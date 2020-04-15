@@ -1,5 +1,4 @@
 # Prerequisites
-
 - NodeJS
 - Clone repository
 - Add .env file
@@ -8,5 +7,7 @@
 
 ## .env file
 Must contain:
+
 USER = {username}
+
 PASS = {password}
