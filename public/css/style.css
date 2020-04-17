@@ -9,13 +9,14 @@
 body {
   font-family: 'Montserrat', sans-serif;
   background: lightgrey;
+  overflow-x: hidden;
 }
 
 header {
   background-color: #141b4d;
   color: #fff;
   height: 80px;
-  width: 100vw;
+  width: 100%;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -55,8 +56,6 @@ header nav {
 }
 
 header .menu {
-  width: 1.5rem;
-  height: 2rem;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -68,6 +67,12 @@ header .menu {
           justify-content: center;
   cursor: pointer;
   z-index: 1000;
+  position: fixed;
+  right: 1.5rem;
+  width: 3rem;
+  height: 3rem;
+  background-color: #78be20;
+  border-radius: 50%;
 }
 
 header .menu:hover .burger,
@@ -81,7 +86,7 @@ header .menu:active .burger::before {
 
 header .burger {
   position: relative;
-  width: 99%;
+  width: 50%;
   height: 3px;
   background-color: #fff;
   display: block;
@@ -146,10 +151,9 @@ header .navitems {
   background-color: #78be20;
   z-index: 2;
   display: block;
-  top: 10px;
-  height: 60px;
-  width: 60px;
-  right: -1px;
+  height: 2rem;
+  width: 2rem;
+  right: 1.5rem;
   border-radius: 50%;
   -webkit-transition: all 0.5s ease-in-out 1s;
   transition: all 0.5s ease-in-out 1s;
@@ -238,39 +242,33 @@ header .navitems.open li:hover:not(.disabled) a {
 
 @-webkit-keyframes openmenu {
   10% {
-    top: 0;
+    width: 6rem;
+    height: 6rem;
     right: 0;
-    height: 100px;
-    width: 100px;
+    top: 0;
   }
-  20% {
-    border-radius: 50% 0 50% 50%;
-  }
-  100% {
+  to {
     border-radius: 0;
-    height: 100vh;
-    width: 100vw;
-    top: 0;
     right: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
   }
 }
 
 @keyframes openmenu {
   10% {
-    top: 0;
+    width: 6rem;
+    height: 6rem;
     right: 0;
-    height: 100px;
-    width: 100px;
+    top: 0;
   }
-  20% {
-    border-radius: 50% 0 50% 50%;
-  }
-  100% {
+  to {
     border-radius: 0;
-    height: 100vh;
-    width: 100vw;
-    top: 0;
     right: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
   }
 }
 
@@ -282,6 +280,13 @@ header .navitems.open li:hover:not(.disabled) a {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 .card {

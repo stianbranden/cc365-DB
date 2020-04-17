@@ -2,7 +2,7 @@ header {
     background-color: $brand-color;
     color: $bar-font-color;
     height: 80px;
-    width: 100vw;
+    width: 100%;
     display: flex;
     justify-content: space-between;
 
@@ -29,13 +29,17 @@ header {
     }
 
     .menu {
-        width: 1.5rem;
-        height: 2rem;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
         z-index: 1000;
+        position: fixed;
+        right: 1.5rem;
+        width: 3rem;
+        height: 3rem;
+        background-color: $secondary-brand-color;
+        border-radius: 50%;
     }
 
     .menu:hover .burger,
@@ -50,7 +54,7 @@ header {
 
     .burger {
         position: relative;
-        width: 99%;
+        width: 50%;
         height: 3px;
         background-color: $bar-font-color;
         display: block;
@@ -105,10 +109,10 @@ header {
         background-color: $secondary-brand-color;
         z-index: 2;
         display: block;
-        top: 10px;
-        height: 60px;
-        width: 60px;
-        right: -1px;
+        //top: 10px;
+        height: 2rem;
+        width: 2rem;
+        right: 1.5rem;
         border-radius: 50%;
         transition: all 0.5s ease-in-out 1s;
 
@@ -178,20 +182,20 @@ header {
         }
         @keyframes openmenu {
             10% {
-                top: 0;
+                width: 6rem;
+                height: 6rem;
                 right: 0;
-                height: 100px;
-                width: 100px;
+                top: 0
+                //border-radius: 0;
             }
-            20% {
-                border-radius: 50% 0 50% 50%;
-            }
-            100% {
+            to {
                 border-radius: 0;
-                height: 100vh;
-                width: 100vw;
-                top: 0;
+                //bottom: 0;
                 right: 0;
+                top: 0;
+                //top: 0;
+                width: 100vw;
+                height: 100vh;
             }
         }
     }
