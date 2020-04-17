@@ -10,8 +10,15 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^8.2.0",
+    "ejs": "^3.0.2",
+    "express": "^4.17.1",
+    "express-ejs-layouts": "^2.5.0",
     "moment": "^2.24.0",
     "request": "^2.88.2",
-    "request-promise": "^4.2.5"
+    "request-promise": "^4.2.5",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0"
   }
 }

@@ -1,32 +1,39 @@
-const baseurl = "https://cc365-eu-c1.sapcctr.com/elkjop";
+const unitsStage = {
+    denmark: {
+        abbr: 'dk',
+        groups: ['DK-AS-EM,AC,CH,PH', 'DK-BU-EM,AC,PH', 'DK-BUHOT-PH', 'DK-CAS-EM', 'DK-PS-PH', 'DK-STA-EM,PH', 'DK-HOT-PH']
+    }/*,
+    helpdesk: {
+
+    },
+    kitchen: {
+
+    }*/
+}
+
+let units = {}
+Object.keys(unitsStage).forEach(key=>{
+    let u = unitsStage[key];
+    units[key] = {
+        abbr: u.abbr,
+        groups: [],
+        key
+    }
+    u.groups.forEach(g=>{
+        let a = g.split('-');
+        if ( a[2].includes(',') ){
+            let cs = a[2].split(',');
+            cs.forEach(c=>{
+                units[key].groups.push(`${a[0]}-${a[1]}-${c}`);
+            });
+        } else {
+            units[key].groups.push(g);
+        }
+    })
+});
+//console.log(units);
+
 
 module.exports = {
-    authQuery: {
-        method: "POST",
-        url: baseurl + '/ecfs/authentication',
-        headers: {
-            'content-type': 'application/x-www-form-urlencoded',
-            authorization: 'ECFAUTH' 
-        }
-    },
-    queueStatusQuery: {
-        headers:{ 'Accept':  'application/json'},
-        method: 'GET',
-        url: baseurl + '/ecfs/RI/rmi/queueStatuses'
-    },
-    queueStatusQueryLive: {
-        headers:{ 'Accept':  'application/json'},
-        method: 'GET',
-        url: baseurl + '/ecfs/RI/rmi/queueStatuses?type=Phone,Chat'
-    },
-    agentQuery: {
-        headers:{ 'Accept':  'application/json'},
-        method: 'GET',
-        url: baseurl + '/ecfs/RI/rmi/agents?showQueueInfo=3&availability=Away,Busy,Free'
-    },
-    queueQuery: {
-        headers:{ 'Accept':  'application/json'},
-        method: 'GET',
-        url: baseurl + '/ecfs/RI/rci/queues'
-    }
+    units
 }

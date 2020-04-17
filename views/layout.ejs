@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <script defer src="/js/script.js"></script>
+    <title>DASHBOARD</title>
+</head>
+<body>
+    <header>
+        <div class="brand"><h3><%= pageTitle %></h3><img src="/images/icon.png" alt="logo"></div>
+        <nav>
+            <div class="menu">
+                <span class="burger"></span>
+            </div>
+            <div class="navitems no-anim closed">
+                <ul>
+                    <li><a href="/denmark">Denmark</a></li>
+                    <li class="disabled"><a href="#">Finland</a></li>
+                    <li class="disabled"><a href="#">Norway</a></li>
+                    <li class="disabled"><a href="#">Sweden</a></li>
+                    <li><a href="/helpdesk">Helpdesk</a></li>
+                    <li><a href="/kitchen">Kitchen&Interior</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <%- body %>
+    <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
+</body>
+</html>

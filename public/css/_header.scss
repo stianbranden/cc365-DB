@@ -1,0 +1,199 @@
+header {
+    background-color: $brand-color;
+    color: $bar-font-color;
+    height: 80px;
+    width: 100vw;
+    display: flex;
+    justify-content: space-between;
+
+    .brand {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        margin-left: 1em;
+    }
+
+    .brand h3 {
+        display: block;
+        text-transform: uppercase;
+    }
+
+    .brand img {
+        height: 50px;
+    }
+
+    nav {
+        display: flex;
+        align-items: center;
+        margin-right: 1em;
+    }
+
+    .menu {
+        width: 1.5rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 1000;
+    }
+
+    .menu:hover .burger,
+    .menu:hover .burger::after,
+    .menu:hover .burger::before,
+    .menu:active .burger,
+    .menu:active .burger::after,
+    .menu:active .burger::before {
+        background-color: $brand-color;
+    }
+
+
+    .burger {
+        position: relative;
+        width: 99%;
+        height: 3px;
+        background-color: $bar-font-color;
+        display: block;
+        border-radius: 20%;
+        transition: all 0.5s ease-in-out;
+        &::after {
+            content: '';
+            position: absolute;
+            width: 99%;
+            height: 3px;
+            background-color: $bar-font-color;
+            top: 0.5rem;
+            display: block;
+            border-radius: 20%;
+            transition: all 0.5s ease-in-out;
+        }
+        &::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background-color: $bar-font-color;
+            top: -0.5rem;
+            display: block;
+            border-radius: 20%;
+            transition: all 0.5s ease-in-out;
+        }
+    }
+    .menu.open .burger::after {
+        opacity: 1;
+        top: 0;
+        transform: rotateZ(45deg)
+    }
+    .menu.open .burger::before {
+        opacity: 1;
+        top: 0;
+        transform: rotateZ(-45deg)
+    }
+    .menu.open .burger{
+        background-color: transparent;
+    }
+
+    .menu.open:hover .burger::after,
+    .menu.open:hover .burger::before,
+    .menu.open:active .burger::after,
+    .menu.open:active .burger::before {
+        background-color: $brand-color;
+    }
+
+    .navitems {
+        position: fixed;
+        background-color: $secondary-brand-color;
+        z-index: 2;
+        display: block;
+        top: 10px;
+        height: 60px;
+        width: 60px;
+        right: -1px;
+        border-radius: 50%;
+        transition: all 0.5s ease-in-out 1s;
+
+        ul {
+            list-style: none;
+            text-align: center;
+            display: none;
+            opacity: 0;
+            //transition: opacity 0.5s ease-in-out 1s;
+        }
+
+        &.open {
+            animation: openmenu 1s ease-in-out forwards;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+
+            ul {
+                display: block;
+                animation: showList 0.5s 1s ease-in-out forwards;
+            }
+
+            li {
+                margin: 0.5rem;
+                //border: 1px solid $brand-color;
+                border-radius: 0.2rem;
+                background-color: $bar-font-color;
+                box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+                transition: all 125ms ease-in-out;
+
+                a {
+                    text-decoration: none;
+                    color: $brand-color;
+                    padding: 0.5rem;
+                    display: block;
+                    transition: all 125ms ease-in-out;
+                }
+
+                &.disabled {
+                    background-color: lightgrey;
+                    a {
+                        cursor: not-allowed;
+                    }
+                }
+
+                &:hover:not(.disabled) {
+                    background-color: $brand-color;
+                    transform: scale(1.1);
+
+                    a {
+                        color: $bar-font-color;
+                        font-weight: bold;
+                    }
+                    
+                }
+
+
+            }
+
+        }
+
+        @keyframes showList {
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes openmenu {
+            10% {
+                top: 0;
+                right: 0;
+                height: 100px;
+                width: 100px;
+            }
+            20% {
+                border-radius: 50% 0 50% 50%;
+            }
+            100% {
+                border-radius: 0;
+                height: 100vh;
+                width: 100vw;
+                top: 0;
+                right: 0;
+            }
+        }
+    }
+
+}
