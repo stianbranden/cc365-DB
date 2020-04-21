@@ -28,6 +28,16 @@
     overflow: hidden;
     margin: 1rem;
 
+    .stat-text {
+        font-size: 0.5rem;
+        text-transform: uppercase;
+        color: $secondary-brand-color;
+    }
+    .stat-number {
+        font-weight: bold;
+        color: $brand-color;
+    }
+
     .card-header {
         grid-area: heading;
         margin: 0.2rem;
@@ -62,6 +72,10 @@
             justify-content: space-evenly;
             align-items: center;
 
+            .stat {
+                flex: 1;
+            }
+
             .stat-text {
                 font-size: 0.5rem;
                 text-transform: uppercase;
@@ -89,6 +103,10 @@
         }
         .arrow-up:hover, .arrow-down:hover {
             //background-color: $brand-color;
+            color: $bar-font-color;
+        }
+
+        .stat-text {
             color: $bar-font-color;
         }
     }

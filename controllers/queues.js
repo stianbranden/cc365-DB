@@ -18,7 +18,7 @@ const data = {
 }
 
 
-async function run(authenticated, runCount){
+async function getQueues(authenticated, runCount){
     runCount++;
     if ( runCount === 6 ) runCount = 0;
     try {
@@ -51,9 +51,18 @@ async function run(authenticated, runCount){
         let queueStatus;
         if ( runCount === 1 ){
             queueStatus = JSON.parse(await request(queueStatusQuery));
+            data.queueStatus = queueStatus;
+            
         }
         else {
             queueStatus = JSON.parse(await request(queueStatusQueryLive));
+            queueStatus.forEach(qs=>{
+                data.queueStatus.forEach((dqs, i)=>{
+                    if ( qs.id === dqs.id ){
+                        data.queueStatus.splice(i,1,qs);
+                    }
+                });
+            });
         }
         console.log(`QueueStatus found: ${queueStatus.length}` );
 
@@ -62,7 +71,7 @@ async function run(authenticated, runCount){
         
         console.log(`Runtime: ${moment().diff(a)}`);
         
-        return {runCount, data};
+        return {runCount, data, queueMap};
     } catch (err) {
         authenticated = false;
         /*setTimeout(()=>{
@@ -75,4 +84,6 @@ async function run(authenticated, runCount){
 }
 //run(false, 0)
 
-module.exports = run;
+module.exports = {
+    getQueues
+};

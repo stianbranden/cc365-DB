@@ -310,6 +310,17 @@ header .navitems.open li:hover:not(.disabled) a {
   margin: 1rem;
 }
 
+.card .stat-text {
+  font-size: 0.5rem;
+  text-transform: uppercase;
+  color: #78be20;
+}
+
+.card .stat-number {
+  font-weight: bold;
+  color: #141b4d;
+}
+
 .card .card-header {
   -ms-grid-row: 1;
   -ms-grid-column: 1;
@@ -376,6 +387,12 @@ header .navitems.open li:hover:not(.disabled) a {
           align-items: center;
 }
 
+.card .card-main .card-stat .stat {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+
 .card .card-main .card-stat .stat-text {
   font-size: 0.5rem;
   text-transform: uppercase;
@@ -412,6 +429,10 @@ header .navitems.open li:hover:not(.disabled) a {
 }
 
 .card .card-sub .arrow-up:hover, .card .card-sub .arrow-down:hover {
+  color: #fff;
+}
+
+.card .card-sub .stat-text {
   color: #fff;
 }
 
