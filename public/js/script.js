@@ -24,31 +24,35 @@ socket.on('connect-ok', data=>{
 });
 
 socket.on('updateQueues', data=>{
-    console.log(data);
+    //console.log(data);
     let ex = {
         ph: {
             qu: 0,
             lw: 0,
             min: 1000,
-            max: 0
+            max: 0,
+            queues: []
         },
         em: {
             qu: 0,
             lw: 0,
             min: 1000,
-            max: 0
+            max: 0,
+            queues: []
         },
         ch: {
             qu: 0,
             lw: 0,
             min: 1000,
-            max: 0
+            max: 0,
+            queues: []
         },
         ac: {
             qu: 0,
             lw: 0,
             min: 1000,
-            max: 0
+            max: 0,
+            queues: []
         }
     }
     data.forEach(g=>{
@@ -65,6 +69,7 @@ socket.on('updateQueues', data=>{
             if ( ag > ex[abbr].max ){
                 ex[abbr].max = ag
             }
+            ex[abbr].queues.push(q);
         });
     });
     console.log(ex);
@@ -74,7 +79,10 @@ socket.on('updateQueues', data=>{
 
 function updateGroups(data){
     Object.keys(data).forEach(key=>{
-        document.querySelector(`#${key} .card-queue h1`).innerText = data[key].qu;
+        const card = document.querySelector(`#${key}`);
+        card.queueData = data[key].queues;
+        
+        card.queue = data[key].qu;
         //lw = longest wait
         let lw = moment.duration(data[key].lw);
         let lwDisplay = Math.floor(lw.as('s'));
@@ -94,12 +102,12 @@ function updateGroups(data){
             lwDisplay = Math.floor(lw.as('h'));
             lwSuffix = 'h'
         }
-        document.querySelector(`#${key} .lw .stat-number`).innerText = lwDisplay + lwSuffix;
+        card.longestWait = lwDisplay + lwSuffix;
         //min max agents
         if ( data[key].min === data[key].max ){
-            document.querySelector(`#${key} .agents .stat-number`).innerText = data[key].min
+            card.agents = data[key].min
         } else {
-            document.querySelector(`#${key} .agents .stat-number`).innerText = data[key].min + ' - ' + data[key].max
+            card.agents = data[key].min + ' - ' + data[key].max
         }
 
     });

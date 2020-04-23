@@ -1,14 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
-@import 'variables', 'reset', 'header';
+@import 'variables', 'reset';
 
-
-
-.container {
-    margin: 1rem;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
+:host {
+    display: block;
 }
 
 .card {
@@ -21,7 +14,7 @@
         "heading sub"
         "main sub";
     border-radius: 0.5rem;
-    background: white;
+    background: $bar-font-color;
     box-shadow: 0.3rem 0.3rem 1rem rgba(0,0,0,0.9);
     text-align: center;
     transition: all 500ms ease-in-out;
@@ -39,17 +32,20 @@
     }
 
     .card-header {
+
         grid-area: heading;
         margin: 0.2rem;
         display: flex;
         align-items: center;
         justify-content: center;
-
-        ion-icon {
-            margin-right: 0.5rem;
-        }
+        z-index: 2;
+        background-color: $bar-font-color;
     }
     .card-main {
+        background-color: $bar-font-color;
+        transition: all 0.5s ease-in-out;
+        transform: translateY(-100%);
+        z-index: -1;
         grid-area: main;
         display: grid;
         grid-template-rows: 3fr 1fr;
@@ -88,6 +84,11 @@
         }
         
     }
+    .card-main.front {
+        z-index: 1;
+        transform: translateY(0);
+        transition: all 0.5s ease-in-out;
+    }
     
     .card-sub {
         grid-area: sub;
@@ -110,10 +111,10 @@
             color: $bar-font-color;
         }
     }
-    &:hover, .card:active {
+    &:hover, &:active {
         transform: scale(1.1);
     }
+    &[hidden] {
+        display: none;
+    }
 }
-
-
-  

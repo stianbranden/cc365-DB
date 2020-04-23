@@ -436,7 +436,7 @@ header .navitems.open li:hover:not(.disabled) a {
   color: #fff;
 }
 
-.card:hover, .card:active {
+.card:hover, .card .card:active {
   -webkit-transform: scale(1.1);
           transform: scale(1.1);
 }
