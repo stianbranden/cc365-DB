@@ -15,7 +15,17 @@ body {
   display: block;
 }
 
+:host([hidden]) {
+  display: none;
+}
+
+:host:not(:defined) {
+  display: none;
+}
+
 .card {
+  -webkit-transition: all 500ms ease-in-out;
+  transition: all 500ms ease-in-out;
   width: 300px;
   height: 200px;
   display: -ms-grid;
@@ -30,8 +40,6 @@ body {
   -webkit-box-shadow: 0.3rem 0.3rem 1rem rgba(0, 0, 0, 0.9);
           box-shadow: 0.3rem 0.3rem 1rem rgba(0, 0, 0, 0.9);
   text-align: center;
-  -webkit-transition: all 500ms ease-in-out;
-  transition: all 500ms ease-in-out;
   overflow: hidden;
   margin: 1rem;
 }
@@ -67,10 +75,8 @@ body {
 
 .card .card-main {
   background-color: #fff;
-  -webkit-transition: all 0.5s ease-in-out;
-  transition: all 0.5s ease-in-out;
-  -webkit-transform: translateY(-100%);
-          transform: translateY(-100%);
+  -webkit-transform: translateY(0%);
+          transform: translateY(0%);
   z-index: -1;
   -ms-grid-row: 2;
   -ms-grid-column: 1;
@@ -134,12 +140,22 @@ body {
   color: #141b4d;
 }
 
-.card .card-main.front {
+.card .card-main.anim {
+  -webkit-transition: -webkit-transform 500ms ease-in-out 50ms;
+  transition: -webkit-transform 500ms ease-in-out 50ms;
+  transition: transform 500ms ease-in-out 50ms;
+  transition: transform 500ms ease-in-out 50ms, -webkit-transform 500ms ease-in-out 50ms;
   z-index: 1;
-  -webkit-transform: translateY(0);
-          transform: translateY(0);
-  -webkit-transition: all 0.5s ease-in-out;
-  transition: all 0.5s ease-in-out;
+}
+
+.card .card-main.up {
+  -webkit-transform: translateY(-100%);
+          transform: translateY(-100%);
+}
+
+.card .card-main.down {
+  -webkit-transform: translateY(100%);
+          transform: translateY(100%);
 }
 
 .card .card-sub {

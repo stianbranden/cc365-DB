@@ -6,7 +6,7 @@ template.innerHTML = `
         <div class="card-header">
             <h2></h2>
         </div>
-        <div class="card-main front" num="0">
+        <div class="card-main anim" num="0">
             <div class="card-queue">
                 <h1></h1>
             </div>
@@ -85,16 +85,40 @@ class Card extends HTMLElement {
         this.shadowRoot.appendChild(template.content.cloneNode(true));
         this.shadowRoot.querySelector('.card-header h2').innerText = name;
         this.shadowRoot.querySelector('.card-sub .center ion-icon').setAttribute('name', icon);
-        console.log(this.shadowRoot.querySelector('.card-main').getAttribute('num'));
+        
 
-        this._toggleMain= ()=>{
-            this.shadowRoot.querySelector(`.card-main[num="${this.page}"]`).classList.remove('front');
-            this.page ++;
+        let _toggleMain = i=>{
+            let currFront = this.shadowRoot.querySelector(`.card-main[num="${this.page}"]`);
+            this.page += i;
             if (this.page === this.pageLength){
                 this.page = 0;
+            } else if (this.page < 0 ){
+                this.page = this.pageLength -1;
             }
-            this.shadowRoot.querySelector(`.card-main[num="${this.page}"]`).classList.add('front');
+            let nextFront = this.shadowRoot.querySelector(`.card-main[num="${this.page}"]`);
+            nextFront.className = 'card-main';
+            if ( i < 0 ){
+                nextFront.classList.add('up')
+                setTimeout(()=>{
+                    currFront.classList.add('down');
+                    nextFront.className = 'card-main anim'
+                }, 10)
+            }
+            else {
+                nextFront.classList.add('down');
+                setTimeout(()=>{
+                    currFront.classList.add('up');
+                    nextFront.className = 'card-main anim'
+                },10);
+            }
         }
+        this.shadowRoot.querySelector('.arrow-up').addEventListener('click', ()=>{
+            _toggleMain(1);
+        });
+        this.shadowRoot.querySelector('.arrow-down').addEventListener('click', ()=>{
+            _toggleMain(-1);
+        });
+
         
     }
 } 

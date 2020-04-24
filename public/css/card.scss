@@ -3,8 +3,15 @@
 :host {
     display: block;
 }
+:host([hidden]) {
+     display: none;
+}
+:host:not(:defined){
+    display: none;
+}
 
 .card {
+    transition: all 500ms ease-in-out;
     width: 300px;
     height: 200px;
     display: grid;
@@ -17,7 +24,6 @@
     background: $bar-font-color;
     box-shadow: 0.3rem 0.3rem 1rem rgba(0,0,0,0.9);
     text-align: center;
-    transition: all 500ms ease-in-out;
     overflow: hidden;
     margin: 1rem;
 
@@ -43,8 +49,7 @@
     }
     .card-main {
         background-color: $bar-font-color;
-        transition: all 0.5s ease-in-out;
-        transform: translateY(-100%);
+        transform: translateY(0%);
         z-index: -1;
         grid-area: main;
         display: grid;
@@ -82,12 +87,16 @@
                 color: $brand-color;
             }
         }
-        
-    }
-    .card-main.front {
-        z-index: 1;
-        transform: translateY(0);
-        transition: all 0.5s ease-in-out;
+        &.anim {
+            transition: transform 500ms ease-in-out 50ms;
+            z-index: 1;
+        }
+        &.up {
+            transform: translateY(-100%);
+        }
+        &.down {
+            transform: translateY(100%);
+        }
     }
     
     .card-sub {
