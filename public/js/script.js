@@ -84,25 +84,7 @@ function updateGroups(data){
         
         card.queue = data[key].qu;
         //lw = longest wait
-        let lw = moment.duration(data[key].lw);
-        let lwDisplay = Math.floor(lw.as('s'));
-        let lwSuffix = 's';
-        if ( lw.as('s') > 100 && lw.as('s') < 600 ){
-            lwDisplay = lw.minutes();
-            if (lw.seconds() < 10 ){
-                lwDisplay += ':0' + lw.seconds();
-            }
-            lwSuffix =''
-        }
-        else if (lw.as('s') >= 600 && lw.as('s') < 3600 ){
-            lwDisplay = Mats.floor(lw.as('m'));
-            lwSuffix = 'min'
-        }
-        else if (lw.as('s') >= 3600) {
-            lwDisplay = Math.floor(lw.as('h'));
-            lwSuffix = 'h'
-        }
-        card.longestWait = lwDisplay + lwSuffix;
+        card.longestWait = data[key].lw;
         //min max agents
         if ( data[key].min === data[key].max ){
             card.agents = data[key].min

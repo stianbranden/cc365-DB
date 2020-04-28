@@ -1,3 +1,36 @@
+function msToTime(ms){
+    let s = Math.round(ms/1000);
+    if ( s < 100 ){
+        return s+'s';
+    } 
+    else if ( s < 600 ){
+        let m = Math.floor(s/60);
+        s = s - (m * 60);
+        if ( s < 10 ){
+            return m + ':0' + s;
+        }
+        else {
+            return m + ':' + s;
+        }
+    }
+    else if ( s < 3600 ){
+        return Math.round(s/60) + 'm'
+    }
+    else {
+        return Math.round(s/3600) + 'h'
+    }
+}
+
+function queueSort(a,b){
+    let comp = 0;
+    if (a.name > b.name){
+        comp = 1;
+    }
+    else if (a.name < b.name) {
+        comp = -1;
+    }
+    return comp;
+}
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -25,9 +58,7 @@ template.innerHTML = `
                 </div>
             </div>
         </div>
-        <div class="card-main" num="1">
-            <div>Hellooo</div>
-        </div>
+        
         
         <div class="card-sub">
             <div class="arrow-up">
@@ -54,7 +85,7 @@ class Card extends HTMLElement {
     }
 
     set longestWait(lw){
-        this.shadowRoot.querySelector('.lw .stat-number').innerText = lw;
+        this.shadowRoot.querySelector('.lw .stat-number').innerText = msToTime(lw);
     }
 
     set agents(ag){
@@ -62,12 +93,33 @@ class Card extends HTMLElement {
     }
 
     set queueData(data){
-        this.queues = data;
+        
         if ( this.queues.length === 0 ){
-            this.shadowRoot.querySelector('.card').setAttribute('hidden', true)
+            this.queues = data.sort(queueSort);
+            if ( this.queues.length === 0 ){
+                this.shadowRoot.querySelector('.card').setAttribute('hidden', true)
+            } else {
+                //this.shadowRoot.querySelector('.card').removeAttribute('hidden');
+                let i = 0;
+                let list = []
+                this.queues.forEach(queue=>{
+                    if ( i === 6) {
+                        i = 0;
+                        this._createMain(list);
+                        list = [];
+                    }
+                    list.push(queue);
+                    i++;
+                });
+                if ( list.length > 0 ){
+                    this._createMain(list);
+                }
+            }
         } else {
-            this.shadowRoot.querySelector('.card').removeAttribute('hidden')
+
+
         }
+        
     }
 
     get queueData(){
@@ -78,7 +130,7 @@ class Card extends HTMLElement {
         super();
         this.queues = [];
         this.page = 0;
-        this.pageLength = 2;
+        this.pageLength = 1;
         let name = this.getAttribute('name');
         let icon = this.getAttribute('icon');
         this.attachShadow({mode: 'open'});
@@ -86,30 +138,51 @@ class Card extends HTMLElement {
         this.shadowRoot.querySelector('.card-header h2').innerText = name;
         this.shadowRoot.querySelector('.card-sub .center ion-icon').setAttribute('name', icon);
         
+        this._createMain = (list)=>{
+            let num = this.pageLength;
+            this.pageLength++;
+            let ele = `<div class="card-table">
+                <table>
+                    <tr><th class="name">Name</th><th>Queue</th><th>Agents</th><th>Oldest</th></tr>`;
+            list.forEach(q=>{
+                ele += `<tr id="${q.id}"><td class="name" title="${q.name}">${q.name}</td><td class="queue">${q.inQueueCurrent}</td><td class="agents">${q.agentsServing-q.agentsNotReady}</td><td class="oldest">${msToTime(q.waitingDurationCurrentMax)}</td></tr>`
+            })
+
+            ele += `
+                    </table>
+                </div>`;
+            let div = document.createElement('div')
+            div.setAttribute('class', 'card-main')
+            div.setAttribute('num', String(num))
+            div.innerHTML = ele;
+            this.shadowRoot.querySelector('.card').appendChild(div);
+        }
 
         let _toggleMain = i=>{
-            let currFront = this.shadowRoot.querySelector(`.card-main[num="${this.page}"]`);
-            this.page += i;
-            if (this.page === this.pageLength){
-                this.page = 0;
-            } else if (this.page < 0 ){
-                this.page = this.pageLength -1;
-            }
-            let nextFront = this.shadowRoot.querySelector(`.card-main[num="${this.page}"]`);
-            nextFront.className = 'card-main';
-            if ( i < 0 ){
-                nextFront.classList.add('up')
-                setTimeout(()=>{
-                    currFront.classList.add('down');
-                    nextFront.className = 'card-main anim'
-                }, 10)
-            }
-            else {
-                nextFront.classList.add('down');
-                setTimeout(()=>{
-                    currFront.classList.add('up');
-                    nextFront.className = 'card-main anim'
-                },10);
+            if ( this.pageLength > 0){
+                let currFront = this.shadowRoot.querySelector(`.card-main[num="${this.page}"]`);
+                this.page += i;
+                if (this.page === this.pageLength){
+                    this.page = 0;
+                } else if (this.page < 0 ){
+                    this.page = this.pageLength -1;
+                }
+                let nextFront = this.shadowRoot.querySelector(`.card-main[num="${this.page}"]`);
+                nextFront.className = 'card-main';
+                if ( i < 0 ){
+                    nextFront.classList.add('up')
+                    setTimeout(()=>{
+                        currFront.classList.add('down');
+                        nextFront.className = 'card-main anim'
+                    }, 10)
+                }
+                else {
+                    nextFront.classList.add('down');
+                    setTimeout(()=>{
+                        currFront.classList.add('up');
+                        nextFront.className = 'card-main anim'
+                    },10);
+                }
             }
         }
         this.shadowRoot.querySelector('.arrow-up').addEventListener('click', ()=>{
