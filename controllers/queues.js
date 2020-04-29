@@ -5,6 +5,8 @@ const {authQuery, queueStatusQuery, agentQuery, queueQuery, queueStatusQueryLive
 
 const request = require('request-promise').defaults({jar: true})
 const moment = require('moment');
+const encode = require('nodejs-base64-encode');
+
 
 const queueMap = {
     updated: moment().subtract(1,'d'),
@@ -24,9 +26,12 @@ async function getQueues(authenticated, runCount){
     try {
         let a = moment();
         if (!authenticated){ //If not authenticated, then authenticate
-            let buff = new Buffer(`${USER}:${PASS}`);
-            let base64data = buff.toString('base64');
+            //let buff = new Buffer(`${USER}:${PASS}`);
+            //let base64data = buff.toString('base64');
+            let base64data = encode.encode(`${USER}:${PASS}`, 'base64');
             authQuery.body = 'Authorization=Basic ' + base64data;
+            console.log(authQuery.body);
+            
             let resp = JSON.parse(await request(authQuery));
             authenticated = true;
         }
