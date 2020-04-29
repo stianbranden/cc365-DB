@@ -1,13 +1,74 @@
 @import 'variables', 'reset';
 
 :host {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 :host([hidden]) {
-     display: none;
+     display: none !important;
 }
 :host:not(:defined){
     display: none;
+}
+
+*[hidden] {
+    display: none !important;
+}
+
+.loader {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   
+    svg {
+        max-width: 600px;
+        max-height: 600px;
+        
+        width: 80%;
+        height: 80%;
+        circle {
+            stroke: $brand-color;
+        }
+        :nth-child(1){
+            animation: load2 2s forwards infinite ease-in-out;
+        }
+        :nth-child(2){
+            animation: load3 2s forwards infinite ease-in-out;
+        }
+    }
+
+}
+
+@keyframes load2 {
+    0% {
+        opacity: 0;
+    }
+    33% {
+        opacity: 0;
+    }
+    66% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes load3 {
+    0% {
+        opacity: 0;
+    }
+    33% {
+        opacity: 0;
+    }
+    66% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 .card {
@@ -48,7 +109,7 @@
     }
     .card-main {
         background-color: $bar-font-color;
-        transform: translateY(0%);
+        transform: translate(0%, 0%);
         z-index: -1;
         grid-area: main;
         display: grid;
@@ -142,6 +203,13 @@
         .stat-text {
             color: $bar-font-color;
         }
+        ion-icon[name="chevron-back-outline"] {
+            display: none;
+        }
+        ion-icon[name="chevron-forward-outline"] {
+            display: none;
+        }
+
     }
     &:hover, &:active {
         transform: scale(1.1);
@@ -149,4 +217,66 @@
     &[hidden] {
         display: none;
     }
+}
+
+
+@media only screen and (min-width: $small-size) {
+    .card {
+        width: 300px;
+        height: 300px;
+        grid-template-columns: auto;
+        grid-template-rows: 1fr 5fr 0.7fr;
+        grid-template-areas: 
+          "heading"
+          "main"
+          "sub";
+
+        .card-sub {
+            flex-direction: row;
+            z-index: 2;
+
+            .arrow-up, .arrow-down, .center {
+                padding: 0 1rem;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            ion-icon[name="chevron-up-outline"] {
+                display: none;
+            }
+            ion-icon[name="chevron-back-outline"] {
+                display: block;
+            }
+            ion-icon[name="chevron-down-outline"] {
+                display: none;
+            }
+            ion-icon[name="chevron-forward-outline"] {
+                display: block;
+            }
+        }
+        .card-main{
+            .card-queue {
+                h1 {
+                    font-size: 5rem;;
+                }
+            }
+
+            &.up {
+                transform: translateX(-100%);
+            }
+            &.down {
+                transform: translateX(100%);
+            }
+            .card-table {
+                th.name {
+                    width: 120px;
+                }
+                td {
+                    font-size: 1.1rem;
+                }
+            }
+        }
+    }
+
+    
 }

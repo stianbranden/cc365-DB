@@ -1,5 +1,9 @@
-
-
+/*
+      ----------------------
+        Menu Controls
+        General
+      ----------------------
+*/
 let burgermenu = document.querySelector('.menu');
 let navmenu = document.querySelector('nav .navitems');
 
@@ -10,7 +14,15 @@ burgermenu.addEventListener('click', ()=>{
     navmenu.classList.toggle('closed')
 });
 
+document.querySelector('.container').classList.add(key);
 
+
+/*
+      ----------------------
+        Socket.io init
+        General
+      ----------------------
+*/
 
 const socket = io();
 
@@ -23,40 +35,68 @@ socket.on('connect-ok', data=>{
     console.log(`Connected ok, ${data}`);
 });
 
+
+/*
+      ----------------------
+        On QueueUpdate, 
+        spesific to key
+      ----------------------
+*/
 socket.on('updateQueues', data=>{
-    //console.log(data);
+    console.log(data);
+    let dataSet = {
+        qu: 0,
+        lw: 0,
+        min: 1000,
+        max: 0
+    }
     let ex = {
         ph: {
-            qu: 0,
-            lw: 0,
-            min: 1000,
-            max: 0,
+            ...dataSet,
             queues: []
         },
         em: {
-            qu: 0,
-            lw: 0,
-            min: 1000,
-            max: 0,
+            ...dataSet,
             queues: []
         },
         ch: {
-            qu: 0,
-            lw: 0,
-            min: 1000,
-            max: 0,
+            ...dataSet,
             queues: []
         },
         ac: {
-            qu: 0,
-            lw: 0,
-            min: 1000,
-            max: 0,
+            ...dataSet,
             queues: []
         }
     }
+    if ( key === 'helpdesk'){
+        ex = {
+            dk: {
+                ...dataSet,
+                queues: []
+            },
+            fi: {
+                ...dataSet,
+                queues: []
+            },
+            se: {
+                ...dataSet,
+                queues: []
+            },
+            no: {
+                ...dataSet,
+                queues: []
+            }
+        }
+    }
+
     data.forEach(g=>{
+
         let abbr = g.group.split('-')[2].toLowerCase();
+        //console.log(abbr, ex[abbr]);
+        if ( key === 'helpdesk'){
+            abbr = g.group.split('-')[0].toLowerCase();
+        }
+        
         g.data.forEach(q=>{
             ex[abbr].qu += q.inQueueCurrent;
             if ( q.waitingDurationCurrentMax > ex[abbr].lw ) {
@@ -77,19 +117,25 @@ socket.on('updateQueues', data=>{
     
 });
 
+/*
+      ----------------------
+        Update for cards, 
+        Generic
+      ----------------------
+*/
 function updateGroups(data){
-    Object.keys(data).forEach(key=>{
-        const card = document.querySelector(`#${key}`);
-        card.queueData = data[key].queues;
+    Object.keys(data).forEach(cardKey=>{
+        const card = document.querySelector(`#${cardKey}`);
+        card.queueData = data[cardKey].queues;
         
-        card.queue = data[key].qu;
+        card.queue = data[cardKey].qu;
         //lw = longest wait
-        card.longestWait = data[key].lw;
+        card.longestWait = data[cardKey].lw;
         //min max agents
-        if ( data[key].min === data[key].max ){
-            card.agents = data[key].min
+        if ( data[cardKey].min === data[cardKey].max ){
+            card.agents = data[cardKey].min
         } else {
-            card.agents = data[key].min + ' - ' + data[key].max
+            card.agents = data[cardKey].min + ' - ' + data[cardKey].max
         }
 
     });

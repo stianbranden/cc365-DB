@@ -10,6 +10,7 @@ body {
   font-family: 'Montserrat', sans-serif;
   background: lightgrey;
   overflow-x: hidden;
+  min-width: 350px;
 }
 
 header {
@@ -191,11 +192,14 @@ header .navitems.open ul {
 }
 
 header .navitems.open li {
-  margin: 0.5rem;
-  border-radius: 0.2rem;
+  border-radius: 0.5rem;
+  -webkit-box-shadow: 0.3rem 0.3rem 1rem rgba(0, 0, 0, 0.9);
+          box-shadow: 0.3rem 0.3rem 1rem rgba(0, 0, 0, 0.9);
+  text-align: center;
+  overflow: hidden;
+  margin: 1rem;
+  padding: 1rem 2rem;
   background-color: #fff;
-  -webkit-box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-          box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
   -webkit-transition: all 125ms ease-in-out;
   transition: all 125ms ease-in-out;
 }
@@ -272,6 +276,40 @@ header .navitems.open li:hover:not(.disabled) a {
   }
 }
 
+@media only screen and (min-width: 700px) {
+  header .navitems.open ul {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+  }
+  header .navitems.open ul li {
+    -ms-flex-preferred-size: 40%;
+        flex-basis: 40%;
+  }
+  header .navitems.open ul a {
+    font-weight: bolder;
+    font-size: 1.2rem;
+  }
+}
+
+@media only screen and (min-width: 1360px) {
+  header .navitems.open ul li {
+    -ms-flex-preferred-size: 30%;
+        flex-basis: 30%;
+  }
+  header .navitems.open ul a {
+    font-size: 1.4rem;
+  }
+}
+
 .container {
   margin: 1rem;
   display: -webkit-box;
@@ -287,5 +325,27 @@ header .navitems.open li:hover:not(.disabled) a {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+}
+
+@media only screen and (min-width: 700px) {
+  .container {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+  }
+  queue-card {
+    -ms-flex-preferred-size: 34%;
+        flex-basis: 34%;
+  }
+}
+
+@media only screen and (min-width: 1360px) {
+  queue-card {
+    -ms-flex-preferred-size: 25%;
+        flex-basis: 25%;
+  }
 }
 /*# sourceMappingURL=style.css.map */

@@ -2,10 +2,20 @@ const unitsStage = {
     denmark: {
         abbr: 'dk',
         groups: ['DK-AS-EM,AC,CH,PH', 'DK-BU-EM,AC,PH', 'DK-BUHOT-PH', 'DK-CAS-EM', 'DK-PS-PH', 'DK-STA-EM,PH', 'DK-HOT-PH']
-    }/*,
-    helpdesk: {
-
     },
+    helpdesk: {
+        abbr: 'thd',
+        groups: [
+            'DK-HDP-PH', 
+            'DK-HDF-PH',
+            'FI-HDP-PH',
+            'FI-HDF-PH',
+            'NO-HDP-PH',
+            'NO-HDF-PH',
+            'SE-HDP-PH',
+            'SE-HDF-PH',
+        ]
+    }/*,
     kitchen: {
 
     }*/

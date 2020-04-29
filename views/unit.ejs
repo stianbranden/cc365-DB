@@ -1,9 +1,16 @@
 <div class="container">
-
-    <queue-card name="Phone" id="ph" icon="call-outline"></queue-card>
-    <queue-card name="Chat" id="ch" icon="chatbubbles-outline"></queue-card>
-    <queue-card name="Email" id="em" icon="mail-outline"></queue-card>
-    <queue-card name="Action" id="ac" icon="attach-outline"></queue-card>
+    <% if (pageTitle === 'helpdesk'){ %>
+        <queue-card name="Denmark" id="dk" icon="call-outline" showLoader=true></queue-card>
+        <queue-card name="Finland" id="fi" icon="call-outline"></queue-card>
+        <queue-card name="Norway" id="no" icon="call-outline"></queue-card>
+        <queue-card name="Sweden" id="se" icon="call-outline"></queue-card>
+    <% } else { %>
+        <queue-card name="Phone" id="ph" icon="call-outline" showLoader=true></queue-card>
+        <queue-card name="Chat" id="ch" icon="chatbubbles-outline"></queue-card>
+        <queue-card name="Email" id="em" icon="mail-outline"></queue-card>
+        <queue-card name="Action" id="ac" icon="attach-outline"></queue-card>
+    <% } %>
+    
 
 </div>
 

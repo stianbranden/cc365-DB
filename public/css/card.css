@@ -9,18 +9,125 @@ body {
   font-family: 'Montserrat', sans-serif;
   background: lightgrey;
   overflow-x: hidden;
+  min-width: 350px;
 }
 
 :host {
-  display: block;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 
 :host([hidden]) {
-  display: none;
+  display: none !important;
 }
 
 :host:not(:defined) {
   display: none;
+}
+
+*[hidden] {
+  display: none !important;
+}
+
+.loader {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.loader svg {
+  max-width: 600px;
+  max-height: 600px;
+  width: 80%;
+  height: 80%;
+}
+
+.loader svg circle {
+  stroke: #141b4d;
+}
+
+.loader svg :nth-child(1) {
+  -webkit-animation: load2 2s forwards infinite ease-in-out;
+          animation: load2 2s forwards infinite ease-in-out;
+}
+
+.loader svg :nth-child(2) {
+  -webkit-animation: load3 2s forwards infinite ease-in-out;
+          animation: load3 2s forwards infinite ease-in-out;
+}
+
+@-webkit-keyframes load2 {
+  0% {
+    opacity: 0;
+  }
+  33% {
+    opacity: 0;
+  }
+  66% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes load2 {
+  0% {
+    opacity: 0;
+  }
+  33% {
+    opacity: 0;
+  }
+  66% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes load3 {
+  0% {
+    opacity: 0;
+  }
+  33% {
+    opacity: 0;
+  }
+  66% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes load3 {
+  0% {
+    opacity: 0;
+  }
+  33% {
+    opacity: 0;
+  }
+  66% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .card {
@@ -74,8 +181,8 @@ body {
 
 .card .card-main {
   background-color: #fff;
-  -webkit-transform: translateY(0%);
-          transform: translateY(0%);
+  -webkit-transform: translate(0%, 0%);
+          transform: translate(0%, 0%);
   z-index: -1;
   -ms-grid-row: 2;
   -ms-grid-column: 1;
@@ -219,6 +326,14 @@ body {
   color: #fff;
 }
 
+.card .card-sub ion-icon[name="chevron-back-outline"] {
+  display: none;
+}
+
+.card .card-sub ion-icon[name="chevron-forward-outline"] {
+  display: none;
+}
+
 .card:hover, .card:active {
   -webkit-transform: scale(1.1);
           transform: scale(1.1);
@@ -226,5 +341,65 @@ body {
 
 .card[hidden] {
   display: none;
+}
+
+@media only screen and (min-width: 700px) {
+  .card {
+    width: 300px;
+    height: 300px;
+    -ms-grid-columns: auto;
+        grid-template-columns: auto;
+    -ms-grid-rows: 1fr 5fr 0.7fr;
+        grid-template-rows: 1fr 5fr 0.7fr;
+        grid-template-areas: "heading" "main" "sub";
+  }
+  .card .card-sub {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    z-index: 2;
+  }
+  .card .card-sub .arrow-up, .card .card-sub .arrow-down, .card .card-sub .center {
+    padding: 0 1rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+  }
+  .card .card-sub ion-icon[name="chevron-up-outline"] {
+    display: none;
+  }
+  .card .card-sub ion-icon[name="chevron-back-outline"] {
+    display: block;
+  }
+  .card .card-sub ion-icon[name="chevron-down-outline"] {
+    display: none;
+  }
+  .card .card-sub ion-icon[name="chevron-forward-outline"] {
+    display: block;
+  }
+  .card .card-main .card-queue h1 {
+    font-size: 5rem;
+  }
+  .card .card-main.up {
+    -webkit-transform: translateX(-100%);
+            transform: translateX(-100%);
+  }
+  .card .card-main.down {
+    -webkit-transform: translateX(100%);
+            transform: translateX(100%);
+  }
+  .card .card-main .card-table th.name {
+    width: 120px;
+  }
+  .card .card-main .card-table td {
+    font-size: 1.1rem;
+  }
 }
 /*# sourceMappingURL=card.css.map */

@@ -11,5 +11,20 @@
     align-items: center;
 }
 
+@media only screen and (min-width: $small-size) {
+    .container {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    queue-card {
+        flex-basis: 34%;
+    }
+}
+
+@media only screen and (min-width: $big-size) {
+    queue-card {
+        flex-basis: 25%;
+    }
+}
 
   

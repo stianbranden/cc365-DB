@@ -35,7 +35,14 @@ function queueSort(a,b){
 const template = document.createElement('template');
 template.innerHTML = `
 <link rel="stylesheet" type="text/css" href="/css/card.css" />
-<div class="card">
+<div class="loader" hidden>
+    <svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'>
+        <circle cx='256' cy='256' r='32' style='fill:none;stroke-miterlimit:10;stroke-width:16px'/>
+        <circle cx='416' cy='256' r='32' style='fill:none;stroke-miterlimit:10;stroke-width:16px'/>
+        <circle cx='96' cy='256' r='32' style='fill:none;stroke-miterlimit:10;stroke-width:16px'/>
+    </svg>
+</div>
+<div class="card" hidden>
         <div class="card-header">
             <h2></h2>
         </div>
@@ -63,12 +70,14 @@ template.innerHTML = `
         <div class="card-sub">
             <div class="arrow-up">
                 <ion-icon name="chevron-up-outline"></ion-icon>
+                <ion-icon name="chevron-back-outline"></ion-icon>
             </div>
             <div class="center">
                 <ion-icon></ion-icon>
             </div>
             <div class="arrow-down">
                 <ion-icon name="chevron-down-outline"></ion-icon>
+                <ion-icon name="chevron-forward-outline"></ion-icon>
             </div>
         </div>
     </div>`
@@ -99,7 +108,8 @@ class Card extends HTMLElement {
             if ( this.queues.length === 0 ){
                 this.shadowRoot.querySelector('.card').setAttribute('hidden', true)
             } else {
-                //this.shadowRoot.querySelector('.card').removeAttribute('hidden');
+                this.shadowRoot.querySelector('.card').removeAttribute('hidden');
+                this.shadowRoot.querySelector('.loader').setAttribute('hidden', true);
                 let i = 0;
                 let list = []
                 this.queues.forEach(queue=>{
@@ -116,7 +126,12 @@ class Card extends HTMLElement {
                 }
             }
         } else {
-
+            this.queues = data.sort(queueSort);
+            this.queues.forEach(q=>{
+                this.shadowRoot.querySelector(`[id='${q.id}'] .queue`).innerText = q.inQueueCurrent;
+                this.shadowRoot.querySelector(`[id='${q.id}'] .agents`).innerText = q.agentsServing-q.agentsNotReady;
+                this.shadowRoot.querySelector(`[id='${q.id}'] .oldest`).innerText = msToTime(q.waitingDurationCurrentMax);
+            });
 
         }
         
@@ -133,8 +148,12 @@ class Card extends HTMLElement {
         this.pageLength = 1;
         let name = this.getAttribute('name');
         let icon = this.getAttribute('icon');
+        let showLoader = this.getAttribute('showLoader');
         this.attachShadow({mode: 'open'});
         this.shadowRoot.appendChild(template.content.cloneNode(true));
+        if (showLoader){
+            this.shadowRoot.querySelector('.loader').removeAttribute('hidden');
+        }
         this.shadowRoot.querySelector('.card-header h2').innerText = name;
         this.shadowRoot.querySelector('.card-sub .center ion-icon').setAttribute('name', icon);
         
@@ -161,7 +180,7 @@ class Card extends HTMLElement {
         let _toggleMain = i=>{
             if ( this.pageLength > 0){
                 let currFront = this.shadowRoot.querySelector(`.card-main[num="${this.page}"]`);
-                this.page += i;
+                this.page -= i;
                 if (this.page === this.pageLength){
                     this.page = 0;
                 } else if (this.page < 0 ){

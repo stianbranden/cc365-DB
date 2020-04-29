@@ -137,11 +137,13 @@ header {
             }
 
             li {
-                margin: 0.5rem;
-                //border: 1px solid $brand-color;
-                border-radius: 0.2rem;
+                border-radius: 0.5rem;
+                box-shadow: 0.3rem 0.3rem 1rem rgba(0, 0, 0, 0.9);
+                text-align: center;
+                overflow: hidden;
+                margin: 1rem;
+                padding: 1rem 2rem;
                 background-color: $bar-font-color;
-                box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
                 transition: all 125ms ease-in-out;
 
                 a {
@@ -200,4 +202,40 @@ header {
         }
     }
 
+}
+
+@media only screen and (min-width: $small-size){
+
+    header {
+        .navitems.open ul {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+
+            li {
+                flex-basis: 40%;
+            }
+            a {
+                font-weight: bolder;
+                font-size: 1.2rem;
+            }
+        }
+
+    }
+}
+@media only screen and (min-width: $big-size){
+
+    header {
+        .navitems.open ul {
+            
+            li {
+                flex-basis: 30%;
+            }
+            a {
+                font-size: 1.4rem;
+            }
+        }
+
+    }
 }
