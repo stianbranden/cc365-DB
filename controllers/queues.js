@@ -26,7 +26,7 @@ async function getQueues(authenticated, runCount){
         if (!authenticated){ //If not authenticated, then authenticate
             let buff = new Buffer(`${USER}:${PASS}`);
             let base64data = buff.toString('base64');
-            authQuery.body = 'Authorization=Basic' + base64data;
+            authQuery.body = 'Authorization=Basic ' + base64data;
             let resp = JSON.parse(await request(authQuery));
             authenticated = true;
         }
