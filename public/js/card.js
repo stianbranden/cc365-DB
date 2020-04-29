@@ -107,6 +107,7 @@ class Card extends HTMLElement {
             this.queues = data.sort(queueSort);
             if ( this.queues.length === 0 ){
                 this.shadowRoot.querySelector('.card').setAttribute('hidden', true)
+                this.setAttribute('hidden', true)
             } else {
                 this.shadowRoot.querySelector('.card').removeAttribute('hidden');
                 this.shadowRoot.querySelector('.loader').setAttribute('hidden', true);
@@ -151,6 +152,17 @@ class Card extends HTMLElement {
         let showLoader = this.getAttribute('showLoader');
         let hideCountryName = this.getAttribute('hide-country-abbr');
         let hideChannelAbbr = this.getAttribute('hide-channel-abbr');
+        let trimAway = this.getAttribute('trim-away');
+        if ( trimAway && trimAway.includes(',') ){
+            trimAway = trimAway.split(',')
+        } else if (trimAway){
+            trimAway = [trimAway]
+        }
+        else {
+            trimAway = []
+        }
+        //this.setAttribute('something', trimAway[0])
+
         this.attachShadow({mode: 'open'});
         this.shadowRoot.appendChild(template.content.cloneNode(true));
         if (showLoader){
@@ -173,6 +185,11 @@ class Card extends HTMLElement {
                 }
                 if ( hideChannelAbbr ){
                     qname = qname.replace('@ ', '').replace('Action ', '');
+                }
+                if (trimAway.length > 0){
+                    trimAway.forEach(trim=>{
+                        qname = qname.replace(trim, '')
+                    })
                 }
                 ele += `<tr id="${q.id}"><td class="name" title="${q.name}">${qname}</td><td class="queue">${q.inQueueCurrent}</td><td class="agents">${q.agentsServing-q.agentsNotReady}</td><td class="oldest">${msToTime(q.waitingDurationCurrentMax)}</td></tr>`
             })

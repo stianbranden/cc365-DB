@@ -1,14 +1,19 @@
 <div class="container">
     <% if (pageTitle === 'helpdesk'){ %>
-        <queue-card name="Denmark" id="dk" icon="call-outline" showLoader=true></queue-card>
-        <queue-card name="Finland" id="fi" icon="call-outline"></queue-card>
-        <queue-card name="Norway" id="no" icon="call-outline"></queue-card>
-        <queue-card name="Sweden" id="se" icon="call-outline"></queue-card>
+        <queue-card name="Denmark" id="dk" icon="call-outline" showLoader=true hide-country-abbr=true></queue-card>
+        <queue-card name="Finland" id="fi" icon="call-outline" hide-country-abbr=true></queue-card>
+        <queue-card name="Norway" id="no" icon="call-outline" hide-country-abbr=true></queue-card>
+        <queue-card name="Sweden" id="se" icon="call-outline" hide-country-abbr=true></queue-card>
+    <% } else if(pageTitle==='kitchen') { %> 
+        <queue-card name="Phone" id="ph" icon="call-outline" showLoader=true hide-channel-abbr=true></queue-card>
+        <queue-card name="Chat" id="ch" icon="chatbubbles-outline" hide-channel-abbr=true></queue-card>
+        <queue-card name="Email" id="em" icon="mail-outline" hide-channel-abbr=true trim-away="Kitchen"></queue-card>
+        <queue-card name="Action" id="ac" icon="attach-outline" hide-channel-abbr=true></queue-card>
     <% } else { %>
-        <queue-card name="Phone" id="ph" icon="call-outline" showLoader=true></queue-card>
-        <queue-card name="Chat" id="ch" icon="chatbubbles-outline"></queue-card>
-        <queue-card name="Email" id="em" icon="mail-outline"></queue-card>
-        <queue-card name="Action" id="ac" icon="attach-outline"></queue-card>
+        <queue-card name="Phone" id="ph" icon="call-outline" showLoader=true hide-country-abbr=true hide-channel-abbr=true></queue-card>
+        <queue-card name="Chat" id="ch" icon="chatbubbles-outline" hide-country-abbr=true hide-channel-abbr=true></queue-card>
+        <queue-card name="Email" id="em" icon="mail-outline" hide-country-abbr=true hide-channel-abbr=true></queue-card>
+        <queue-card name="Action" id="ac" icon="attach-outline" hide-country-abbr=true hide-channel-abbr=true></queue-card>
     <% } %>
     
 

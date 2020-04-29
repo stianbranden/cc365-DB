@@ -35,6 +35,7 @@ function run(auth, i){
             run(true, data.runCount); //Redo fecth after 10 sec, incrementing runCount
         }, 10000)
     }).catch(err=>{
+        console.log('An error has happened', err);
         setTimeout(()=>{
             run(false, 0); //If something is going wrong then restart after 60 sec
         }, 60000)
@@ -61,7 +62,7 @@ io.on('connection', socket =>{
 
 
 function updateQueues({data, queueMap}){
-    
+    let missingGroups = []
     Object.keys(units).forEach(unit=>{        
         let objs = [];
         units[unit].groups.forEach(group=>{
@@ -70,16 +71,28 @@ function updateQueues({data, queueMap}){
                 group,
                 data: []
             };
-            queueMap.map[group].forEach(q=>{
-                let qu = data.queueStatus.find(e=>{
-                    return e.id === q;
+            if ( queueMap.map[group] ){
+                queueMap.map[group].forEach(q=>{
+                    let qu = data.queueStatus.find(e=>{
+                        return e.id === q;
+                    });
+                    if ( qu ){
+                        obj.data.push(qu);
+                    }
                 });
-                obj.data.push(qu);
-            });
+            }
+            else {
+                //console.log('Not found: ' + group);
+                //Some kind of error handling
+                missingGroups.push(group)
+            }
+            
             objs.push(obj)
             
         });
         io.in(unit).emit('updateQueues', objs);
         
     });
+    console.log(`Number of missing groups: ${missingGroups.length}`);
+    
 }

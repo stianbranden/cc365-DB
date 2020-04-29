@@ -92,6 +92,9 @@ socket.on('updateQueues', data=>{
     data.forEach(g=>{
 
         let abbr = g.group.split('-')[2].toLowerCase();
+        if (abbr === 'cb'){
+            abbr = 'ph';
+        }
         //console.log(abbr, ex[abbr]);
         if ( key === 'helpdesk'){
             abbr = g.group.split('-')[0].toLowerCase();

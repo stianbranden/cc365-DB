@@ -1,24 +1,32 @@
 const unitsStage = {
     denmark: {
         abbr: 'dk',
-        groups: ['DK-AS-EM,AC,CH,PH', 'DK-BU-EM,AC,PH', 'DK-BUHOT-PH', 'DK-CAS-EM', 'DK-PS-PH', 'DK-STA-EM,PH', 'DK-HOT-PH']
+        groups: ['DK-AS-EM,AC,CH,PH,CB', 'DK-BU-EM,AC,PH,CB', 'DK-BUHOT-PH,CB', 'DK-CAS-EM', 'DK-PS-PH,CB', 'DK-STA-EM,PH,CB', 'DK-HOT-PH,CB']
     },
     helpdesk: {
         abbr: 'thd',
         groups: [
-            'DK-HDP-PH', 
-            'DK-HDF-PH',
-            'FI-HDP-PH',
-            'FI-HDF-PH',
-            'NO-HDP-PH',
-            'NO-HDF-PH',
-            'SE-HDP-PH',
-            'SE-HDF-PH',
+            'DK-HDP-PH,CB', 
+            'DK-HDF-PH,CB',
+            'FI-HDP-PH,CB',
+            'FI-HDF-PH,CB',
+            'NO-HDP-PH,CB',
+            'NO-HDF-PH,CB',
+            'SE-HDP-PH,CB',
+            'SE-HDF-PH,CB',
         ]
-    }/*,
+    },
     kitchen: {
-
-    }*/
+        abbr: 'k&i',
+        groups: ['DK-KI-PH,CB,EM,AC',
+            'NO-KI-PH,CB,EM,AC',
+            'SE-KI-PH,CB,EM,AC',
+            'DK-KIHOT-PH,CB',
+            'NO-KIHOT-PH,CB',
+            'SE-KIHOT-PH,CB',
+            'NC-KI-PH,EM,AC'
+        ]
+    }
 }
 
 let units = {}

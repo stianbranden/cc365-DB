@@ -5,8 +5,7 @@ const {authQuery, queueStatusQuery, agentQuery, queueQuery, queueStatusQueryLive
 
 const request = require('request-promise').defaults({jar: true})
 const moment = require('moment');
-const encode = require('nodejs-base64-encode');
-
+const fs = require('fs');
 
 const queueMap = {
     updated: moment().subtract(1,'d'),
@@ -28,9 +27,9 @@ async function getQueues(authenticated, runCount){
         if (!authenticated){ //If not authenticated, then authenticate
             //let buff = new Buffer(`${USER}:${PASS}`);
             //let base64data = buff.toString('base64');
-            let base64data = encode.encode(`${USER}:${PASS}`, 'base64');
+            //let base64data = encode.encode(`${USER}:${PASS}`, 'base64');
             authQuery.body = 'Authorization=Basic ' + BASE64;
-            console.log(authQuery.body);
+            //console.log(authQuery.body);
             
             let resp = JSON.parse(await request(authQuery));
             authenticated = true;
@@ -38,6 +37,7 @@ async function getQueues(authenticated, runCount){
         if ( moment().date() != queueMap.updated.date() ){
             queueMap.map = {};
             let queues = JSON.parse(await request(queueQuery));
+            //fs.writeFileSync('./tmp/queue.json', JSON.stringify(queues), 'utf8')
             queueMap.updated = moment();
             console.log(`Queues found: ${queues.length}`);
 
@@ -50,7 +50,7 @@ async function getQueues(authenticated, runCount){
                 }
             });
             
-            console.log(`QueueMap length: ${Object.keys(queueMap).length}`);
+            console.log(`QueueMap length: ${Object.keys(queueMap.map).length}`);
             
         }
         let queueStatus;
