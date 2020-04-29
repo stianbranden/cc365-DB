@@ -1,5 +1,5 @@
 require('dotenv').config();
-const {USER, PASS} = process.env;
+const {USER, PASS, BASE64} = process.env;
 const {authQuery, queueStatusQuery, agentQuery, queueQuery, queueStatusQueryLive, useProxy, proxy} = require('./config')
 
 
@@ -29,7 +29,7 @@ async function getQueues(authenticated, runCount){
             //let buff = new Buffer(`${USER}:${PASS}`);
             //let base64data = buff.toString('base64');
             let base64data = encode.encode(`${USER}:${PASS}`, 'base64');
-            authQuery.body = 'Authorization=Basic ' + base64data;
+            authQuery.body = 'Authorization=Basic ' + BASE64;
             console.log(authQuery.body);
             
             let resp = JSON.parse(await request(authQuery));
