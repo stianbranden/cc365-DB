@@ -1,6 +1,8 @@
 const baseurl = "https://cc365-eu-c1.sapcctr.com/elkjop";
+let useProxy = true
+let proxy = 'http://proxy.elkjop.int:8080'
 
-module.exports = {
+const queries =  {
     authQuery: {
         method: "POST",
         url: baseurl + '/ecfs/authentication',
@@ -30,3 +32,11 @@ module.exports = {
         url: baseurl + '/ecfs/RI/rci/queues'
     }
 }
+
+if (useProxy){
+    Object.keys(queries).forEach(key=>{
+        queries[key].proxy = proxy;
+    });
+}
+
+module.exports = queries

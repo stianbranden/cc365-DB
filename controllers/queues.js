@@ -1,6 +1,6 @@
 require('dotenv').config();
 const {USER, PASS} = process.env;
-const {authQuery, queueStatusQuery, agentQuery, queueQuery, queueStatusQueryLive} = require('./config')
+const {authQuery, queueStatusQuery, agentQuery, queueQuery, queueStatusQueryLive, useProxy, proxy} = require('./config')
 
 
 const request = require('request-promise').defaults({jar: true})
