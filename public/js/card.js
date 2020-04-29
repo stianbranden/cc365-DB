@@ -149,6 +149,8 @@ class Card extends HTMLElement {
         let name = this.getAttribute('name');
         let icon = this.getAttribute('icon');
         let showLoader = this.getAttribute('showLoader');
+        let hideCountryName = this.getAttribute('hide-country-abbr');
+        let hideChannelAbbr = this.getAttribute('hide-channel-abbr');
         this.attachShadow({mode: 'open'});
         this.shadowRoot.appendChild(template.content.cloneNode(true));
         if (showLoader){
@@ -164,7 +166,15 @@ class Card extends HTMLElement {
                 <table>
                     <tr><th class="name">Name</th><th>Queue</th><th>Agents</th><th>Oldest</th></tr>`;
             list.forEach(q=>{
-                ele += `<tr id="${q.id}"><td class="name" title="${q.name}">${q.name}</td><td class="queue">${q.inQueueCurrent}</td><td class="agents">${q.agentsServing-q.agentsNotReady}</td><td class="oldest">${msToTime(q.waitingDurationCurrentMax)}</td></tr>`
+                let qname = q.name;
+                if ( hideCountryName && qname.includes('(')){
+                    let rep = qname.substr(qname.indexOf('('), 4);
+                    qname = qname.replace(rep, '');
+                }
+                if ( hideChannelAbbr ){
+                    qname = qname.replace('@ ', '').replace('Action ', '');
+                }
+                ele += `<tr id="${q.id}"><td class="name" title="${q.name}">${qname}</td><td class="queue">${q.inQueueCurrent}</td><td class="agents">${q.agentsServing-q.agentsNotReady}</td><td class="oldest">${msToTime(q.waitingDurationCurrentMax)}</td></tr>`
             })
 
             ele += `
