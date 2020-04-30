@@ -16,8 +16,10 @@ function msToTime(ms){
     else if ( s < 3600 ){
         return Math.round(s/60) + 'm'
     }
-    else {
+    else if ( s < 259200 ) {
         return Math.round(s/3600) + 'h'
+    } else {
+        return Math.round(s/86400) + 'd'
     }
 }
 
