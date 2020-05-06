@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const baseurl = "https://cc365-eu-c1.sapcctr.com/elkjop";
-let {USEPROXY, PROXY} = process.env
+const {USEPROXY, PROXY} = process.env
 
 
 const queries =  {
@@ -35,7 +35,7 @@ const queries =  {
     }
 }
 
-if (USEPROXY){
+if (USEPROXY==="true"){
     Object.keys(queries).forEach(key=>{
         queries[key].proxy = PROXY;
     });
