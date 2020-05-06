@@ -1,6 +1,8 @@
+require('dotenv').config();
+
 const baseurl = "https://cc365-eu-c1.sapcctr.com/elkjop";
-let useProxy = true
-let proxy = 'http://proxy.elkjop.int:8080'
+let {USEPROXY, PROXY} = process.env
+
 
 const queries =  {
     authQuery: {
@@ -33,9 +35,9 @@ const queries =  {
     }
 }
 
-if (useProxy){
+if (USEPROXY){
     Object.keys(queries).forEach(key=>{
-        queries[key].proxy = proxy;
+        queries[key].proxy = PROXY;
     });
 }
 
