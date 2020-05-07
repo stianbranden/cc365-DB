@@ -2,7 +2,8 @@ const router = require('express').Router();
 const {units} = require('../config.js')
 
 router.get('/', (req, res)=>{
-    res.render('root', {pageTitle: 'Nordic'});
+
+    res.render('root', {pageTitle: 'nordic'});
 });
 
 router.get('/:unit', (req, res)=>{

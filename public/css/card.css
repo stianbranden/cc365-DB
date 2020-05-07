@@ -294,6 +294,80 @@ body {
           transform: translateY(100%);
 }
 
+.card .card-summary {
+  -ms-grid-row: 2;
+  -ms-grid-column: 1;
+  grid-area: main;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  z-index: -1;
+  background-color: #fff;
+  -webkit-transform: translate(0%, 0%);
+          transform: translate(0%, 0%);
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.card .card-summary .ph, .card .card-summary .ch, .card .card-summary .em, .card .card-summary .ac {
+  -ms-flex-preferred-size: 50%;
+      flex-basis: 50%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  /*h1, h3, h5 {
+                flex-basis: 100%;
+            }*/
+}
+
+.card .card-summary .ph h1, .card .card-summary .ch h1, .card .card-summary .em h1, .card .card-summary .ac h1 {
+  font-size: 3rem;
+}
+
+.card .card-summary .ph h3, .card .card-summary .ch h3, .card .card-summary .em h3, .card .card-summary .ac h3 {
+  font-size: 1.5rem;
+}
+
+.card .card-summary .ph h5, .card .card-summary .ch h5, .card .card-summary .em h5, .card .card-summary .ac h5 {
+  font-size: 0.7rem;
+}
+
+.card .card-summary .ph.use-entire-line, .card .card-summary .ch.use-entire-line, .card .card-summary .em.use-entire-line, .card .card-summary .ac.use-entire-line {
+  -ms-flex-preferred-size: 100%;
+      flex-basis: 100%;
+}
+
+.card .card-summary.anim {
+  -webkit-transition: -webkit-transform 500ms ease-in-out 50ms;
+  transition: -webkit-transform 500ms ease-in-out 50ms;
+  transition: transform 500ms ease-in-out 50ms;
+  transition: transform 500ms ease-in-out 50ms, -webkit-transform 500ms ease-in-out 50ms;
+  z-index: 1;
+}
+
+.card .card-summary.up {
+  -webkit-transform: translateY(-100%);
+          transform: translateY(-100%);
+}
+
+.card .card-summary.down {
+  -webkit-transform: translateY(100%);
+          transform: translateY(100%);
+}
+
 .card .card-sub {
   -ms-grid-row: 1;
   -ms-grid-row-span: 2;
@@ -311,6 +385,32 @@ body {
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
+}
+
+.card .card-sub.card-menu {
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.card .card-sub.card-menu div.active, .card .card-sub.card-menu div:hover {
+  -webkit-transform: scale(1.2);
+          transform: scale(1.2);
+  color: #fff;
+}
+
+.card .card-sub.card-menu div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 0.5rem 0;
+  cursor: pointer;
 }
 
 .card .card-sub .arrow-up, .card .card-sub .arrow-down {
@@ -383,6 +483,15 @@ body {
   }
   .card .card-sub ion-icon[name="chevron-forward-outline"] {
     display: block;
+  }
+  .card .card-sub.card-menu div {
+    padding: 0 1rem;
+  }
+  .card .card-sub.card-menu div h1 {
+    font-size: 4rem;
+  }
+  .card .card-sub.card-menu div h3 {
+    font-size: 2rem;
   }
   .card .card-main .card-queue h1 {
     font-size: 5rem;

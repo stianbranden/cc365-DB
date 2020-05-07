@@ -17,7 +17,7 @@ const unitsStage = {
         ]
     },
     kitchen: {
-        abbr: 'k&i',
+        abbr: 'ki',
         groups: ['DK-KI-PH,CB,EM,AC',
             'NO-KI-PH,CB,EM,AC',
             'SE-KI-PH,CB,EM,AC',
@@ -29,7 +29,12 @@ const unitsStage = {
     }
 }
 
-let units = {}
+let units = {
+   /* nordic: {
+        abbr: 'nc',
+        groups: []
+    }*/
+}
 Object.keys(unitsStage).forEach(key=>{
     let u = unitsStage[key];
     units[key] = {
@@ -43,13 +48,17 @@ Object.keys(unitsStage).forEach(key=>{
             let cs = a[2].split(',');
             cs.forEach(c=>{
                 units[key].groups.push(`${a[0]}-${a[1]}-${c}`);
+                //units.nordic.groups.push(`${a[0]}-${a[1]}-${c}`);
             });
         } else {
             units[key].groups.push(g);
+            //units.nordic.groups.push(g);
         }
     })
 });
 //console.log(units);
+
+
 
 
 module.exports = {

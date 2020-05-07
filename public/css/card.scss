@@ -182,6 +182,49 @@
             transform: translateY(100%);
         }
     }
+
+    .card-summary {
+        grid-area: main;
+        display: flex;
+        flex-wrap: wrap ;
+        z-index: -1;
+        background-color: $bar-font-color;
+        transform: translate(0%, 0%);
+        justify-content: center;
+
+        .ph, .ch, .em, .ac {
+            flex-basis: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            /*h1, h3, h5 {
+                flex-basis: 100%;
+            }*/
+            h1 {
+                font-size: 3rem;
+            }
+            h3 {
+                font-size: 1.5rem;
+            }
+            h5 {
+                font-size: 0.7rem;
+            }
+            &.use-entire-line {
+                flex-basis: 100%;
+            }
+        }
+        &.anim {
+            transition: transform 500ms ease-in-out 50ms;
+            z-index: 1;
+        }
+        &.up {
+            transform: translateY(-100%);
+        }
+        &.down {
+            transform: translateY(100%);
+        }
+    }
     
     .card-sub {
         grid-area: sub;
@@ -190,6 +233,23 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+
+        &.card-menu {
+            justify-content: center;
+            align-items: center;
+            
+            div.active, div:hover {
+                transform: scale(1.2);
+                color: $bar-font-color;
+            }
+            div {
+                display: flex;
+                align-items: center;
+                padding: 0.5rem 0;
+                cursor: pointer;
+            }
+            
+        }
 
         .arrow-up, .arrow-down {
             padding: 1rem 0;
@@ -252,6 +312,15 @@
             }
             ion-icon[name="chevron-forward-outline"] {
                 display: block;
+            }
+            &.card-menu div {
+                padding: 0 1rem;
+                h1 {
+                    font-size: 4rem;
+                }
+                h3 {
+                    font-size: 2rem;
+                }
             }
         }
         .card-main{

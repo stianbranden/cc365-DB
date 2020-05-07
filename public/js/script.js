@@ -43,7 +43,7 @@ socket.on('connect-ok', data=>{
       ----------------------
 */
 socket.on('updateQueues', data=>{
-    console.log(data);
+    //console.log(data);
     let dataSet = {
         qu: 0,
         lw: 0,
@@ -89,41 +89,85 @@ socket.on('updateQueues', data=>{
         }
     }
 
-    data.forEach(g=>{
+    if ( key === 'nordic' ){
+        ex = {}
+        Object.keys(data).forEach(key=>{
+            if ( !ex[key] ){
+                ex[key] = {
+                    channels:{
+                        ph: {...dataSet, queues: []},
+                        ch: {...dataSet, queues: []},
+                        em: {...dataSet, queues: []},
+                        ac: {...dataSet, queues: []}
+                    },
+                    queueCount: 0
+                }
+            }
+            let obj = data[key];
+            obj.forEach(g=>{
+                let abbr = g.group.split('-')[2].toLowerCase();
+                if (abbr === 'cb'){
+                    abbr = 'ph';
+                }
 
-        let abbr = g.group.split('-')[2].toLowerCase();
-        if (abbr === 'cb'){
-            abbr = 'ph';
-        }
-        //console.log(abbr, ex[abbr]);
-        if ( key === 'helpdesk'){
-            abbr = g.group.split('-')[0].toLowerCase();
-        }
-        
-        g.data.forEach(q=>{
-            ex[abbr].qu += q.inQueueCurrent;
-            if ( q.waitingDurationCurrentMax > ex[abbr].lw ) {
-                ex[abbr].lw = q.waitingDurationCurrentMax;
+                g.data.forEach(q=>{
+                    ex[key].queueCount ++;
+                    ex[key].channels[abbr].qu += q.inQueueCurrent;
+                    if ( q.waitingDurationCurrentMax >ex[key].channels[abbr].lw ) {
+                       ex[key].channels[abbr].lw = q.waitingDurationCurrentMax;
+                    }
+                    let ag = q.agentsServing - q.agentsNotReady;
+                    if ( ag <ex[key].channels[abbr].min ){
+                       ex[key].channels[abbr].min = ag;
+                    }
+                    if ( ag >ex[key].channels[abbr].max ){
+                       ex[key].channels[abbr].max = ag
+                    }
+                   ex[key].channels[abbr].queues.push(q);
+                });
+            });
+        })
+        updateNordicCard(ex);
+    }
+    else {
+        data.forEach(g=>{
+
+            let abbr = g.group.split('-')[2].toLowerCase();
+            if (abbr === 'cb'){
+                abbr = 'ph';
             }
-            let ag = q.agentsServing - q.agentsNotReady;
-            if ( ag < ex[abbr].min ){
-                ex[abbr].min = ag;
+            //console.log(abbr, ex[abbr]);
+            if ( key === 'helpdesk'){
+                abbr = g.group.split('-')[0].toLowerCase();
             }
-            if ( ag > ex[abbr].max ){
-                ex[abbr].max = ag
-            }
-            ex[abbr].queues.push(q);
+            
+            g.data.forEach(q=>{
+                ex[abbr].qu += q.inQueueCurrent;
+                if ( q.waitingDurationCurrentMax > ex[abbr].lw ) {
+                    ex[abbr].lw = q.waitingDurationCurrentMax;
+                }
+                let ag = q.agentsServing - q.agentsNotReady;
+                if ( ag < ex[abbr].min ){
+                    ex[abbr].min = ag;
+                }
+                if ( ag > ex[abbr].max ){
+                    ex[abbr].max = ag
+                }
+                ex[abbr].queues.push(q);
+            });
         });
-    });
-    console.log(ex);
-    updateGroups(ex)
+        updateGroups(ex)
+    }
+    
+    //console.log(ex);
+    
     
 });
 
 /*
       ----------------------
         Update for cards, 
-        Generic
+        Generic, not used for Nordic
       ----------------------
 */
 function updateGroups(data){
@@ -142,4 +186,11 @@ function updateGroups(data){
         }
 
     });
+}
+
+function updateNordicCard(data){
+    Object.keys(data).forEach(cardKey=>{
+        let cardData = data[cardKey];
+        document.getElementById(cardKey).data = cardData; 
+    })
 }
