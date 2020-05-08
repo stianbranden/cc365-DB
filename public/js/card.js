@@ -372,7 +372,7 @@ class SummaryCard extends HTMLElement{
         //centerMenu.addEventListener('click', menuClick, false);
         let sub = this.shadowRoot.querySelector('.card-sub');
         sub.prepend(getSubMenuElement('ph', 'call').content.cloneNode(true), getSubMenuElement('ch', 'chatbubbles').content.cloneNode(true));
-        sub.append(getSubMenuElement('em', 'mail').content.cloneNode(true), getSubMenuElement('ac', 'attach').content.cloneNode(true));
+        sub.append(getSubMenuElement('em', 'mail').content.cloneNode(true), getSubMenuElement('ac', 'document-attach').content.cloneNode(true));
 
         this.shadowRoot.querySelectorAll('.card-menu > div').forEach(divs=>{
             divs.addEventListener('click', menuClick);
