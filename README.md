@@ -17,6 +17,10 @@ PROXY = *Proxy adress to use for api request*
 
 USEPROXY = *true = user proxy set over, false = do not use th eproxy settings*
 
+NODE_ENV = *Environment variable, set production to avoid some console logs*
+
+UPDATE_FREQUENCY = *In ms the time between updates, time-out if error is set to 6 times the update frequency, defaults to 10 000ms=10s*
+
 Alternatively these parameters can be set to enviranmental variables
 
 

@@ -10,6 +10,7 @@ const rootRoute = require('./routes/root');
 const ejsLayouts = require('express-ejs-layouts');
 const morgan = require('morgan')
 const {units} = require('./config')
+const updateFrequency = process.env.UPDATE_FREQUENCY || 10000;
 
 /*Setup EJS*/
 app.set('view engine', 'ejs');
@@ -33,12 +34,12 @@ function run(auth, i){
         updateQueues(data);
         setTimeout(()=>{
             run(true, data.runCount); //Redo fecth after 10 sec, incrementing runCount
-        }, 10000)
+        }, updateFrequency)
     }).catch(err=>{
         console.log('An error has happened', err);
         setTimeout(()=>{
             run(false, 0); //If something is going wrong then restart after 60 sec
-        }, 60000)
+        }, updateFrequency*6)
     });
 }
 
