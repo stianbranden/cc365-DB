@@ -32,6 +32,16 @@ const queries =  {
         headers:{ 'Accept':  'application/json'},
         method: 'GET',
         url: baseurl + '/ecfs/RI/rci/queues'
+    },
+    contactsQuery: {
+        headers: {'Accept': 'application/json'},
+        method: 'GET',
+        url: baseurl + '/ecfs/RI/rmi/contacts/?startTime=2020-05-12T06:00:00.000Z&endTime=2020-05-12T07:59:59.999Z&applicationName=ContactCenter&limit=5000&Channel=Phone'
+    },
+    singleContactQuery: {
+        headers: {'Accept': 'application/json'},
+        method: 'GET',
+        url: baseurl + '/ecfs/RI/rmi/contacts/'
     }
 }
 

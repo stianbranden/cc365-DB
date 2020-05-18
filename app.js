@@ -1,12 +1,13 @@
 require('dotenv').config();
 
-const {getQueues} = require('./controllers/queues');
+const {getQueues, getContacts, getSingleContact} = require('./controllers/queues');
 const express = require('express')
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const moment = require('moment')
 const rootRoute = require('./routes/root');
+const contactRoute = require('./routes/contact');
 const ejsLayouts = require('express-ejs-layouts');
 const morgan = require('morgan')
 const {units} = require('./config')
@@ -25,12 +26,18 @@ if (process.env.NODE_ENV !== 'production'){
   }
 
 
+app.use('/contact', contactRoute);
 app.use('/', rootRoute);
 
+
 function run(auth, i){
+    //getSingleContact('4599557514');
+    //getContacts();
+    
     getQueues(auth, i).then(data=>{
         //Do stuff with the data
         //console.log(data);
+
         updateQueues(data);
         setTimeout(()=>{
             run(true, data.runCount); //Redo fecth after 10 sec, incrementing runCount

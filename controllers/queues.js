@@ -1,9 +1,10 @@
 require('dotenv').config();
-const {BASE64} = process.env;
-const {authQuery, queueStatusQuery, agentQuery, queueQuery, queueStatusQueryLive} = require('./config')
+const {BASE64, NODE_ENV} = process.env;
+const {authQuery, queueStatusQuery, agentQuery, queueQuery, queueStatusQueryLive, contactsQuery, singleContactQuery} = require('./config')
 
 
 const request = require('request-promise').defaults({jar: true})
+const req = require('request').defaults({jar: true});
 const moment = require('moment');
 const fs = require('fs');
 
@@ -69,12 +70,18 @@ async function getQueues(authenticated, runCount){
                 });
             });
         }
-        console.log(`QueueStatus found: ${queueStatus.length}` );
 
         let agentStatus = JSON.parse(await request(agentQuery));
-        console.log(`Agents found: ${agentStatus.length}`);
+        if ( NODE_ENV != 'production' ){
+            console.log(`QueueStatus found: ${queueStatus.length}` );
+            console.log(`Agents found: ${agentStatus.length}`);
+            console.log(`Runtime: ${moment().diff(a)}`);
+        }
         
-        console.log(`Runtime: ${moment().diff(a)}`);
+
+       /* let contacts = request(contactsQuery);
+        console.log(contacts);*/
+        
         
         return {runCount, data, queueMap};
     } catch (err) {
@@ -89,6 +96,97 @@ async function getQueues(authenticated, runCount){
 }
 //run(false, 0)
 
+function getContacts(){
+    try {
+        authQuery.body = 'Authorization=Basic ' + BASE64;
+        req(authQuery, (e,r,b)=>{
+            let min = moment().format();
+            let max = moment().subtract(3, 'd').format()
+            getContactsWithLimit(req, 0, min, max )
+        })
+        
+        
+        
+    } catch (error) {
+        
+    }
+}
+
+
+function getContactsWithLimit(req, offset, min, max){
+    let opt = {...contactsQuery};
+    if ( offset > 0){
+        opt.url = opt.url + '&offset=' + offset;
+    }
+    req(opt, (e,r,b)=>{
+        if ( e|| r.statusCode > 299){
+            console.log(r.statusCode);
+            
+        }
+        b = JSON.parse(b);
+        console.log(`${offset} run with ${b.length}`);
+        
+        if ( b.length > 0){
+            fs.writeFileSync(`./test${offset}.json`, JSON.stringify(b), 'utf8');
+            b.forEach(c=>{
+                if ( typeof c.arrivalQueueTime != 'undefined' && c.queueName === 'Delivery (DK)'){
+                    let q = moment(c.arrivalQueueTime).format();
+                    if ( q > max ){
+                        max = q;
+                    }
+                    if ( q < min ){
+                        min = q;
+                    }
+                }
+            });
+            getContactsWithLimit(req, offset+b.length, min, max);
+        }
+        else {
+            console.log('DONE');
+            console.log({max, min, offset});
+            
+        }
+    });
+}
+
+async function getSingleContact(key, value){
+    
+    
+    try {
+        let opt = {...singleContactQuery};
+        if ( key === 'id' ){
+            opt.url += `${value}/`
+        }
+        else {
+            opt.url += `${key}=${value}`;
+        }
+        if ( NODE_ENV != 'production' ){
+            console.log('Running query with params');
+            console.log({key, value, opt});
+        }
+        let doc = await reques(opt);
+        return doc;
+    } catch (error) {
+        return error;
+    }
+    
+
+
+
+    /*authQuery.body = 'Authorization=Basic ' + BASE64;
+    req(authQuery, (e,r,b)=>{
+        console.log(`${r.statusCode} on authentication`);
+        
+        req(opt, (e,r,b)=>{
+            console.log(`${r.statusCode} on single contact`);
+            fs.writeFileSync(`./${id}.json`, b, 'utf8');
+        });
+    })*/
+
+}
+
 module.exports = {
-    getQueues
+    getQueues,
+    getContacts,
+    getSingleContact
 };
