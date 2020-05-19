@@ -69,7 +69,7 @@ io.on('connection', socket =>{
 
 
 
-function updateQueues({data, queueMap}){
+function updateQueues({data, queueMap, agentStatus}){
     let missingGroups = []
     let nordic = {}
     Object.keys(units).forEach(unit=>{        
@@ -103,6 +103,9 @@ function updateQueues({data, queueMap}){
         nordic[units[unit].abbr] = objs;
     });
     io.in('nordic').emit('updateQueues', nordic);
+    //io.in('denmark').emit('agentStatus', agentStatus);
+    //io.in('denmark').emit('agentStatus', queueMap);
     console.log(`Number of missing groups: ${missingGroups.length}`);
+    
     
 }

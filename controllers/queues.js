@@ -12,7 +12,8 @@ const queueMap = {
     updated: moment().subtract(1,'d'),
     map: {
 
-    }
+    },
+    queues: {}
 }
 
 const data = {
@@ -37,6 +38,7 @@ async function getQueues(authenticated, runCount){
         }
         if ( moment().date() != queueMap.updated.date() ){
             queueMap.map = {};
+            queueMap.queues = {};
             let queues = JSON.parse(await request(queueQuery));
             //fs.writeFileSync('./tmp/queue.json', JSON.stringify(queues), 'utf8')
             queueMap.updated = moment();
@@ -45,9 +47,11 @@ async function getQueues(authenticated, runCount){
             queues.forEach(q=>{
                 if (typeof queueMap.map[q.description] === 'undefined' && q.description != null && q.description.length < 15 ){
                     queueMap.map[q.description] = [q.id]
+                    queueMap.queues[q.id] = q.description;
                 }
                 else if (q.description != null && q.description.length < 15) {
                     queueMap.map[q.description].push(q.id)
+                    queueMap.queues[q.id] = q.description;
                 }
             });
             
@@ -70,8 +74,27 @@ async function getQueues(authenticated, runCount){
                 });
             });
         }
-
+        
         let agentStatus = JSON.parse(await request(agentQuery));
+        agentStatus.forEach(agent=>{
+
+            let queues = [...agent.queues.queue];
+            delete agent.queues;
+            agent.queues = []
+            agent.queueGroups = []
+            queues.forEach(q=>{
+                if ( q.serving ){
+                    agent.queues.push(q);
+                    let qG = queueMap.queues[q.id]||'NA';
+                    if (!agent.queueGroups.includes(qG)){
+                        agent.queueGroups.push(qG);
+                    }
+                    
+                }
+            });
+        });
+
+
         if ( NODE_ENV != 'production' ){
             console.log(`QueueStatus found: ${queueStatus.length}` );
             console.log(`Agents found: ${agentStatus.length}`);
@@ -83,7 +106,7 @@ async function getQueues(authenticated, runCount){
         console.log(contacts);*/
         
         
-        return {runCount, data, queueMap};
+        return {runCount, data, queueMap, agentStatus};
     } catch (err) {
         authenticated = false;
         /*setTimeout(()=>{

@@ -227,7 +227,7 @@ body {
 }
 
 .card .card-main .card-table th {
-  font-size: 13px;
+  font-size: 10px;
 }
 
 .card .card-main .card-table td {
@@ -506,6 +506,9 @@ body {
   }
   .card .card-main .card-table th.name {
     width: 120px;
+  }
+  .card .card-main .card-table th {
+    font-size: 12px;
   }
   .card .card-main .card-table td {
     font-size: 1.1rem;

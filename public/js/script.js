@@ -42,13 +42,21 @@ socket.on('connect-ok', data=>{
         spesific to key
       ----------------------
 */
+socket.on('agentStatus', agentStatus=>{
+    console.log(agentStatus);
+
+});
+
+
 socket.on('updateQueues', data=>{
     //console.log(data);
     let dataSet = {
         qu: 0,
         lw: 0,
         min: 1000,
-        max: 0
+        max: 0,
+        minFree: 1000,
+        maxFree: 0
     }
     let ex = {
         ph: {
@@ -123,6 +131,14 @@ socket.on('updateQueues', data=>{
                     if ( ag >ex[key].channels[abbr].max ){
                        ex[key].channels[abbr].max = ag
                     }
+
+                    let free = q.agentsFree;
+                    if ( free < ex[key].channels[abbr].minFree ){
+                        ex[key].channels[abbr].minFree = free
+                    }
+                    if ( free > ex[key].channels[abbr].maxFree ){
+                        ex[key].channels[abbr].maxFree = free
+                    }
                    ex[key].channels[abbr].queues.push(q);
                 });
             });
@@ -153,13 +169,20 @@ socket.on('updateQueues', data=>{
                 if ( ag > ex[abbr].max ){
                     ex[abbr].max = ag
                 }
+                let agFree = q.agentsFree;
+                if ( agFree < ex[abbr].minFree ){
+                    ex[abbr].minFree = agFree;
+                }
+                if ( agFree > ex[abbr].maxFree ){
+                    ex[abbr].maxFree = agFree;
+                }
                 ex[abbr].queues.push(q);
             });
         });
         updateGroups(ex)
     }
     
-    //console.log(ex);
+    console.log(ex);
     
     
 });
@@ -183,6 +206,11 @@ function updateGroups(data){
             card.agents = data[cardKey].min
         } else {
             card.agents = data[cardKey].min + ' - ' + data[cardKey].max
+        }
+        if ( data[cardKey].minFree === data[cardKey].maxFree ){
+            card.freeAgents = data[cardKey].minFree;
+        } else {
+            card.freeAgents = data[cardKey].minFree + ' - ' + data[cardKey].maxFree
         }
 
     });

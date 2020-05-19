@@ -136,7 +136,7 @@
 
             }
             th {
-                font-size: 13px;
+                font-size: 10px;
             }
             td {
                 font-size: 12px;
@@ -339,6 +339,9 @@
             .card-table {
                 th.name {
                     width: 120px;
+                }
+                th {
+                    font-size: 12px;
                 }
                 td {
                     font-size: 1.1rem;

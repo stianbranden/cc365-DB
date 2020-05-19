@@ -53,13 +53,13 @@ template.innerHTML = `
                 <h1></h1>
             </div>
             <div class="card-stat">
-                <div class="stat sla">
+                <div class="stat free">
                     <div class="stat-number">TBA</div>
-                    <div class="stat-text">daily sla</div>
+                    <div class="stat-text">idle agents</div>
                 </div>
                 <div class="stat agents">
                     <div class="stat-number"> </div>
-                    <div class="stat-text">agents</div>
+                    <div class="stat-text">ready agents</div>
                 </div>
                 <div class="stat lw">
                     <div class="stat-number"> </div>
@@ -92,13 +92,13 @@ function getMainElement(type, num, key){
                 <h1></h1>
             </div>
             <div class="card-stat">
-                <div class="stat sla">
+                <div class="stat free">
                     <div class="stat-number">TBA</div>
-                    <div class="stat-text">daily sla</div>
+                    <div class="stat-text">idle agents</div>
                 </div>
                 <div class="stat agents">
                     <div class="stat-number"> </div>
-                    <div class="stat-text">agents</div>
+                    <div class="stat-text">ready agents</div>
                 </div>
                 <div class="stat lw">
                     <div class="stat-number"> </div>
@@ -107,6 +107,7 @@ function getMainElement(type, num, key){
             </div>
         </div>`;
     } 
+    
     else if (type === 'summary'){
         mainTemp.innerHTML = `<div class="card-summary center anim" num="0" key=center>
             <div class="card-queue ph">
@@ -150,6 +151,10 @@ class Card extends HTMLElement {
         this.shadowRoot.querySelector('.agents .stat-number').innerText = ag;
     }
 
+    set freeAgents(ag){
+        this.shadowRoot.querySelector('.free .stat-number').innerText = ag;
+    }
+
     set queueData(data){
         
         if ( this.queues.length === 0 ){
@@ -179,7 +184,7 @@ class Card extends HTMLElement {
             this.queues = data.sort(queueSort);
             this.queues.forEach(q=>{
                 this.shadowRoot.querySelector(`[id='${q.id}'] .queue`).innerText = q.inQueueCurrent;
-                this.shadowRoot.querySelector(`[id='${q.id}'] .agents`).innerText = q.agentsServing-q.agentsNotReady;
+                this.shadowRoot.querySelector(`[id='${q.id}'] .agents`).innerText = `${q.agentsFree}/${q.agentsServing-q.agentsNotReady}`;
                 this.shadowRoot.querySelector(`[id='${q.id}'] .oldest`).innerText = msToTime(q.waitingDurationCurrentMax);
             });
 
@@ -225,7 +230,7 @@ class Card extends HTMLElement {
             this.pageLength++;
             let ele = `<div class="card-table">
                 <table>
-                    <tr><th class="name">Name</th><th>Queue</th><th>Agents</th><th>Oldest</th></tr>`;
+                    <tr><th class="name">Name</th><th>Queue</th><th>Idle/Ready</th><th>Oldest</th></tr>`;
             list.forEach(q=>{
                 let qname = q.name;
                 if ( hideCountryName && qname.includes('(')){
@@ -240,7 +245,7 @@ class Card extends HTMLElement {
                         qname = qname.replace(trim, '')
                     })
                 }
-                ele += `<tr id="${q.id}"><td class="name" title="${q.name}">${qname}</td><td class="queue">${q.inQueueCurrent}</td><td class="agents">${q.agentsServing-q.agentsNotReady}</td><td class="oldest">${msToTime(q.waitingDurationCurrentMax)}</td></tr>`
+                ele += `<tr id="${q.id}"><td class="name" title="${q.name}">${qname}</td><td class="queue">${q.inQueueCurrent}</td><td class="agents">${q.agentsFree}/${q.agentsServing-q.agentsNotReady}</td><td class="oldest">${msToTime(q.waitingDurationCurrentMax)}</td></tr>`
             })
 
             ele += `
@@ -323,7 +328,12 @@ class SummaryCard extends HTMLElement{
                 if (queueData.min === queueData.max){
                     minMax = queueData.max;
                 }
+                let minMaxFree = queueData.minFree + '-' + queueData.maxFree;
+                if (queueData.minFree === queueData.maxFree){
+                    minMaxFree = queueData.maxFree;
+                }
                 this.shadowRoot.querySelector(`.card-main[key="${channel}"] .stat.agents .stat-number`).innerText = minMax
+                this.shadowRoot.querySelector(`.card-main[key="${channel}"] .stat.free .stat-number`).innerText = minMaxFree
                 this.shadowRoot.querySelector(`.card-main[key="${channel}"] .stat.lw .stat-number`).innerText = msToTime(queueData.lw)
             } else{
                 this.shadowRoot.querySelector(`.card-queue.${channel}`).setAttribute('hidden', "");
@@ -392,7 +402,7 @@ class SummaryCard extends HTMLElement{
 
         let _moveTo = (key)=>{
             let clickedMenuItem = this.shadowRoot.querySelector('.card-menu .' + key);
-            console.log(key);
+           // console.log(key);
             
             if ( !clickedMenuItem.classList.contains('active') ){ //If it is already active then do nothing
                 let newMain = this.shadowRoot.querySelector(`.card > [key="${key}"]`);
