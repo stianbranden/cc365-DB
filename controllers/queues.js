@@ -62,6 +62,9 @@ async function getQueues(authenticated, runCount){
         if ( runCount === 1 ){
             queueStatus = JSON.parse(await request(queueStatusQuery));
             data.queueStatus = queueStatus;
+            data.queueStatus.forEach(q=>{
+                q.group = queueMap.queues[q.id];
+            })
             
         }
         else {
@@ -69,6 +72,7 @@ async function getQueues(authenticated, runCount){
             queueStatus.forEach(qs=>{
                 data.queueStatus.forEach((dqs, i)=>{
                     if ( qs.id === dqs.id ){
+                        qs.group = queueMap.queues[qs.id]
                         data.queueStatus.splice(i,1,qs);
                     }
                 });

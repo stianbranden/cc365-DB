@@ -25,12 +25,31 @@ function msToTime(ms){
 
 function queueSort(a,b){
     let comp = 0;
-    if (a.name > b.name){
+    let groupSort = {
+        AS: 1,
+        PS: 1,
+        HOT: 2
+    }
+
+    let aGroup = groupSort[a.group.split('-')[1]] || 3;
+    let bGroup = groupSort[b.group.split('-')[1]] || 3;
+
+    
+    comp = aGroup - bGroup;
+
+    if ( comp === 0 && aGroup < bGroup ){
         comp = 1;
     }
-    else if (a.name < b.name) {
+    else if ( comp === 0 && a.name > b.name){
+        comp = 1;
+    }
+    else if( comp === 0 ) {
         comp = -1;
     }
+//    console.log(`Comparing ${a.name} (${aGroup}) to ${b.name} (${bGroup}), result being ${comp}`);
+    
+    //console.log(a.name,b.name, a.group, aGroup, comp);
+
     return comp;
 }
 
@@ -159,6 +178,10 @@ class Card extends HTMLElement {
         
         if ( this.queues.length === 0 ){
             this.queues = data.sort(queueSort);
+            //console.log(this.queues);
+            //console.log(data);
+            
+            
             if ( this.queues.length === 0 ){
                 this.shadowRoot.querySelector('.card').setAttribute('hidden', true)
                 this.setAttribute('hidden', true)
