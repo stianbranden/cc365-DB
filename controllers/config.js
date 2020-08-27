@@ -31,7 +31,7 @@ const queries =  {
     queueQuery: {
         headers:{ 'Accept':  'application/json'},
         method: 'GET',
-        url: baseurl + '/ecfs/RI/rci/queues'
+        url: baseurl + '/ecfs/RI/rci/queues?limit=1000'
     },
     contactsQuery: {
         headers: {'Accept': 'application/json'},
