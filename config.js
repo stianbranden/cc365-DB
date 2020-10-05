@@ -3,6 +3,10 @@ const unitsStage = {
         abbr: 'dk',
         groups: ['DK-AS-EM,AC,CH,PH,CB', 'DK-BU-EM,AC,PH,CB', 'DK-BUHOT-PH,CB', 'DK-CAS-EM', 'DK-PS-PH,CB', 'DK-STA-EM,PH,CB', 'DK-HOT-PH,CB']
     },
+    sweden: {
+        abbr: 'se',
+        groups: ['SE-AS-EM,AC,CH,PH,CB', 'SE-BU-EM,AC,PH,CB', 'SE-BUHOT-PH,CB', 'SE-CAS-EM', 'SE-PS-PH,CB', 'SE-STA-EM,PH,CB', 'SE-HOT-PH,CB']
+    },
     helpdesk: {
         abbr: 'thd',
         groups: [
