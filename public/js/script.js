@@ -225,7 +225,7 @@ function updateNordicCard(data){
     })
 }
 
-if (key = 'ChatTranscript'){
+if (key == 'ChatTranscript'){
     function enc(){
         let obj = document.querySelectorAll('.card-text');
         //console.log(obj.length)
