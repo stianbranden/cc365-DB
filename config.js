@@ -7,6 +7,10 @@ const unitsStage = {
         abbr: 'se',
         groups: ['SE-AS-EM,AC,CH,PH,CB', 'SE-BU-EM,AC,PH,CB', 'SE-BUHOT-PH,CB', 'SE-CAS-EM', 'SE-PS-PH,CB', 'SE-STA-EM,PH,CB', 'SE-HOT-PH,CB']
     },
+    norway: {
+        abbr: 'no',
+        groups: ['NO-AS-EM,AC,CH,PH,CB', 'NO-BU-EM,AC,PH,CB', 'NO-BUHOT-PH,CB', 'NO-CAS-EM', 'NO-PS-PH,CB', 'NO-STA-EM,PH,CB', 'NO-HOT-PH,CB']
+    },
     helpdesk: {
         abbr: 'thd',
         groups: [
@@ -61,7 +65,6 @@ Object.keys(unitsStage).forEach(key=>{
     })
 });
 //console.log(units);
-
 
 
 
