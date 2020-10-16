@@ -318,33 +318,33 @@ header .navitems.open li:hover:not(.disabled) a {
   }
 }
 
-.ChatTranscripts .msg {
+.ChatTranscript .msg {
   width: 75%;
   margin-top: 3rem;
 }
 
-.ChatTranscripts .msg-card {
+.ChatTranscript .msg-card {
   border: 1px solid rgba(0, 0, 0, 0.125);
   border-radius: .25rem;
 }
 
-.ChatTranscripts .msg-card .card-header {
+.ChatTranscript .msg-card .card-header {
   padding: 0.5rem;
   border-radius: .25rem .25rem 0 0;
 }
 
-.ChatTranscripts .msg-card .card-footer {
+.ChatTranscript .msg-card .card-footer {
   padding: 0.5rem;
   background-color: #999999;
   border-radius: 0 0 .25rem .25rem;
 }
 
-.ChatTranscripts .msg-card .card-body {
+.ChatTranscript .msg-card .card-body {
   padding: 1rem;
   background-color: #fff;
 }
 
-.ChatTranscripts .msg-card .card-body .button-segment {
+.ChatTranscript .msg-card .card-body .button-segment {
   margin-top: 0.25rem;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -353,7 +353,7 @@ header .navitems.open li:hover:not(.disabled) a {
       flex-wrap: wrap;
 }
 
-.ChatTranscripts .msg-card .card-body button {
+.ChatTranscript .msg-card .card-body button {
   background-color: #0099cc;
   padding: 0.25rem;
   margin: .1rem;
@@ -361,17 +361,17 @@ header .navitems.open li:hover:not(.disabled) a {
   color: #fff;
 }
 
-.ChatTranscripts .msg-card.bot .card-header {
+.ChatTranscript .msg-card.bot .card-header {
   background-color: #333333;
   color: #fff;
 }
 
-.ChatTranscripts .msg-card.agent .card-header {
+.ChatTranscript .msg-card.agent .card-header {
   background-color: #141b4d;
   color: #fff;
 }
 
-.ChatTranscripts .msg-card.customer .card-header {
+.ChatTranscript .msg-card.customer .card-header {
   background-color: #78be20;
   color: #fff;
 }
@@ -402,7 +402,7 @@ header .navitems.open li:hover:not(.disabled) a {
     -ms-flex-wrap: wrap;
         flex-wrap: wrap;
   }
-  .container.ChatTranscripts {
+  .container.ChatTranscript {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
         -ms-flex-direction: column;
