@@ -8,6 +8,8 @@ const io = require('socket.io')(server);
 const moment = require('moment')
 const rootRoute = require('./routes/root');
 const contactRoute = require('./routes/contact');
+const tableauRoute = require('./routes/tableau');
+const chatBotTranscriptRoute = require('./routes/chatBotTranscript');
 const ejsLayouts = require('express-ejs-layouts');
 const morgan = require('morgan')
 const {units} = require('./config')
@@ -25,8 +27,11 @@ if (process.env.NODE_ENV !== 'production'){
     app.use(morgan('common'));
   }
 
-
+//Routes
 app.use('/contact', contactRoute);
+app.use('/tableau', tableauRoute);
+app.use('/chat', chatBotTranscriptRoute);
+
 app.use('/', rootRoute);
 
 

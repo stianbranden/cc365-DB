@@ -45,10 +45,47 @@ const queries =  {
     }
 }
 
+
+const kindly =  {
+    "2107": {
+        "method": "GET",
+        "url": "https://api.kindly.ai/api/v1/bot/2107/conversations/chat/${chatid}/",
+        "headers": {
+            "authorization": "Kr2V3v-dBwgVM-dxen9DjBDLYm4ufO-7QgqWm5dnWW_jvgahr9P0xn7YDsuux6Ap"
+        }
+    },
+    "2348": {
+        "method": "GET",
+        "url": "https://api.kindly.ai/api/v1/bot/2348/conversations/chat/${chatid}/",
+        "headers": {
+            "authorization": "sxNND7xL6ypqt-z2XuiFzpy4XdffRZFPHnZAzbgFtZg0fYJsHESYDSc4SmfWB2zh"
+        }
+    },
+    "2347": {
+        "method": "GET",
+        "url": "https://api.kindly.ai/api/v1/bot/2347/conversations/chat/${chatid}/",
+        "headers": {
+            "authorization": "JwMeuaG9ugtjfZEPg9Aaq3KCHOCpx3X-il-5M9atkIIQL13zEUfVm8yORunH7S99"
+        }
+    },
+    "2398": {
+        "method": "GET",
+        "url": "https://api.kindly.ai/api/v1/bot/2398/conversations/chat/${chatid}/",
+        "headers": {
+            "authorization": "xVD3Zty22JpvWjaGQfC420vHgWbq9tc6ILlLS0LUfFvDoEpyiKL3XJypkTPmHvKW"
+        }
+    }
+}
+
 if (USEPROXY==="true"){
     Object.keys(queries).forEach(key=>{
         queries[key].proxy = PROXY;
     });
+    Object.keys(kindly).forEach(key=>{
+        kindly[key].proxy  = PROXY;
+    })
 }
+
+queries.kindly = kindly;
 
 module.exports = queries

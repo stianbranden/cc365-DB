@@ -1,0 +1,56 @@
+.ChatTranscripts{
+
+
+    .msg {
+        width: 75%;
+        margin-top: 3rem;
+    }
+
+    .msg-card {
+        border: 1px solid rgba(0,0,0,.125);
+        border-radius: .25rem;
+        
+
+        .card-header{
+            padding: 0.5rem;
+            border-radius: .25rem .25rem 0 0;
+        }
+        .card-footer {
+            padding: 0.5rem;
+            background-color: $color-light-grey;
+            border-radius: 0 0 .25rem .25rem;
+        }
+        .card-body {
+            padding: 1rem;
+            background-color: $bar-font-color;
+
+            .button-segment {
+                margin-top: 0.25rem;
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            button {
+                background-color: $color-lighter-blue;
+                padding: 0.25rem;
+                margin: .1rem;
+                width: 34%;
+                color: $bar-font-color;
+            }
+
+        }
+
+        &.bot .card-header{
+            background-color: $color-dark-grey;
+            color: $bar-font-color;
+        }
+        &.agent .card-header {
+            background-color: $brand-color;
+            color: $bar-font-color;
+        }
+        &.customer .card-header {
+            background-color: $secondary-brand-color;
+            color: $bar-font-color;
+        }
+    }
+} 

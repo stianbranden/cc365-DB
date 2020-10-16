@@ -219,6 +219,51 @@ function updateGroups(data){
 function updateNordicCard(data){
     Object.keys(data).forEach(cardKey=>{
         let cardData = data[cardKey];
-        document.getElementById(cardKey).data = cardData; 
+        if (document.getElementById(cardKey)){
+            document.getElementById(cardKey).data = cardData; 
+        }
     })
+}
+
+if (key = 'ChatTranscript'){
+    function enc(){
+        let obj = document.querySelectorAll('.card-text');
+        //console.log(obj.length)
+        for ( let i = 0; i < obj.length; i++){
+          let o = obj[i];
+//          console.log(o);
+          o.innerHTML = o.innerText;
+        }
+      }
+      function chDate(){
+
+        let obj = document.querySelectorAll('.card-footer');
+        //console.log(obj.length)
+        for ( let i = 0; i < obj.length; i++){
+          let o = obj[i].innerText;
+          //$(o).html(o.innerText);
+          let created = moment(o).format("HH:mm:ss");
+          obj[i].innerText = created ;
+        }
+
+      }
+      function adjB (){
+        let obj = document.querySelectorAll('.bRow');
+        for ( let i = 0; i < obj.length; i++){
+          let r = obj[i];
+          let mH = 0;
+          for ( let j = 0; j < r.length; j++ ){
+            let b = r[j];
+            if ( b.style.height > mH ){
+              mH = b.style.height;
+            }
+          }
+          for ( let j = 0; j < r.length; j++ ){
+            r[j].style.height = mH;
+          }
+        }
+      }
+      enc();
+      chDate();
+      adjB();
 }
