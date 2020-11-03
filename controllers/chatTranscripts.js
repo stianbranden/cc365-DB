@@ -3,8 +3,8 @@ const request = require('request');
 
 const getTranscript = async function(botId, chatId){
     return new Promise((resolve, reject)=>{
-        console.log(kindly, botId);
-        let opt = kindly[botId];
+        //console.log(kindly, botId);
+        let opt = JSON.parse(JSON.stringify(kindly[botId]));
         if (opt){
             opt.url = opt.url.replace('${chatid}', chatId);
             request(opt, (e,r,b)=>{
