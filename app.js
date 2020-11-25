@@ -32,7 +32,7 @@ if (process.env.NODE_ENV !== 'production'){
 app.use('/contact', contactRoute);
 app.use('/tableau', tableauRoute);
 app.use('/chat', chatBotTranscriptRoute);
-app.use('/report', reportRoute);
+app.use('/mngrs', reportRoute);
 
 app.use('/', rootRoute);
 
