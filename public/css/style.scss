@@ -2,6 +2,17 @@
 @import 'variables', 'reset', 'header', 'msg';
 
 
+.splitcontainer {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    
+}
+.tableauPlaceholder {
+    margin: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .container {
     margin: 1rem;
@@ -9,8 +20,6 @@
     justify-content: center;
     flex-direction: column;
     align-items: center;
-
-
 }
 
 

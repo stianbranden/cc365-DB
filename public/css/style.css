@@ -376,6 +376,26 @@ header .navitems.open li:hover:not(.disabled) a {
   color: #fff;
 }
 
+.splitcontainer {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 3fr 1fr;
+      grid-template-columns: 3fr 1fr;
+}
+
+.tableauPlaceholder {
+  margin: 1rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
 .container {
   margin: 1rem;
   display: -webkit-box;
