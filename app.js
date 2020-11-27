@@ -15,7 +15,7 @@ const ejsLayouts = require('express-ejs-layouts');
 const morgan = require('morgan')
 const {units} = require('./config')
 const updateFrequency = process.env.UPDATE_FREQUENCY || 10000;
-
+const {NODE_ENV} = process.env;
 /*Setup EJS*/
 app.set('view engine', 'ejs');
 app.use(ejsLayouts);
@@ -27,6 +27,7 @@ app.use(express.static('public'));
 if (process.env.NODE_ENV !== 'production'){
     app.use(morgan('common'));
   }
+
 
 //Routes
 app.use('/contact', contactRoute);
@@ -69,14 +70,14 @@ io.on('connection', socket =>{
 
     socket.on('connect-to', room =>{
         console.log(`Connect to ${room} from ${socket.id}`);
-        socket.emit('copnnect-ok', {id: socket.id, room})
+        socket.emit('connect-ok', {id: socket.id, room})
         socket.join(room);
     });
 });
 
 
 
-function updateQueues({data, queueMap, agentStatus}){
+function updateQueues({data, queueMap}){
     let missingGroups = []
     let nordic = {}
     Object.keys(units).forEach(unit=>{        
@@ -110,9 +111,41 @@ function updateQueues({data, queueMap, agentStatus}){
         nordic[units[unit].abbr] = objs;
     });
     io.in('nordic').emit('updateQueues', nordic);
+
+    //Update daily stats
+    let nordicStats = {}
+    Object.keys(units).forEach(unit=>{
+        let objs = [];
+        units[unit].groups.forEach(group=>{
+            let obj = {
+                group,
+                data: []
+            };
+            if (queueMap.map[group]){
+                queueMap.map[group].forEach(q=>{
+                    let qu = data.queueStats.find(e=>{
+                        return e.queueId === q;
+                    });
+                    if ( qu ){
+                        obj.data.push(qu);
+                    }
+                });
+            }
+            else {
+
+            }
+            objs.push(obj)
+        });
+        io.in(unit).emit('updateStats', objs);
+        nordicStats[units[unit].abbr] = objs;
+    });
+    io.in('nordic').emit('updateStats', nordicStats);
     //io.in('denmark').emit('agentStatus', agentStatus);
     //io.in('denmark').emit('agentStatus', queueMap);
-    console.log(`Number of missing groups: ${missingGroups.length}`);
+    if ( NODE_ENV != 'production'){
+        console.log(`Number of missing groups: ${missingGroups.length}`);
+    }
+    
     
     
 }

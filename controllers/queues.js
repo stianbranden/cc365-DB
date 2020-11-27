@@ -1,6 +1,7 @@
 require('dotenv').config();
 const {BASE64, NODE_ENV} = process.env;
 const {authQuery, queueStatusQuery, agentQuery, queueQuery, queueStatusQueryLive, contactsQuery, singleContactQuery} = require('./config')
+const {raiContactStatsToday} = require('./rai');
 
 
 const request = require('request-promise').defaults({jar: true})
@@ -30,7 +31,7 @@ async function getQueues(authenticated, runCount){
             //let buff = new Buffer(`${USER}:${PASS}`);
             //let base64data = buff.toString('base64');
             //let base64data = encode.encode(`${USER}:${PASS}`, 'base64');
-            authQuery.body = 'Authorization=Basic ' + BASE64;
+            //authQuery.body = 'Authorization=Basic ' + BASE64;
             //console.log(authQuery.body);
             
             let resp = JSON.parse(await request(authQuery));
@@ -40,7 +41,7 @@ async function getQueues(authenticated, runCount){
             queueMap.map = {};
             queueMap.queues = {};
             let queues = JSON.parse(await request(queueQuery));
-            //fs.writeFileSync('./tmp/queue.json', JSON.stringify(queues), 'utf8')
+            fs.writeFileSync('./tmp/queue.json', JSON.stringify(queues), 'utf8')
             queueMap.updated = moment();
             console.log(`Queues found: ${queues.length}`);
 
@@ -54,8 +55,16 @@ async function getQueues(authenticated, runCount){
                     queueMap.queues[q.id] = q.description;
                 }
             });
-            
-            console.log(`QueueMap length: ${Object.keys(queueMap.map).length}`);
+            if (NODE_ENV != 'production'){
+                console.log(`QueueMap length: ${Object.keys(queueMap.map).length}`);
+            }
+
+            let rai = await raiContactStatsToday();
+            data.queueStats = rai;
+            data.queueStats.forEach(q=>{
+                q.group = queueMap.queues[q.queueId];
+            });
+            console.log('RAI1: ' + JSON.stringify(data.queueStats[0]));
             
         }
         let queueStatus;
@@ -191,7 +200,7 @@ async function getSingleContact(key, value){
             console.log('Running query with params');
             console.log({key, value, opt});
         }
-        let doc = await reques(opt);
+        let doc = await request(opt);
         return doc;
     } catch (error) {
         return error;
