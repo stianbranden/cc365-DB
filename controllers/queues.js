@@ -41,7 +41,7 @@ async function getQueues(authenticated, runCount){
             queueMap.map = {};
             queueMap.queues = {};
             let queues = JSON.parse(await request(queueQuery));
-            fs.writeFileSync('./tmp/queue.json', JSON.stringify(queues), 'utf8')
+            //fs.writeFileSync('./tmp/queue.json', JSON.stringify(queues), 'utf8')
             queueMap.updated = moment();
             console.log(`Queues found: ${queues.length}`);
 
