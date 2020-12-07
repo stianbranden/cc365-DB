@@ -383,8 +383,11 @@ header .navitems.open li:hover:not(.disabled) a {
       grid-template-columns: 3fr 1fr;
 }
 
-.tableauPlaceholder {
-  margin: 1rem;
+.splitcontainer .tableauPlaceholder {
+  margin: 2rem;
+  border-radius: 0.5rem;
+  -webkit-box-shadow: 0.3rem 0.3rem 1rem rgba(0, 0, 0, 0.9);
+          box-shadow: 0.3rem 0.3rem 1rem rgba(0, 0, 0, 0.9);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -394,6 +397,18 @@ header .navitems.open li:hover:not(.disabled) a {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  -webkit-transition: all 500ms ease-in-out;
+  transition: all 500ms ease-in-out;
+}
+
+.splitcontainer .tableauPlaceholder:hover {
+  -webkit-transform: scale(1.05);
+          transform: scale(1.05);
+}
+
+.scaledown {
+  -webkit-transform: scale(1);
+          transform: scale(1);
 }
 
 .container {
@@ -401,9 +416,9 @@ header .navitems.open li:hover:not(.disabled) a {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
       -ms-flex-direction: column;

@@ -11,6 +11,7 @@ const contactRoute = require('./routes/contact');
 const tableauRoute = require('./routes/tableau');
 const chatBotTranscriptRoute = require('./routes/chatBotTranscript');
 const reportRoute = require('./routes/report');
+const myStatsRoute = require('./routes/myStats');
 const ejsLayouts = require('express-ejs-layouts');
 const morgan = require('morgan')
 const {units} = require('./config')
@@ -34,6 +35,7 @@ app.use('/contact', contactRoute);
 app.use('/tableau', tableauRoute);
 app.use('/chat', chatBotTranscriptRoute);
 app.use('/mngrs', reportRoute);
+app.use('/myStats', myStatsRoute);
 
 app.use('/', rootRoute);
 
