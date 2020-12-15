@@ -5,6 +5,15 @@
     
 }
 
+*[hidden] {
+    display: none !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
 body {
     font-family: 'Montserrat', sans-serif;
     background: lightgrey;

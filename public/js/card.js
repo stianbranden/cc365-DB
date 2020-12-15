@@ -65,7 +65,9 @@ template.innerHTML = `
 </div>
 <div class="card" hidden>
         <div class="card-header">
+            <div></div>
             <h2></h2>
+            <ion-icon name="bar-chart-outline" title='Todays stats' key='daily'></ion-icon>
         </div>
         <div class="card-main anim" num="0">
             <div class="card-queue">
@@ -83,6 +85,25 @@ template.innerHTML = `
                 <div class="stat lw">
                     <div class="stat-number"> </div>
                     <div class="stat-text">Longest wait</div>
+                </div>
+            </div>
+        </div>
+        <div class="card-main card-daily">
+            <div class="card-queue sla asa">
+                <h1></h1>
+            </div>
+            <div class="card-stat">
+                <div class="stat offered">
+                    <div class="stat-number">TBA</div>
+                    <div class="stat-text">Offered contacts</div>
+                </div>
+                <div class="stat answered">
+                    <div class="stat-number"> </div>
+                    <div class="stat-text">Answered contacts</div>
+                </div>
+                <div class="stat aht">
+                    <div class="stat-number"> </div>
+                    <div class="stat-text">AHT</div>
                 </div>
             </div>
         </div>
@@ -128,7 +149,7 @@ function getMainElement(type, num, key){
     } 
     
     else if (type === 'summary'){
-        mainTemp.innerHTML = `<div class="card-summary center anim" num="0" key=center>
+        mainTemp.innerHTML = `<div class="card-summary center anim" num="0" key="center" type='live'>
             <div class="card-queue ph">
                 <h1 class="queue-number">0</h1>
                 <h5>Phone</h5>
@@ -145,7 +166,41 @@ function getMainElement(type, num, key){
                 <h3 class="queue-number">0</h3>
                 <h5>Action</h5>
             </div>
-        </div>`;
+        </div>
+        <div class="card-summary" type="daily">
+            <div class="card-daily ph">
+                <h4>Phone</h4>
+                <div class="sla">
+                    <h6>SLA: </h6><h3 class="sla-number">0%</h3>
+                </div>
+                <div class="offered"><h6>Offered</h6><h5>0</h5></div>
+                <div class="answered"><h6>Answered</h6><h5>0</h5></div>             
+            </div>
+            <div class="card-daily ch">
+                <h4>Chat</h4>
+                <div class="sla">
+                    <h6>SLA: </h6><h3 class="sla-number">0%</h3>
+                </div>
+                <div class="offered"><h6>Offered</h6><h5>0</h5></div>
+                <div class="answered"><h6>Answered</h6><h5>0</h5></div>  
+            </div>
+            <div class="card-daily em">
+                <h4>Email</h4>
+                <div class="sla">
+                    <h6>ASA: </h6><h3 class="sla-number">0%</h3>
+                </div>
+                <div class="offered"><h6>Offered</h6><h5>0</h5></div>
+                <div class="answered"><h6>Answered</h6><h5>0</h5></div>  
+            </div>
+            <div class="card-daily ac">
+                <h4>Action</h4>
+                <div class="sla">
+                    <h6>ASA: </h6><h3 class="sla-number">0%</h3>
+                </div>
+                <div class="offered"><h6>Offered</h6><h5>0</h5></div>
+                <div class="answered"><h6>Answered</h6><h5>0</h5></div>  
+            </div>
+        </div> `;
     }
 
     return mainTemp;
@@ -219,6 +274,38 @@ class Card extends HTMLElement {
         return this.queues;
     }
 
+    set dailyData(data){
+       // Object.keys(data).forEach(ch=>{
+           let ch = data.channel;
+            this.shadowRoot.querySelector('.card-daily .offered .stat-number').innerText = data.offered;
+            this.shadowRoot.querySelector('.card-daily .answered .stat-number').innerText = data.answered;
+            if (ch === 'ph' || ch === 'ch'){
+                let sla = 0;
+                if (data.offered > 0 ){
+                    sla = data.inSLA / data.offered * 1000;
+                    sla = Math.trunc(sla)/10
+                }
+                this.shadowRoot.querySelector('.card-daily .sla h1').innerText = sla + '%';
+                this.shadowRoot.querySelector('.card-daily .sla').setAttribute('title', 'Service Level (within 60sec)');
+            }
+            else {
+                let asa = 0;
+                if ( data.answered > 0){
+                    asa = data.totSA / data.answered;
+                }
+                this.shadowRoot.querySelector('.card-daily .asa h1').innerText = msToTime(asa);
+                this.shadowRoot.querySelector('.card-daily .asa').setAttribute('title', 'Average speed of answer');
+
+            }
+            let aht = 0;
+            if (data.answered > 0){
+                aht = data.totHandling / data.answered;
+            }
+            this.shadowRoot.querySelector('.card-daily .aht .stat-number').innerText = msToTime(aht);
+
+       // });
+    }
+
     constructor(){
         super();
         this.queues = [];
@@ -280,8 +367,25 @@ class Card extends HTMLElement {
             div.innerHTML = ele;
             this.shadowRoot.querySelector('.card').appendChild(div);
         }
+        let _toggleDaily = ()=>{
+            let icon = this.shadowRoot.querySelector('ion-icon[key=daily]');
+            if (icon.classList.contains('active')){
+                icon.classList.remove('active');
+                icon.setAttribute('name', icon.getAttribute('name') + '-outline');
+                this.shadowRoot.querySelector('.card-daily').classList.remove('active');
+                this.shadowRoot.querySelector('.card-header h2').innerText = name;
+            } else {
+                icon.classList.add('active');
+                icon.setAttribute('name', icon.getAttribute('name').replace('-outline', ''));
+                this.shadowRoot.querySelector('.card-daily').classList.add('active');
+                this.shadowRoot.querySelector('.card-header h2').innerText = name + ' - Today'
+            }
+        }
 
         let _toggleMain = i=>{
+            if ( this.shadowRoot.querySelector('ion-icon[key=daily]').classList.contains('active') ){
+                _toggleDaily();
+            }
             if ( this.pageLength > 0){
                 let currFront = this.shadowRoot.querySelector(`.card-main[num="${this.page}"]`);
                 this.page -= i;
@@ -314,6 +418,7 @@ class Card extends HTMLElement {
         this.shadowRoot.querySelector('.arrow-down').addEventListener('click', ()=>{
             _toggleMain(-1);
         });
+        this.shadowRoot.querySelector('ion-icon[key=daily]').addEventListener('click', _toggleDaily);
 
         
     }
@@ -376,6 +481,30 @@ class SummaryCard extends HTMLElement{
         }
     }
 
+    set dailyData(data){
+        Object.keys(data).forEach(ch=>{
+            this.shadowRoot.querySelector('.card-daily.' + ch + ' .offered h5').innerText = data[ch].offered;
+            this.shadowRoot.querySelector('.card-daily.' + ch + ' .answered h5').innerText = data[ch].answered;
+            if ( ch === 'ph' || ch === 'ch'){
+                let sla = 0;
+                if (data[ch].offered > 0 ){
+                    sla = data[ch].inSLA / data[ch].offered * 1000;
+                    sla = Math.trunc(sla)/10
+                }
+                this.shadowRoot.querySelector('.card-daily.' + ch + ' .sla-number').innerText = sla + '%'
+            }
+            else {
+                let asa = 0;
+                let time = '0s'
+                if (data[ch].answered>0){
+                    asa = data[ch].totSA / data[ch].answered;
+                    time = msToTime(asa);
+                }
+                this.shadowRoot.querySelector('.card-daily.' + ch + ' .sla-number').innerText = time;
+            }
+        });
+    }
+
     constructor(){
         super();
         let name = this.getAttribute('name');
@@ -410,16 +539,53 @@ class SummaryCard extends HTMLElement{
         this.shadowRoot.querySelectorAll('.card-menu > div').forEach(divs=>{
             divs.addEventListener('click', menuClick);
         })
+        this.shadowRoot.querySelectorAll('.card-header > ion-icon').forEach(icons=>{
+            icons.addEventListener('click', headerMenuClick);
+        })
 
         this.shadowRoot.querySelector('.card').appendChild(getMainElement('summary').content.cloneNode(true));
         
+        function headerMenuClick(e){
+            //console.log(e.target.className);
+            if (e.target.classList.contains('active')){
+                _headerAction('live');
+                _moveTo('center');
+            }
+            else {
+                _headerAction('daily');
+            }
+        }
+
+        let _headerAction = (key)=>{
+            let icon = this.shadowRoot.querySelector('.card-header ion-icon[key=daily]')
+            if ( key === 'daily'){
+                icon.classList.add('active')
+                icon.setAttribute('name', icon.getAttribute('name').replace('-outline', ''));
+                this.shadowRoot.querySelector('.card-summary[type=daily]').classList.add('display-stats');
+                let oldMenuIcon = this.shadowRoot.querySelector('.card-menu .active').getAttribute('baseIcon');
+                this.shadowRoot.querySelector('.card-menu .active ion-icon').setAttribute('name', `${oldMenuIcon}-outline`);
+                this.shadowRoot.querySelector('.card-menu .active').classList.remove('active');
+                this.shadowRoot.querySelector('.card-header h2').innerText = name + ' Today';
+            }
+            else {
+                if (icon.classList.contains('active')){
+                    icon.classList.remove('active');
+                    icon.setAttribute('name', icon.getAttribute('name')+'-outline');
+                    this.shadowRoot.querySelector('.card-summary[type=daily]').classList.remove('display-stats')
+                }
+
+                
+            }
+
+        }
+
         function menuClick(e){
             let key = e.target.getAttribute('key');
             if ( !key ){
                 key = e.target.parentNode.getAttribute('key');
             }
             //console.log(e.target);
-            
+            _headerAction('live');
             _moveTo(key);
         }
 
@@ -428,18 +594,25 @@ class SummaryCard extends HTMLElement{
            // console.log(key);
             
             if ( !clickedMenuItem.classList.contains('active') ){ //If it is already active then do nothing
+
                 let newMain = this.shadowRoot.querySelector(`.card > [key="${key}"]`);
                 let oldMain = this.shadowRoot.querySelector(`.card > .anim`);
-                oldMain.classList.add('down');
-                newMain.classList.add('up');
+                //oldMain.classList.add('down');
+                //newMain.classList.add('up');
+                oldMain.classList.remove('anim');
                 newMain.classList.add('anim');
-                newMain.classList.remove('up');
-                let oldMenuIcon = this.shadowRoot.querySelector('.card-menu .active').getAttribute('baseIcon');
-                this.shadowRoot.querySelector('.card-menu .active ion-icon').setAttribute('name', `${oldMenuIcon}-outline`);
-                this.shadowRoot.querySelector('.card-menu .active').classList.remove('active');
+               
+                //newMain.classList.remove('up');
+                //oldMain.classList.remove('anim', 'down')
+                if (this.shadowRoot.querySelector('.card-menu .active')){
+                    let oldMenuIcon = this.shadowRoot.querySelector('.card-menu .active').getAttribute('baseIcon');
+                    this.shadowRoot.querySelector('.card-menu .active ion-icon').setAttribute('name', `${oldMenuIcon}-outline`);
+                    this.shadowRoot.querySelector('.card-menu .active').classList.remove('active');
+                }
+                
                 clickedMenuItem.classList.add('active');
                 clickedMenuItem.children[0].setAttribute('name', clickedMenuItem.getAttribute('baseIcon'));
-                oldMain.classList.remove('anim', 'down')
+                
                 let newName = name;
                 switch (key){
                     case 'ph': 

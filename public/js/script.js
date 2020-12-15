@@ -32,7 +32,7 @@ socket.on('submit-room', ()=>{
     socket.emit('connect-to', key);
 })
 socket.on('connect-ok', data=>{
-    console.log(`Connected ok, ${data}`);
+    console.log(`Connected ok, ${JSON.stringify(data)}`);
 });
 
 
@@ -43,7 +43,7 @@ socket.on('connect-ok', data=>{
       ----------------------
 */
 socket.on('agentStatus', agentStatus=>{
-    console.log(agentStatus);
+    //console.log(agentStatus);
 
 });
 
@@ -132,7 +132,7 @@ socket.on('updateQueues', data=>{
                        ex[key].channels[abbr].max = ag
                     }
 
-                    let free = q.agentsFree;
+                    let free = q.agentsFree - q.agentsWrapUp;
                     if ( free < ex[key].channels[abbr].minFree ){
                         ex[key].channels[abbr].minFree = free
                     }
@@ -169,7 +169,7 @@ socket.on('updateQueues', data=>{
                 if ( ag > ex[abbr].max ){
                     ex[abbr].max = ag
                 }
-                let agFree = q.agentsFree;
+                let agFree = q.agentsFree- q.agentsWrapUp;
                 if ( agFree < ex[abbr].minFree ){
                     ex[abbr].minFree = agFree;
                 }
@@ -182,10 +182,180 @@ socket.on('updateQueues', data=>{
         updateGroups(ex)
     }
     
-    console.log(ex);
+    //console.log(ex);
     
     
 });
+
+socket.on('updateStats', data=>{
+    //console.log('UpdateStats',data);
+    if (key === 'nordic'){
+        Object.keys(data).forEach(countrycode=>{
+            let channels = {
+                ph: {
+                    offered: 0,
+                    answered: 0,
+                    inSLA: 0,
+                    totSA: 0,
+                    active: false
+                },
+                ch: {
+                    offered: 0,
+                    answered: 0,
+                    inSLA: 0,
+                    totSA: 0,
+                    active: false
+                },
+                em: {
+                    offered: 0,
+                    answered: 0,
+                    inSLA: 0,
+                    totSA: 0,
+                    active: false
+                },
+                ac: {
+                    offered: 0,
+                    answered: 0,
+                    inSLA: 0,
+                    totSA: 0,
+                    active: false
+                }
+            }
+            data[countrycode].forEach(group=>{
+                let code = group.group.split('-')[2].toLowerCase()
+                if ( code === 'cb'){
+                    code = 'ph'
+                }
+                let channel = channels[code];
+                group.data.forEach(q=>{
+                    channel.offered += q.countOfArrivedContacts;
+                    channel.answered += q.countOfHandledContacts;
+                    channel.inSLA += q.countOfAnsweredOnTimeContacts;
+                    channel.totSA += q.waitingDurationForHandled;
+                    channel.active = true;
+                })
+            });
+            document.getElementById(countrycode).dailyData = channels;
+            //console.log(channels);
+        });
+    } 
+    else if (key === 'helpdesk') {
+        let channels = {
+            dk: {
+                offered: 0,
+                answered: 0,
+                totHandling: 0,
+                inSLA: 0,
+                totSA: 0,
+                active: false,
+                channel: 'ph'
+            },
+            fi: {
+                offered: 0,
+                answered: 0,
+                totHandling: 0,
+                inSLA: 0,
+                totSA: 0,
+                active: false,
+                channel: 'ph'
+            },
+            no: {
+                offered: 0,
+                answered: 0,
+                totHandling: 0,
+                inSLA: 0,
+                totSA: 0,
+                active: false,
+                channel: 'ph'
+            },
+            se: {
+                offered: 0,
+                answered: 0,
+                totHandling: 0,
+                inSLA: 0,
+                totSA: 0,
+                active: false,
+                channel: 'ph'
+            }
+        }
+        data.forEach(group=>{
+            let channel = channels[group.group.split('-')[0].toLowerCase()];
+            group.data.forEach(q=>{
+                channel.offered += q.countOfArrivedContacts;
+                channel.answered += q.countOfHandledContacts;
+                channel.inSLA += q.countOfAnsweredOnTimeContacts;
+                channel.totSA += q.waitingDurationForHandled;
+                channel.totHandling += q.handlingDuration + q.afterworkDuration;
+                channel.active = true;
+            });
+        });
+        Object.keys(channels).forEach(channel=>{
+            let data = channels[channel];
+            document.getElementById(channel).dailyData = data;
+        });
+        //document.getElementById(countrycode).dailyData = channels;
+        //console.log(channels);
+    }
+    else {
+        let channels = {
+            ph: {
+                offered: 0,
+                answered: 0,
+                totHandling: 0,
+                inSLA: 0,
+                totSA: 0,
+                active: false,
+                channel: 'ph'
+            },
+            ch: {
+                offered: 0,
+                answered: 0,
+                totHandling: 0,
+                inSLA: 0,
+                totSA: 0,
+                active: false,
+                channel: 'ch'
+            },
+            em: {
+                offered: 0,
+                answered: 0,
+                totHandling: 0,
+                inSLA: 0,
+                totSA: 0,
+                active: false,
+                channel: 'em'
+            },
+            ac: {
+                offered: 0,
+                answered: 0,
+                totHandling: 0,
+                inSLA: 0,
+                totSA: 0,
+                active: false,
+                channel: 'ac'
+            }
+        }
+        data.forEach(group=>{
+            let channel = channels[group.group.split('-')[2].toLowerCase()];
+            group.data.forEach(q=>{
+                channel.offered += q.countOfArrivedContacts;
+                channel.answered += q.countOfHandledContacts;
+                channel.inSLA += q.countOfAnsweredOnTimeContacts;
+                channel.totSA += q.waitingDurationForHandled;
+                channel.totHandling += q.handlingDuration + q.afterworkDuration;
+                channel.active = true;
+            });
+        });
+        Object.keys(channels).forEach(channel=>{
+            let data = channels[channel];
+            document.getElementById(channel).dailyData = data;
+        });
+        //document.getElementById(countrycode).dailyData = channels;
+        //console.log(channels);
+
+    }
+    
+})
 
 /*
       ----------------------

@@ -6,7 +6,9 @@ const request = require('request-promise').defaults({jar: true})
 function adaptObject(obj){
     const {channel, queueId, queueName,
     countOfHandledContacts, countOfAbandonedContacts,
-    countOfAnsweredOnTimeContacts, handlingDuration, waitingDurationForHandled
+    countOfAnsweredOnTimeContacts, handlingDuration, 
+    waitingDurationForHandled, countOfArrivedContacts,
+    afterworkDuration
      } = obj;
      return {
         channel, 
@@ -16,7 +18,9 @@ function adaptObject(obj){
         countOfAbandonedContacts,
         countOfAnsweredOnTimeContacts, 
         handlingDuration, 
-        waitingDurationForHandled
+        afterworkDuration,
+        waitingDurationForHandled,
+        countOfArrivedContacts
     };
 }
 

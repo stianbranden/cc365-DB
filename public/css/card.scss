@@ -103,9 +103,19 @@
         grid-area: heading;
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: space-between;
         z-index: 2;
         background-color: $bar-font-color;
+        padding: 0 1rem;
+
+        .active {
+            color: $secondary-brand-color;
+        }
+        ion-icon:hover {
+            color: $secondary-brand-color;
+            cursor: pointer;
+        }
+
     }
     .card-main {
         background-color: $bar-font-color;
@@ -158,7 +168,11 @@
             align-items: center;
 
             .stat {
+                display: flex;
                 flex: 1;
+                flex-direction: column;
+                justify-content: flex-end;
+                height: 30px;
             }
 
             .stat-text {
@@ -181,6 +195,13 @@
         &.down {
             transform: translateY(100%);
         }
+        &.card-daily {
+            z-index: -2;
+            &.active{
+                z-index: 2;
+            }
+        }
+        
     }
 
     .card-summary {
@@ -191,7 +212,7 @@
         background-color: $bar-font-color;
         transform: translate(0%, 0%);
         justify-content: center;
-
+        
         .ph, .ch, .em, .ac {
             flex-basis: 50%;
             display: flex;
@@ -204,14 +225,38 @@
             h1 {
                 font-size: 3rem;
             }
+            h2 {
+                font-size: 2rem;
+            }
             h3 {
                 font-size: 1.5rem;
+            }
+            h4 {
+                font-size: 1rem;
             }
             h5 {
                 font-size: 0.7rem;
             }
+            h6 {
+                font-size: 0.6rem;
+            }
+            .sla {
+                display: flex;
+                flex-direction: column;
+                align-items: baseline;
+                justify-content: space-evenly;
+                
+            }
+            .offered, .answered {
+                display: flex;
+                align-items: baseline;
+                justify-content: space-evenly;
+                flex-direction: column;
+                
+            }
             &.use-entire-line {
                 flex-basis: 100%;
+                
             }
         }
         &.anim {
@@ -223,6 +268,18 @@
         }
         &.down {
             transform: translateY(100%);
+        }
+        &.display-stats{
+            z-index: 2;
+            padding: 0 0 1rem 0;
+            .ph, .ch, .em, .ac {
+                flex-basis: 93%;
+                display: grid;
+                grid-template-columns: 1fr 2fr 1fr 1fr;
+                column-gap: 0.5rem;
+                justify-items: start;
+                align-items: end;
+            }
         }
     }
     

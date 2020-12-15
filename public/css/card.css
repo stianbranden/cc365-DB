@@ -5,6 +5,14 @@
           box-sizing: border-box;
 }
 
+*[hidden] {
+  display: none !important;
+}
+
+.hidden {
+  display: none !important;
+}
+
 body {
   font-family: 'Montserrat', sans-serif;
   background: lightgrey;
@@ -172,11 +180,21 @@ body {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
   z-index: 2;
   background-color: #fff;
+  padding: 0 1rem;
+}
+
+.card .card-header .active {
+  color: #78be20;
+}
+
+.card .card-header ion-icon:hover {
+  color: #78be20;
+  cursor: pointer;
 }
 
 .card .card-main {
@@ -260,9 +278,20 @@ body {
 }
 
 .card .card-main .card-stat .stat {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  height: 30px;
 }
 
 .card .card-main .card-stat .stat-text {
@@ -292,6 +321,14 @@ body {
 .card .card-main.down {
   -webkit-transform: translateY(100%);
           transform: translateY(100%);
+}
+
+.card .card-main.card-daily {
+  z-index: -2;
+}
+
+.card .card-main.card-daily.active {
+  z-index: 2;
 }
 
 .card .card-summary {
@@ -337,12 +374,56 @@ body {
   font-size: 3rem;
 }
 
+.card .card-summary .ph h2, .card .card-summary .ch h2, .card .card-summary .em h2, .card .card-summary .ac h2 {
+  font-size: 2rem;
+}
+
 .card .card-summary .ph h3, .card .card-summary .ch h3, .card .card-summary .em h3, .card .card-summary .ac h3 {
   font-size: 1.5rem;
 }
 
+.card .card-summary .ph h4, .card .card-summary .ch h4, .card .card-summary .em h4, .card .card-summary .ac h4 {
+  font-size: 1rem;
+}
+
 .card .card-summary .ph h5, .card .card-summary .ch h5, .card .card-summary .em h5, .card .card-summary .ac h5 {
   font-size: 0.7rem;
+}
+
+.card .card-summary .ph h6, .card .card-summary .ch h6, .card .card-summary .em h6, .card .card-summary .ac h6 {
+  font-size: 0.6rem;
+}
+
+.card .card-summary .ph .sla, .card .card-summary .ch .sla, .card .card-summary .em .sla, .card .card-summary .ac .sla {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: baseline;
+      -ms-flex-align: baseline;
+          align-items: baseline;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+}
+
+.card .card-summary .ph .offered, .card .card-summary .ph .answered, .card .card-summary .ch .offered, .card .card-summary .ch .answered, .card .card-summary .em .offered, .card .card-summary .em .answered, .card .card-summary .ac .offered, .card .card-summary .ac .answered {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: baseline;
+      -ms-flex-align: baseline;
+          align-items: baseline;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
 }
 
 .card .card-summary .ph.use-entire-line, .card .card-summary .ch.use-entire-line, .card .card-summary .em.use-entire-line, .card .card-summary .ac.use-entire-line {
@@ -366,6 +447,26 @@ body {
 .card .card-summary.down {
   -webkit-transform: translateY(100%);
           transform: translateY(100%);
+}
+
+.card .card-summary.display-stats {
+  z-index: 2;
+  padding: 0 0 1rem 0;
+}
+
+.card .card-summary.display-stats .ph, .card .card-summary.display-stats .ch, .card .card-summary.display-stats .em, .card .card-summary.display-stats .ac {
+  -ms-flex-preferred-size: 93%;
+      flex-basis: 93%;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 2fr 1fr 1fr;
+      grid-template-columns: 1fr 2fr 1fr 1fr;
+  -webkit-column-gap: 0.5rem;
+          column-gap: 0.5rem;
+  justify-items: start;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: end;
 }
 
 .card .card-sub {

@@ -59,24 +59,29 @@ async function getQueues(authenticated, runCount){
                 console.log(`QueueMap length: ${Object.keys(queueMap.map).length}`);
             }
 
-            let rai = await raiContactStatsToday();
-            data.queueStats = rai;
-            data.queueStats.forEach(q=>{
-                q.group = queueMap.queues[q.queueId];
-            });
-            console.log('RAI1: ' + JSON.stringify(data.queueStats[0]));
+            
             
         }
         let queueStatus;
         if ( runCount === 1 ){
+            //Get queue status all queues
             queueStatus = JSON.parse(await request(queueStatusQuery));
             data.queueStatus = queueStatus;
             data.queueStatus.forEach(q=>{
                 q.group = queueMap.queues[q.id];
             })
-            
+            //get daily stats
+            let rai = await raiContactStatsToday();
+            data.queueStats = rai;
+            data.queueStats.forEach(q=>{
+                q.group = queueMap.queues[q.queueId];
+            });
+            if (NODE_ENV != 'production'){
+                console.log('RAI1: ' + JSON.stringify(data.queueStats[0]));
+            }
         }
         else {
+            //Get queue status for live channel queues
             queueStatus = JSON.parse(await request(queueStatusQueryLive));
             queueStatus.forEach(qs=>{
                 data.queueStatus.forEach((dqs, i)=>{
@@ -87,7 +92,7 @@ async function getQueues(authenticated, runCount){
                 });
             });
         }
-        
+        /*
         let agentStatus = JSON.parse(await request(agentQuery));
         agentStatus.forEach(agent=>{
 
@@ -106,11 +111,12 @@ async function getQueues(authenticated, runCount){
                 }
             });
         });
+        */
 
 
         if ( NODE_ENV != 'production' ){
             console.log(`QueueStatus found: ${queueStatus.length}` );
-            console.log(`Agents found: ${agentStatus.length}`);
+            //console.log(`Agents found: ${agentStatus.length}`);
             console.log(`Runtime: ${moment().diff(a)}`);
         }
         
@@ -119,7 +125,11 @@ async function getQueues(authenticated, runCount){
         console.log(contacts);*/
         
         
-        return {runCount, data, queueMap, agentStatus};
+        return {
+            runCount, 
+            data, 
+            queueMap
+        };
     } catch (err) {
         authenticated = false;
         /*setTimeout(()=>{

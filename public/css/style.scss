@@ -6,18 +6,30 @@
     display: grid;
     grid-template-columns: 3fr 1fr;
     
+
+    .tableauPlaceholder {
+        margin: 2rem;
+        border-radius: 0.5rem;
+        box-shadow: 0.3rem 0.3rem 1rem rgba(0, 0, 0, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 500ms ease-in-out;
+
+        &:hover {
+            transform: scale(1.05);
+        }
+    }
 }
-.tableauPlaceholder {
-    margin: 1rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
+.scaledown {
+    transform: scale(1);
 }
 
 .container {
     margin: 1rem;
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     flex-direction: column;
     align-items: center;
 }
