@@ -229,7 +229,11 @@ socket.on('updateStats', data=>{
                 let channel = channels[code];
                 group.data.forEach(q=>{
                     channel.offered += q.countOfArrivedContacts;
-                    channel.answered += q.countOfCompletedContacts;
+                    if ( code === 'ch' || code == 'ph' ){
+                        channel.answered += q.countOfHandledContacts;
+                    } else {
+                        channel.answered += q.countOfCompletedContacts;
+                    }
                     channel.inSLA += q.countOfAnsweredOnTimeContacts;
                     channel.totSA += q.waitingDurationForHandled;
                     channel.active = true;
@@ -282,7 +286,11 @@ socket.on('updateStats', data=>{
             let channel = channels[group.group.split('-')[0].toLowerCase()];
             group.data.forEach(q=>{
                 channel.offered += q.countOfArrivedContacts;
-                channel.answered += q.countOfCompletedContacts;
+                if ( channel.channel === 'ch' || channel.channel == 'ph' ){
+                    channel.answered += q.countOfHandledContacts;
+                } else {
+                    channel.answered += q.countOfCompletedContacts;
+                }
                 channel.inSLA += q.countOfAnsweredOnTimeContacts;
                 channel.totSA += q.waitingDurationForHandled;
                 channel.totHandling += q.handlingDuration + q.afterworkDuration;
@@ -339,7 +347,11 @@ socket.on('updateStats', data=>{
             let channel = channels[group.group.split('-')[2].toLowerCase()];
             group.data.forEach(q=>{
                 channel.offered += q.countOfArrivedContacts;
-                channel.answered += q.countOfCompletedContacts;
+                if ( channel.channel === 'ch' || channel.channel == 'ph' ){
+                    channel.answered += q.countOfHandledContacts;
+                } else {
+                    channel.answered += q.countOfCompletedContacts;
+                }
                 channel.inSLA += q.countOfAnsweredOnTimeContacts;
                 channel.totSA += q.waitingDurationForHandled;
                 channel.totHandling += q.handlingDuration + q.afterworkDuration;
