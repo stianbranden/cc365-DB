@@ -67,7 +67,9 @@ server.listen(process.env.PORT, ()=>{
 
 //Socket.io stuff
 io.on('connection', socket =>{
-    console.log('a user is connected')
+    if ( NODE_ENV != 'production'){
+        console.log('a user is connected')
+    }
     socket.emit('submit-room');
 
     socket.on('connect-to', room =>{

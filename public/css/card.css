@@ -197,6 +197,10 @@ body {
   cursor: pointer;
 }
 
+.card .card-header h2 {
+  font-size: 1.3rem;
+}
+
 .card .card-main {
   background-color: #fff;
   -webkit-transform: translate(0%, 0%);
@@ -371,27 +375,27 @@ body {
 }
 
 .card .card-summary .ph h1, .card .card-summary .ch h1, .card .card-summary .em h1, .card .card-summary .ac h1 {
-  font-size: 3rem;
-}
-
-.card .card-summary .ph h2, .card .card-summary .ch h2, .card .card-summary .em h2, .card .card-summary .ac h2 {
   font-size: 2rem;
 }
 
-.card .card-summary .ph h3, .card .card-summary .ch h3, .card .card-summary .em h3, .card .card-summary .ac h3 {
+.card .card-summary .ph h2, .card .card-summary .ch h2, .card .card-summary .em h2, .card .card-summary .ac h2 {
   font-size: 1.5rem;
 }
 
-.card .card-summary .ph h4, .card .card-summary .ch h4, .card .card-summary .em h4, .card .card-summary .ac h4 {
+.card .card-summary .ph h3, .card .card-summary .ch h3, .card .card-summary .em h3, .card .card-summary .ac h3 {
   font-size: 1rem;
 }
 
-.card .card-summary .ph h5, .card .card-summary .ch h5, .card .card-summary .em h5, .card .card-summary .ac h5 {
+.card .card-summary .ph h4, .card .card-summary .ch h4, .card .card-summary .em h4, .card .card-summary .ac h4 {
   font-size: 0.7rem;
 }
 
-.card .card-summary .ph h6, .card .card-summary .ch h6, .card .card-summary .em h6, .card .card-summary .ac h6 {
+.card .card-summary .ph h5, .card .card-summary .ch h5, .card .card-summary .em h5, .card .card-summary .ac h5 {
   font-size: 0.6rem;
+}
+
+.card .card-summary .ph h6, .card .card-summary .ch h6, .card .card-summary .em h6, .card .card-summary .ac h6 {
+  font-size: 0.5rem;
 }
 
 .card .card-summary .ph .sla, .card .card-summary .ch .sla, .card .card-summary .em .sla, .card .card-summary .ac .sla {
@@ -547,7 +551,7 @@ body {
 @media only screen and (min-width: 700px) {
   .card {
     width: 300px;
-    height: 300px;
+    height: 299px;
     -ms-grid-columns: auto;
         grid-template-columns: auto;
     -ms-grid-rows: 1fr 5fr 0.7fr;
@@ -613,6 +617,27 @@ body {
   }
   .card .card-main .card-table td {
     font-size: 1.1rem;
+  }
+  .card .card-summary h1 {
+    font-size: 3rem;
+  }
+  .card .card-summary h2 {
+    font-size: 2rem;
+  }
+  .card .card-summary h3 {
+    font-size: 1.5rem;
+  }
+  .card .card-summary h4 {
+    font-size: 1rem;
+  }
+  .card .card-summary h5 {
+    font-size: 0.7rem;
+  }
+  .card .card-summary h6 {
+    font-size: 0.6rem;
+  }
+  .card .card-header h2 {
+    font-size: 1.5rem;
   }
 }
 /*# sourceMappingURL=card.css.map */
