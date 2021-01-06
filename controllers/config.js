@@ -1,14 +1,18 @@
 require('dotenv').config();
 
-const baseurl = "https://cc365-eu-c1.sapcctr.com/elkjop";
-const raiUrl = 'https://dl6rdbsvg3.execute-api.eu-central-1.amazonaws.com';
-const {USEPROXY, PROXY, BASE64, KINDLY2107, KINDLY2347, KINDLY2348, KINDLY2398, XAPIKEY} = process.env
+const authUrl = "https://cc365-eu-c1.sapcctr.com/elkjop/ecfs";
+let baseurl = "https://cc365-eu-c1.sapcctr.com/elkjop/ecfs/RI";
+const raiUrl = 'https://dl6rdbsvg3.execute-api.eu-central-1.amazonaws.com/p';
+const {USEPROXY, PROXY, BASE64, KINDLY2107, KINDLY2347, KINDLY2348, KINDLY2398, XAPIKEY, USENEWAUTH} = process.env
 
+if (USENEWAUTH === 'true'){
+    baseurl = raiUrl;
+}
 
 const queries =  {
     authQuery: {
         method: "POST",
-        url: baseurl + '/ecfs/authentication',
+        url: authUrl + '/authentication',
         headers: {
             'content-type': 'application/x-www-form-urlencoded',
             authorization: 'ECFAUTH' 
@@ -18,36 +22,36 @@ const queries =  {
     queueStatusQuery: {
         headers:{ 'Accept':  'application/json'},
         method: 'GET',
-        url: baseurl + '/ecfs/RI/rmi/queueStatuses'
+        url: baseurl + '/rmi/queueStatuses'
     },
     queueStatusQueryLive: {
         headers:{ 'Accept':  'application/json'},
         method: 'GET',
-        url: baseurl + '/ecfs/RI/rmi/queueStatuses?type=Phone,Chat'
+        url: baseurl + '/rmi/queueStatuses?type=Phone,Chat'
     },
     agentQuery: {
         headers:{ 'Accept':  'application/json'},
         method: 'GET',
-        url: baseurl + '/ecfs/RI/rmi/agents?showQueueInfo=3&availability=Away,Busy,Free'
+        url: baseurl + '/rmi/agents?showQueueInfo=3&availability=Away,Busy,Free'
     },
     queueQuery: {
         headers:{ 'Accept':  'application/json'},
         method: 'GET',
-        url: baseurl + '/ecfs/RI/rci/queues?limit=1000'
+        url: baseurl + '/rci/queues?limit=1000'
     },
     contactsQuery: {
         headers: {'Accept': 'application/json'},
         method: 'GET',
-        url: baseurl + '/ecfs/RI/rmi/contacts/?startTime=2020-05-12T06:00:00.000Z&endTime=2020-05-12T07:59:59.999Z&applicationName=ContactCenter&limit=5000&Channel=Phone'
+        url: baseurl + '/rmi/contacts/?startTime=2020-05-12T06:00:00.000Z&endTime=2020-05-12T07:59:59.999Z&applicationName=ContactCenter&limit=5000&Channel=Phone'
     },
     singleContactQuery: {
         headers: {'Accept': 'application/json'},
         method: 'GET',
-        url: baseurl + '/ecfs/RI/rmi/contacts/'
+        url: baseurl + '/rmi/contacts/'
     },
     raiQuery: {
         method: "GET",
-        url: raiUrl + '/p/rai/contactStatistic?startTime=${today}&timeCategory=day&channelType=EmailIn,CallIn,ChatIn',
+        url: raiUrl + '/rai/contactStatistic?startTime=${today}&timeCategory=day&channelType=EmailIn,CallIn,ChatIn',
         headers: {
             authorization: 'Basic ' + BASE64,
             'x-api-key': XAPIKEY
@@ -55,6 +59,15 @@ const queries =  {
     }
 }
 
+if (USENEWAUTH === 'true'){
+    Object.keys(queries).forEach(key=>{
+        queries[key].headers = {
+            'Accept': 'application/json',
+            authorization: 'Basic ' + BASE64,
+            'x-api-key': XAPIKEY
+        }
+    })
+}
 
 const kindly =  {
     "2107": {

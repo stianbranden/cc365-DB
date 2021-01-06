@@ -1,6 +1,6 @@
 require('dotenv').config();
-const {BASE64, NODE_ENV} = process.env;
-const {authQuery, queueStatusQuery, agentQuery, queueQuery, queueStatusQueryLive, contactsQuery, singleContactQuery} = require('./config')
+const {BASE64, NODE_ENV, USENEWAUTH} = process.env;
+const {authQuery, queueStatusQuery, queueQuery, queueStatusQueryLive, contactsQuery, singleContactQuery} = require('./config')
 const {raiContactStatsToday} = require('./rai');
 
 
@@ -33,8 +33,13 @@ async function getQueues(authenticated, runCount){
             //let base64data = encode.encode(`${USER}:${PASS}`, 'base64');
             //authQuery.body = 'Authorization=Basic ' + BASE64;
             //console.log(authQuery.body);
-            
-            let resp = JSON.parse(await request(authQuery));
+            if (USENEWAUTH==='true'){
+                if (NODE_ENV != 'production'){
+                    console.log(`Running x-api authentication`);
+                }
+            } else {
+                let resp = JSON.parse(await request(authQuery));
+            }
             authenticated = true;
         }
         if ( moment().date() != queueMap.updated.date() ){
