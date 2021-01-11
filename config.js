@@ -30,10 +30,9 @@ const unitsStage = {
     },
     kitchen: {
         abbr: 'ki',
-        groups: ['DK-KI-PH,CB,EM,AC',
+        groups: [
             'NO-KI-PH,CB,EM,AC',
             'SE-KI-PH,CB,EM,AC',
-            'DK-KIHOT-PH,CB',
             'NO-KIHOT-PH,CB',
             'SE-KIHOT-PH,CB',
             'NC-KI-PH,EM,AC'
