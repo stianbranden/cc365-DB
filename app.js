@@ -127,12 +127,15 @@ function updateQueues({data, queueMap}){
             };
             if (queueMap.map[group]){
                 queueMap.map[group].forEach(q=>{
-                    let qu = data.queueStats.find(e=>{
-                        return e.queueId === q;
-                    });
-                    if ( qu ){
-                        obj.data.push(qu);
+                    if ( data.queueStats){
+                        let qu = data.queueStats.find(e=>{
+                            return e.queueId === q;
+                        });
+                        if ( qu ){
+                            obj.data.push(qu);
+                        }
                     }
+                    
                 });
             }
             else {
