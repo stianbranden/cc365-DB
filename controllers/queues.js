@@ -76,7 +76,7 @@ async function getQueues(authenticated, runCount){
                 q.group = queueMap.queues[q.id];
             })
             //get daily stats
-            if (RUNRAI){
+            if (RUNRAI === 'true'){
                 let rai = await raiContactStatsToday();
                 data.queueStats = rai;
                 data.queueStats.forEach(q=>{
