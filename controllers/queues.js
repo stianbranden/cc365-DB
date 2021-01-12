@@ -1,6 +1,6 @@
 require('dotenv').config();
-const {BASE64, NODE_ENV, USENEWAUTH} = process.env;
-const {authQuery, queueStatusQuery, queueQuery, queueStatusQueryLive, contactsQuery, singleContactQuery, RUNRAI} = require('./config')
+const {BASE64, NODE_ENV, USENEWAUTH, RUNRAI} = process.env;
+const {authQuery, queueStatusQuery, queueQuery, queueStatusQueryLive, contactsQuery, singleContactQuery} = require('./config')
 const {raiContactStatsToday} = require('./rai');
 
 
@@ -76,6 +76,7 @@ async function getQueues(authenticated, runCount){
                 q.group = queueMap.queues[q.id];
             })
             //get daily stats
+            //console.log(RUNRAI, 'runrai')
             if (RUNRAI === 'true'){
                 let rai = await raiContactStatsToday();
                 data.queueStats = rai;
