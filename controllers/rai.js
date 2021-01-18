@@ -2,6 +2,7 @@ const {raiQuery} = require('./config')
 const moment = require('moment');
 
 const request = require('request-promise').defaults({jar: true})
+const fs = require('fs');
 
 function adaptObject(obj){
     const {channel, queueId, queueName,
@@ -28,10 +29,13 @@ function adaptObject(obj){
 
 async function raiContactStatsToday(){
     try{
+        
         let rai = JSON.parse(JSON.stringify(raiQuery));
         rai.url = rai.url.replace('${today}', moment().startOf('day').toISOString())
         //console.log(rai);
+        //console.log(rai);
         let resp = JSON.parse(await request(rai));
+        //fs.writeFileSync('./tmp/rai.json', JSON.stringify(resp), 'utf8');
         let processed = []
         resp.forEach(obj=>{
             processed.push(adaptObject(obj));

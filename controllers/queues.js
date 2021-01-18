@@ -79,6 +79,7 @@ async function getQueues(authenticated, runCount){
             //console.log(RUNRAI, 'runrai')
             if (RUNRAI === 'true'){
                 let rai = await raiContactStatsToday();
+                //fs.writeFileSync('./tmp/rai.json', JSON.stringify(rai), 'utf8');
                 data.queueStats = rai;
                 data.queueStats.forEach(q=>{
                     q.group = queueMap.queues[q.queueId];
