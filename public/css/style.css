@@ -379,8 +379,8 @@ header .navitems.open li:hover:not(.disabled) a {
 .splitcontainer {
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 3fr 1fr;
-      grid-template-columns: 3fr 1fr;
+  -ms-grid-columns: 3fr 2fr;
+      grid-template-columns: 3fr 2fr;
 }
 
 .splitcontainer .tableauPlaceholder {
@@ -453,6 +453,10 @@ header .navitems.open li:hover:not(.disabled) a {
   queue-card {
     -ms-flex-preferred-size: 25%;
         flex-basis: 25%;
+  }
+  .splitcontainer summary-card {
+    -ms-flex-preferred-size: 33%;
+        flex-basis: 33%;
   }
 }
 /*# sourceMappingURL=style.css.map */
