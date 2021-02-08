@@ -9,7 +9,7 @@ const unitsStage = {
     },
     norway: {
         abbr: 'no',
-        groups: ['NO-AS-EM,AC,CH,PH,CB', 'NO-BU-EM,AC,PH,CB', 'NO-BUHOT-PH,CB', 'NO-CAS-EM', 'NO-PS-PH,CB', 'NO-STA-EM,PH,CB', 'NO-HOT-PH,CB']
+        groups: ['NO-AS-EM,AC,CH,PH,CB', 'NO-BU-EM,AC,PH,CB', 'NO-BUHOT-PH,CB', 'NO-CAS-EM', 'NO-PS-PH,CB', 'NO-STA-EM,PH,CB', 'NO-HOT-PH,CB', 'NO-INT-EM']
     },
     finland: {
         abbr: 'fi',
