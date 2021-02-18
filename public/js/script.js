@@ -344,7 +344,11 @@ socket.on('updateStats', data=>{
             }
         }
         data.forEach(group=>{
-            let channel = channels[group.group.split('-')[2].toLowerCase()];
+            let channelCode = group.group.split('-')[2].toLowerCase();
+            if (channelCode==='cb'){
+                channelCode ='ph';
+            }
+            let channel = channels[channelCode];
             group.data.forEach(q=>{
                 channel.offered += q.countOfArrivedContacts;
                 if ( channel.channel === 'ch' || channel.channel == 'ph' ){
