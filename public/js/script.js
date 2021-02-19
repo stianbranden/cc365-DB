@@ -453,3 +453,40 @@ if (key == 'ChatTranscript'){
       chDate();
       adjB();
 }
+
+if ( key === 'norway'){
+    if ( !site){
+        //Launch site picker
+        //<ion-icon name="arrow-back-outline" id='site-picker'></ion-icon>
+        let nav = document.getElementById('site-nav');
+        nav.classList.remove('hidden');
+        nav.addEventListener('click', ()=>{
+            nav.classList.toggle('open');
+        });
+        nav.querySelectorAll('button').forEach(btn=>{
+            btn.addEventListener('click', ()=>{
+                let key = btn.getAttribute('key');
+                nav.classList.toggle('open');
+                nav.classList.add('hidden');
+                showBot(key);
+            });
+        });
+    }
+}
+else if (key === 'denmark' ){
+    showBot('d067a39f-c160-4824-8f7a-0863e9f9ef67');
+}
+
+function showBot(botKey){
+
+    var script = document.createElement('script');
+    script.src = 'https://chat.kindlycdn.com/kindly-chat.js';
+    script.async = true;
+    script.id = 'kindly-chat';
+    script.setAttribute('data-shadow-dom', '1');
+    //script.setAttribute('data-bot-key', '49359f26-44ed-4703-b301-b169a224955c');
+    script.setAttribute('data-bot-key', botKey);
+    script.setAttribute('bubbleAvatar', 'http://ccc-local.elkjop.com:3000/images/icon.png');
+    document.body.appendChild(script);
+
+}

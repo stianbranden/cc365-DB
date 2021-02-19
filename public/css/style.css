@@ -428,6 +428,116 @@ header .navitems.open li:hover:not(.disabled) a {
           align-items: center;
 }
 
+#site-nav {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  position: fixed;
+  right: 1.5rem;
+  width: 3rem;
+  height: 3rem;
+  background-color: #78be20;
+  border-radius: 50%;
+  bottom: 1.5rem;
+  -webkit-transition: all ease-in-out 1s;
+  transition: all ease-in-out 1s;
+}
+
+#site-nav .circle {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  right: 1.5rem;
+  width: 3rem;
+  height: 3rem;
+  background-color: #78be20;
+  border-radius: 50%;
+}
+
+#site-nav .menu {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  cursor: pointer;
+  z-index: 900;
+  position: fixed;
+  right: 3.15rem;
+  width: 0.1rem;
+  height: 3rem;
+  background-color: #78be20;
+  border-radius: 5%;
+  bottom: 1.5rem;
+  -webkit-transition: all ease-in-out 1s;
+  transition: all ease-in-out 1s;
+}
+
+#site-nav .menu button {
+  display: none;
+  -webkit-transition: display ease-in-out 0.5s 0.5s;
+  transition: display ease-in-out 0.5s 0.5s;
+  width: 50%;
+  height: 100%;
+  background: transparent;
+  border: none;
+}
+
+#site-nav .menu button:hover {
+  color: #fff;
+  font-weight: bold;
+}
+
+#site-nav #site-picker {
+  position: relative;
+  -webkit-transition: -webkit-transform ease-in-out 1s;
+  transition: -webkit-transform ease-in-out 1s;
+  transition: transform ease-in-out 1s;
+  transition: transform ease-in-out 1s, -webkit-transform ease-in-out 1s;
+  text-align: center;
+  width: 100%;
+  z-index: 1001;
+  color: #fff;
+}
+
+#site-nav #site-picker:hover {
+  color: #141b4d;
+}
+
+#site-nav.open .menu {
+  width: 12rem;
+  padding-right: 1rem;
+}
+
+#site-nav.open .menu button {
+  display: block;
+}
+
+#site-nav.open #site-picker {
+  -webkit-transform: rotateZ(180deg);
+          transform: rotateZ(180deg);
+}
+
 @media only screen and (min-width: 700px) {
   .container {
     -webkit-box-orient: horizontal;

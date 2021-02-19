@@ -17,11 +17,22 @@ router.get("/favicon.ico", function(req, res) {
 });
 
 
-router.get('/:unit', (req, res)=>{
+
+
+router.get('/:unit/', (req, res)=>{
     
     let unit = units[req.params.unit];
+    let site = null;
 
-    res.render('unit', {pageTitle: unit.key, unit})
+    res.render('unit', {pageTitle: unit.key, unit, site})
+})
+
+router.get('/:unit/:site', (req, res)=>{
+    
+    let unit = units[req.params.unit];
+    let site = units[req.params.site];
+
+    res.render('unit', {pageTitle: unit.key, unit, site})
 })
 
 
