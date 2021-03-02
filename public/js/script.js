@@ -479,6 +479,11 @@ else if (key === 'denmark' ){
 
 function showBot(botKey){
 
+    window.kindlyOptions = {
+        bubbleAvatar: '/images/hotbot.webp',
+        name: 'HotBot'
+    }
+
     var script = document.createElement('script');
     script.src = 'https://chat.kindlycdn.com/kindly-chat.js';
     script.async = true;
@@ -486,7 +491,6 @@ function showBot(botKey){
     script.setAttribute('data-shadow-dom', '1');
     //script.setAttribute('data-bot-key', '49359f26-44ed-4703-b301-b169a224955c');
     script.setAttribute('data-bot-key', botKey);
-    script.setAttribute('bubbleAvatar', 'http://ccc-local.elkjop.com:3000/images/icon.png');
     document.body.appendChild(script);
 
 }
