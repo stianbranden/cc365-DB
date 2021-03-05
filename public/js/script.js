@@ -476,6 +476,10 @@ if ( key === 'norway'){
 else if (key === 'denmark' ){
     showBot('d067a39f-c160-4824-8f7a-0863e9f9ef67');
 }
+else if (key === 'sweden' ){
+    showBot('c8f2f820-e41d-470b-9b69-a003ec24d2c1');
+}
+
 
 function showBot(botKey){
 
