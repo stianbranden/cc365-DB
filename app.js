@@ -53,7 +53,7 @@ function run(auth, i){
             run(true, data.runCount); //Redo fecth after 10 sec, incrementing runCount
         }, updateFrequency)
     }).catch(err=>{
-        console.log('An error has happened', err);
+        console.log(moment().toISOString() + ' - An error has happened', err);
         setTimeout(()=>{
             run(false, 0); //If something is going wrong then restart after 60 sec
         }, updateFrequency*6)
@@ -75,11 +75,36 @@ io.on('connection', socket =>{
     socket.on('connect-to', room =>{
         console.log(`Connect to ${room} from ${socket.id}`);
         socket.emit('connect-ok', {id: socket.id, room})
+        if (dataToUsers.queueData[room] && dataToUsers.dailyStats[room]){
+            socket.emit('updateQueues', dataToUsers.queueData[room])
+            socket.emit('updateStats', dataToUsers.dailyStats[room])
+            
+        }
+        
         socket.join(room);
     });
 });
 
-
+let dataToUsers = {
+    queueData: {
+        denmark: null,
+        finland: null,
+        norway: null,
+        sweden: null, 
+        helpdesk: null,
+        kitchen: null,
+        nordic: null
+    },
+    dailyStats: {
+        denmark: null,
+        finland: null,
+        norway: null,
+        sweden: null, 
+        helpdesk: null,
+        kitchen: null,
+        nordic: null
+    }
+}
 
 function updateQueues({data, queueMap}){
     let missingGroups = []
@@ -112,9 +137,11 @@ function updateQueues({data, queueMap}){
             
         });
         io.in(unit).emit('updateQueues', objs);
+        dataToUsers.queueData[unit] = objs;
         nordic[units[unit].abbr] = objs;
     });
     io.in('nordic').emit('updateQueues', nordic);
+    dataToUsers.queueData.nordic = nordic;
 
     //Update daily stats
     let nordicStats = {}
@@ -144,9 +171,11 @@ function updateQueues({data, queueMap}){
             objs.push(obj)
         });
         io.in(unit).emit('updateStats', objs);
+        dataToUsers.dailyStats[unit] = objs;
         nordicStats[units[unit].abbr] = objs;
     });
     io.in('nordic').emit('updateStats', nordicStats);
+    dataToUsers.dailyStats.nordic = nordicStats;
     //io.in('denmark').emit('agentStatus', agentStatus);
     //io.in('denmark').emit('agentStatus', queueMap);
     if ( NODE_ENV != 'production'){
