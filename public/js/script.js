@@ -16,6 +16,18 @@ burgermenu.addEventListener('click', ()=>{
 
 document.querySelector('.container').classList.add(key);
 
+/*
+    ----------------------
+        Footer Menu Controls
+        General
+      ----------------------
+
+*/
+let footer = document.querySelector('footer');
+footer.addEventListener('click', ()=>{
+    footer.classList.toggle('clicked');
+})
+
 
 /*
       ----------------------

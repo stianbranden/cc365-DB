@@ -1,4 +1,4 @@
-require('dotenv').config();
+//require('dotenv').config();
 
 const authUrl = "https://cc365-eu-c1.sapcctr.com/elkjop/ecfs";
 let baseurl = "https://cc365-eu-c1.sapcctr.com/elkjop/ecfs/RI";

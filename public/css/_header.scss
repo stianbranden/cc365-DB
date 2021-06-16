@@ -40,6 +40,9 @@ header {
         height: 3rem;
         background-color: $secondary-brand-color;
         border-radius: 50%;
+        &.loggedin {
+            background-color: $pop-brand-color;
+        }
     }
 
     .menu:hover .burger,
@@ -115,6 +118,10 @@ header {
         right: 1.5rem;
         border-radius: 50%;
         transition: all 0.5s ease-in-out 1s;
+
+        &.loggedin {
+            background-color: $pop-brand-color;
+        }
 
         ul {
             list-style: none;

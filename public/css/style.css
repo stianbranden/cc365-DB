@@ -84,6 +84,10 @@ header .menu {
   border-radius: 50%;
 }
 
+header .menu.loggedin {
+  background-color: #333333;
+}
+
 header .menu:hover .burger,
 header .menu:hover .burger::after,
 header .menu:hover .burger::before,
@@ -166,6 +170,10 @@ header .navitems {
   border-radius: 50%;
   -webkit-transition: all 0.5s ease-in-out 1s;
   transition: all 0.5s ease-in-out 1s;
+}
+
+header .navitems.loggedin {
+  background-color: #333333;
 }
 
 header .navitems ul {
@@ -376,6 +384,66 @@ header .navitems.open li:hover:not(.disabled) a {
   color: #fff;
 }
 
+footer {
+  position: fixed;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  bottom: 0;
+  left: 0;
+  height: 2.5rem;
+  width: 0.7rem;
+  z-index: 2;
+  -webkit-transition: all 500ms ease-in-out;
+  transition: all 500ms ease-in-out;
+  overflow: hidden;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  color: #333333;
+}
+
+footer:hover {
+  width: 100%;
+}
+
+footer:hover div {
+  color: #fff;
+  display: block;
+}
+
+footer.clicked {
+  width: 100%;
+}
+
+footer.clicked div {
+  display: block;
+  color: #fff;
+}
+
+footer.loggedin {
+  background-color: #333333;
+}
+
+footer div {
+  display: none;
+  text-align: left;
+  vertical-align: middle;
+  font-size: 0.8rem;
+  margin: 0.7rem;
+}
+
+footer div ion-icon {
+  font-size: 1rem;
+}
+
+footer div a {
+  color: #fff;
+}
+
 .splitcontainer {
   display: -ms-grid;
   display: grid;
@@ -556,6 +624,13 @@ header .navitems.open li:hover:not(.disabled) a {
   queue-card {
     -ms-flex-preferred-size: 34%;
         flex-basis: 34%;
+  }
+  footer {
+    width: 100%;
+  }
+  footer div {
+    display: block;
+    color: #fff;
   }
 }
 

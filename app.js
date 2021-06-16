@@ -12,14 +12,48 @@ const tableauRoute = require('./routes/tableau');
 const chatBotTranscriptRoute = require('./routes/chatBotTranscript');
 const reportRoute = require('./routes/report');
 const myStatsRoute = require('./routes/myStats');
+const authRoute = require('./routes/auth');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
+const connectDB = require('./controllers/connectDB');
+const passport = require('passport');
 const ejsLayouts = require('express-ejs-layouts');
 const morgan = require('morgan')
 const {units} = require('./config')
 const updateFrequency = process.env.UPDATE_FREQUENCY || 10000;
-const {NODE_ENV} = process.env;
+const {NODE_ENV, SESSION_SECRET, MONGODBURI, MONGODBNAME} = process.env;
 /*Setup EJS*/
 app.set('view engine', 'ejs');
 app.use(ejsLayouts);
+
+//Connect to MongoDB
+const mongoConnection = connectDB();
+
+// Passport config
+require('./controllers/passportAzure')(passport)
+
+
+// Sessions
+app.use(
+    session({
+      secret: SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
+      store: MongoStore.create({ mongoUrl: MONGODBURI + MONGODBNAME }),
+    })
+  )
+  
+  // Passport middleware
+  app.use(passport.initialize())
+  app.use(passport.session())
+  
+  // Set global var
+  app.use(function (req, res, next) {
+    res.locals.user = req.user || null
+    next()
+  })
+
 
 //Static file middleware
 app.use(express.static('public'));
@@ -27,7 +61,7 @@ app.use(express.static('public'));
 //Logging middleware
 if (process.env.NODE_ENV !== 'production'){
     app.use(morgan('common'));
-  }
+}
 
 
 //Routes
@@ -36,8 +70,10 @@ app.use('/tableau', tableauRoute);
 app.use('/chat', chatBotTranscriptRoute);
 app.use('/mngrs', reportRoute);
 app.use('/myStats', myStatsRoute);
+app.use('/auth', authRoute);
 
 app.use('/', rootRoute);
+
 
 
 function run(auth, i){
