@@ -1,9 +1,9 @@
-require('dotenv').config();
+//require('dotenv').config();
 
-const authUrl = "https://cc365-eu-c1.sapcctr.com/elkjop/ecfs";
-let baseurl = "https://cc365-eu-c1.sapcctr.com/elkjop/ecfs/RI";
-const raiUrl = 'https://dl6rdbsvg3.execute-api.eu-central-1.amazonaws.com/p';
-const {USEPROXY, PROXY, BASE64, KINDLY2107, KINDLY2347, KINDLY2348, KINDLY2398, XAPIKEY, USENEWAUTH} = process.env
+const {USEPROXY, PROXY, BASE64, KINDLY2107, KINDLY2347, KINDLY2348, KINDLY2398, XAPIKEY, USENEWAUTH, RAI_URL, AUTH_URL, BASE_URL} = process.env
+const authUrl = AUTH_URL
+let baseurl = BASE_URL
+const raiUrl = RAI_URL
 
 if (USENEWAUTH === 'true'){
     baseurl = raiUrl;
