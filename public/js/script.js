@@ -132,7 +132,8 @@ socket.on('updateQueues', data=>{
                        ex[key].channels[abbr].max = ag
                     }
 
-                    let free = q.agentsFree - q.agentsWrapUp;
+                    let free = q.agentsFree;// - q.agentsWrapUp;
+                    //console.log({q, free, agentsFree: q.agentsFree, agentsWrapUp: q.agentsWrapUp});
                     if ( free < ex[key].channels[abbr].minFree ){
                         ex[key].channels[abbr].minFree = free
                     }
@@ -169,7 +170,8 @@ socket.on('updateQueues', data=>{
                 if ( ag > ex[abbr].max ){
                     ex[abbr].max = ag
                 }
-                let agFree = q.agentsFree- q.agentsWrapUp;
+                let agFree = q.agentsFree;//- q.agentsWrapUp;
+                //console.log({q, ag, agFree, agentsFree: q.agentsFree, agentsWrapUp: q.agentsWrapUp});
                 if ( agFree < ex[abbr].minFree ){
                     ex[abbr].minFree = agFree;
                 }
