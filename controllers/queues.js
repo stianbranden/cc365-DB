@@ -61,7 +61,7 @@ async function getQueues(authenticated, runCount){
                 }
             });
             if (NODE_ENV != 'production'){
-                console.log(`QueueMap length: ${Object.keys(queueMap.map).length}`);
+                console.log(`QueueMap length: ${Object.keys(queueMap.map).length}`);             
             }
 
             
@@ -75,6 +75,9 @@ async function getQueues(authenticated, runCount){
             data.queueStatus.forEach(q=>{
                 q.group = queueMap.queues[q.id];
             })
+            /*if (runCount === 1){
+                console.log({queues: data.queueStatus[0]});
+            }*/
             //get daily stats
             //console.log(RUNRAI, 'runrai')
             if (RUNRAI === 'true'){
