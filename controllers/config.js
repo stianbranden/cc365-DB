@@ -1,6 +1,6 @@
 //require('dotenv').config();
 
-const {USEPROXY, PROXY, BASE64, KINDLY2107, KINDLY2347, KINDLY2348, KINDLY2398, XAPIKEY, USENEWAUTH, RAI_URL, AUTH_URL, BASE_URL} = process.env
+const {USEPROXY, PROXY, BASE64, KINDLY2107, KINDLY2347, KINDLY2348, KINDLY2398, XAPIKEY, USENEWAUTH, RAI_URL, AUTH_URL, BASE_URL, TABLEAU_SERVER, TABLEAU_SITE} = process.env
 const authUrl = AUTH_URL
 let baseurl = BASE_URL
 const raiUrl = RAI_URL
@@ -100,15 +100,27 @@ const kindly =  {
     }
 }
 
+const tableauTicketRequest = {
+    method: 'POST',
+    url: TABLEAU_SERVER,
+    headers:
+     { 'Content-Type': 'application/x-www-form-urlencoded' },
+    form: {
+        target_site: TABLEAU_SITE
+    }
+}
+
 if (USEPROXY==="true"){
     Object.keys(queries).forEach(key=>{
         queries[key].proxy = PROXY;
     });
     Object.keys(kindly).forEach(key=>{
         kindly[key].proxy  = PROXY;
-    })
+    });
+    tableauTicketRequest.proxy = PROXY;
 }
 
 queries.kindly = kindly;
+queries.tableauTicketRequest = tableauTicketRequest;
 
 module.exports = queries
