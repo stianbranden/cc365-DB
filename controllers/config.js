@@ -1,6 +1,6 @@
 //require('dotenv').config();
 
-const {USEPROXY, PROXY, BASE64, KINDLY2107, KINDLY2347, KINDLY2348, KINDLY2398, XAPIKEY, USENEWAUTH, RAI_URL, AUTH_URL, BASE_URL, TABLEAU_SERVER, TABLEAU_SITE} = process.env
+const {USEPROXY, PROXY, BASE64, KINDLY2107, KINDLY2347, KINDLY2348, KINDLY2398, XAPIKEY, USENEWAUTH, RAI_URL, AUTH_URL, BASE_URL, TABLEAU_SERVER, TABLEAU_SITE, TELEOPTI_ACCESS_TOKEN, TELEOPTI_URL} = process.env
 const authUrl = AUTH_URL
 let baseurl = BASE_URL
 const raiUrl = RAI_URL
@@ -110,6 +110,60 @@ const tableauTicketRequest = {
     }
 }
 
+const teleoptiRequests = {
+    getBusinessUnits: {
+        method: 'POST',
+        url: TELEOPTI_URL + '/query/BusinessUnit/AllBusinessUnits',
+        headers: {
+            'Authorization': 'Bearer ' + TELEOPTI_ACCESS_TOKEN,
+            'Accept': 'application/json'
+        }
+    },
+    getAllTeamsWithAgents: {
+        method: 'POST',
+        url: TELEOPTI_URL + '/query/Team/AllTeamsWithAgents',
+        headers: {
+            'Authorization': 'Bearer ' + TELEOPTI_ACCESS_TOKEN,
+            'Accept': 'application/json'
+        }
+    },
+    getPeopleByTeamId: {
+        method: 'POST',
+        url: TELEOPTI_URL + '/query/Person/PeopleByTeamId',
+        headers: {
+            'Authorization': 'Bearer ' + TELEOPTI_ACCESS_TOKEN,
+            'Accept': 'application/json'
+        }
+    },
+    getSchedulesByPersonIds: {
+        method: 'POST',
+        url: TELEOPTI_URL + '/query/Schedule/ScheduleByPersonIds',
+        headers: {
+            'Authorization': 'Bearer ' + TELEOPTI_ACCESS_TOKEN,
+            'Accept': 'application/json'
+        }
+    },
+    getScheduleByTeamId: {
+        method: 'POST',
+        url: TELEOPTI_URL + '/query/Schedule/ScheduleByTeamId',
+        headers: {
+            'Authorization': 'Bearer ' + TELEOPTI_ACCESS_TOKEN,
+            'Accept': 'application/json'
+        }
+    },
+    getUpdatedSchedules: {
+        method: 'POST',
+        url: TELEOPTI_URL + '/query/ScheduleChanges/SchedulesByChangeDate',
+        headers: {
+            'Authorization': 'Bearer ' + TELEOPTI_ACCESS_TOKEN,
+            'Accept': 'application/json'
+        }
+    }
+    
+    
+    
+}
+
 if (USEPROXY==="true"){
     Object.keys(queries).forEach(key=>{
         queries[key].proxy = PROXY;
@@ -118,9 +172,16 @@ if (USEPROXY==="true"){
         kindly[key].proxy  = PROXY;
     });
     tableauTicketRequest.proxy = PROXY;
+    Object.keys(teleoptiRequests).forEach(key=>{
+        teleoptiRequests[key].proxy = PROXY;
+    });
 }
 
 queries.kindly = kindly;
 queries.tableauTicketRequest = tableauTicketRequest;
+
+Object.keys(teleoptiRequests).forEach(key=>{
+    queries[key] = teleoptiRequests[key];
+});
 
 module.exports = queries

@@ -3,7 +3,9 @@ const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const User = require('../models/User')
 
-const {AZURE_CLIENTID, AZURE_CLIENTSECRET} = process.env;
+const {AZURE_CLIENTID, AZURE_CLIENTSECRET, NODE_ENV} = process.env;
+const {getAgentWithEmail} = require('./getTeleoptiData');
+const {getUserById} = require('./getUserData');
 
 module.exports = function (passport) {
   passport.use(
@@ -14,27 +16,38 @@ module.exports = function (passport) {
     },
     async (accessToken, refreshToken, params, provider, done) => {
         const profile = jwt.decode(accessToken);
-        if (process.env.NODE_ENV !== 'production'){
+        if (NODE_ENV !== 'production'){
             console.log({
-                jwt: jwt.decode(accessToken), 
-                params, 
-                provider
+                jwt: jwt.decode(accessToken)
             });
         }
         try {
-            let user = await User.findOne({upn: profile.upn});
+            let agent = await getAgentWithEmail(profile.upn);
+            console.log(agent);
+            let agentId = null;
+            if (agent){
+              agentId = agent._id;
+            }
+            
+            let user = await User.findById(profile.upn);
             if (user){
                 //Update user
-                user.last_login = Date.now();
-                await user.save();
+              user = await User.findByIdAndUpdate(profile.upn, {
+                last_login: Date.now(),
+                agentId
+              }, {new: true})
             }
             else {
                 user = await  User.create({
-                    upn: profile.upn,
+                    _id: profile.upn,
                     name: profile.name,
+                    agentId,
                     given_name: profile.given_name,
                     family_name: profile.family_name
                 });
+            }
+            if ( NODE_ENV != 'Production' ){
+              getUserById(user._id).then(saved_user=>console.log(saved_user));
             }
             done(null, user);
         } catch (e) {

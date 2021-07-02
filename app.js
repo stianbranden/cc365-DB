@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const {getQueues, getContacts, getSingleContact} = require('./controllers/queues');
+const {getTodaysTeleoptiData, runScheduleUpdate} = require('./controllers/fetchTeleoptiData');
 const express = require('express')
 const app = express();
 const server = require('http').Server(app);
@@ -35,24 +36,23 @@ require('./controllers/passportAzure')(passport)
 
 
 // Sessions
-app.use(
-    session({
-      secret: SESSION_SECRET,
-      resave: false,
-      saveUninitialized: false,
-      store: MongoStore.create({ mongoUrl: MONGODBURI + MONGODBNAME }),
-    })
-  )
+const sessionMiddleware = session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: MONGODBURI + MONGODBNAME }),
+});
+app.use(sessionMiddleware);
   
-  // Passport middleware
-  app.use(passport.initialize())
-  app.use(passport.session())
-  
-  // Set global var
-  app.use(function (req, res, next) {
-    res.locals.user = req.user || null
-    next()
-  })
+// Passport middleware
+app.use(passport.initialize())
+app.use(passport.session())
+
+// Set global var
+app.use(function (req, res, next) {
+res.locals.user = req.user || null
+next()
+})
 
 
 //Static file middleware
@@ -99,11 +99,23 @@ function run(auth, i){
 server.listen(process.env.PORT, ()=>{
     console.log(`${moment().format()} - Server listening on port ${process.env.PORT}`);
     run(false, 0);
+    //getTodaysTeleoptiData();
+    runScheduleUpdate();
 });
 
 //Socket.io stuff
+
+const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+
+io.use(wrap(sessionMiddleware));
+io.use(wrap(passport.initialize()));
+io.use(wrap(passport.session()));
+
 io.on('connection', socket =>{
-    if ( NODE_ENV != 'production'){
+    if ( NODE_ENV != 'production' && socket.request.user){
+        console.log(socket.request.user.upn + ' is connected');
+    }
+    else if (NODE_ENV != 'production'){
         console.log('a user is connected')
     }
     socket.emit('submit-room');
