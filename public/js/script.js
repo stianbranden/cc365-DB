@@ -456,6 +456,12 @@ if (key == 'ChatTranscript'){
       adjB();
 }
 
+/*
+      ----------------------
+        HotBot - Kindly - ChatBot
+      ----------------------
+*/
+
 if ( key === 'norway'){
     if ( !site){
         //Launch site picker
@@ -483,11 +489,16 @@ else if (key === 'sweden' ){
 }
 
 
+
+
 function showBot(botKey){
 
     window.kindlyOptions = {
         bubbleAvatar: '/images/hotbot.webp',
-        name: 'HotBot'
+        name: 'HotBot',
+        context: {
+            country: key
+        }
     }
 
     var script = document.createElement('script');
