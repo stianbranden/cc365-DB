@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "colors": "^1.4.0",
     "connect-mongo": "^4.4.1",
     "dotenv": "^8.6.0",
     "ejs": "^3.1.6",
@@ -20,6 +21,7 @@
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
     "mongoose": "^5.12.13",
+    "node-cron": "^3.0.0",
     "nodejs-base64-encode": "^1.1.0",
     "passport": "^0.4.1",
     "passport-azure-ad-oauth2": "0.0.4",

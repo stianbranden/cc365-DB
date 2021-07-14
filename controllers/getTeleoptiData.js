@@ -1,6 +1,49 @@
 const Agent = require('../models/Agent');
 const BusinessUnit = require('../models/BusinessUnit');
 const Team = require('../models/Team');
+const Schedule = require('../models/Schedule');
+const moment = require('moment');
+const { logStd } = require('./logger');
+
+const getSchedulesForTeam = (teamId, date = moment().format('YYYY-MM-DD'), includeEmpty = false)=>{
+    return new Promise( async (resolve, reject)=>{
+        let query = {
+            "agent.teamId": teamId, 
+            date
+        }
+        if ( !includeEmpty ){
+            query.$or = [
+                {"shift.0":{$exists: true}},
+                {dayOff: {$ne: null}}
+            ]
+        }
+        try {
+            resolve(await Schedule.find(query));
+        } catch (error) {
+            reject(error)
+        }
+    });
+}
+
+const getSchedulesForDepartment = (department, date = moment().format('YYYY-MM-DD'), includeEmpty=false)=>{
+    return new Promise( async (resolve, reject)=>{
+        let query = {
+            "agent.departmentName": {$regex: department,$options:'i'},
+            date
+        }
+        if ( !includeEmpty ){
+            query.$or = [
+                {"shift.0":{$exists: true}},
+                {dayOff: {$ne: null}}
+            ]
+        }
+        try {
+            resolve(await Schedule.find(query));
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
 
 const getAgentWithId = id =>{
     return new Promise(async (resolve, reject)=>{
@@ -55,6 +98,26 @@ const getAllBusinessUnits = _ =>{
     });
 }
 
+const getBusinessUnit = businessUnitId =>{
+    return new Promise( async (resolve, reject)=>{
+        try {
+            resolve(await businessUnit.findOne({businessUnitId}));
+        } catch (error) {
+            reject(error)
+        }
+    });
+}
+
+const getTeam = teamId =>{
+    return new Promise( async (resolve, reject)=>{
+        try {
+            resolve(await Team.findOne({teamId}));
+        } catch (error) {
+            reject(error)
+        }
+    });
+}
+
 const getTeams = (businessUnitId=null)=>{
     return new Promise(async (resolve, reject) => {
         let query = {}
@@ -75,6 +138,10 @@ module.exports = {
     getAgentWithId,
     getAgentWithEmail,
     getAllBusinessUnits,
+    getBusinessUnit,
     getTeams,
-    getAgents
+    getAgents,
+    getSchedulesForTeam,
+    getSchedulesForDepartment,
+    getTeam
 }

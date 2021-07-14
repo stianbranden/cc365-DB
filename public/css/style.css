@@ -606,6 +606,138 @@ footer div a {
           transform: rotateZ(180deg);
 }
 
+.schedule-container {
+  width: 100%;
+  min-height: 4rem;
+  margin: 0.5rem;
+  margin-bottom: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  border-bottom: 1px dashed grey;
+  padding: 1rem;
+}
+
+.schedule-container:first-child {
+  padding-bottom: 0;
+}
+
+.schedule-container .padding {
+  width: 2rem;
+}
+
+.schedule-container ion-icon {
+  width: 1rem;
+  visibility: hidden;
+  margin: auto 1rem auto 0;
+}
+
+.schedule-container ion-icon.active {
+  visibility: visible;
+  color: #141b4d;
+}
+
+.schedule-container ion-icon.active path {
+  fill: #78be20;
+}
+
+.schedule-container:hover ion-icon {
+  visibility: visible;
+}
+
+.schedule-container .name {
+  width: 150px;
+  margin: auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.schedule-container .shift {
+  width: 100%;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (1fr)[1020];
+      grid-template-columns: repeat(1020, 1fr);
+}
+
+.schedule-container .shift .time-label {
+  font-size: 0.7rem;
+  margin-top: auto;
+  border-left: 1px solid grey;
+  padding-left: 0.1rem;
+}
+
+.schedule-container .shift .block {
+  padding: 0.5rem;
+  text-align: center;
+  max-height: 4rem;
+  position: relative;
+  display: -ms-grid;
+  display: grid;
+  /* Tooltip text */
+  /* Show the tooltip text when you mouse over the tooltip container */
+}
+
+.schedule-container .shift .block.active {
+  border: 3px solid cyan !important;
+}
+
+.schedule-container .shift .block.active span {
+  font-size: 1rem;
+}
+
+.schedule-container .shift .block:first-child {
+  border-bottom-left-radius: 0.2rem;
+  border-top-left-radius: 0.2rem;
+}
+
+.schedule-container .shift .block:last-child {
+  border-bottom-right-radius: 0.2rem;
+  border-top-right-radius: 0.2rem;
+}
+
+.schedule-container .shift .block span {
+  font-size: 0.8rem;
+  overflow: clip;
+  white-space: nowrap;
+}
+
+.schedule-container .shift .block span.activity-name {
+  font-weight: bold;
+}
+
+.schedule-container .shift .block > span {
+  visibility: hidden;
+}
+
+.schedule-container .shift .block .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -60px;
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+.schedule-container .shift .block .tooltiptext span {
+  white-space: unset;
+}
+
+.schedule-container .shift .block:hover .tooltiptext {
+  visibility: visible;
+}
+
 @media only screen and (min-width: 700px) {
   .container {
     -webkit-box-orient: horizontal;
@@ -621,6 +753,13 @@ footer div a {
         -ms-flex-direction: column;
             flex-direction: column;
   }
+  .container.schedule-overview {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    margin-bottom: 2rem;
+  }
   queue-card {
     -ms-flex-preferred-size: 34%;
         flex-basis: 34%;
@@ -631,6 +770,12 @@ footer div a {
   footer div {
     display: block;
     color: #fff;
+  }
+  .schedule-container .shift .block > span {
+    visibility: visible;
+  }
+  .schedule-container .shift .block.extra-small > span {
+    visibility: hidden;
   }
 }
 

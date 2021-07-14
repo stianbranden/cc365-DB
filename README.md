@@ -45,6 +45,16 @@ AUTH_URL = *Sinch AUTH URL, not used if USENEWAUTH*
 
 BASE_URL = *Sinch BASE URL, not used if USENEWAUTH*
 
+TABLEAU_SERVER = *Tableau server URL for trusted auth*
+
+TABLEAU_SITE = *Tableau site*
+
+TELEOPTI_ACCESS_TOKEN = *Teleopti access token*
+
+TELEOPTI_URL = *Teleopti API URL*
+
+TELEOPTI_UPDATE_FREQUENCY = *How often to run schedule change query*
+
 Alternatively these parameters can be set to enviranmental variables
 
 

@@ -7,46 +7,48 @@ const BusinessUnit = require('../models/BusinessUnit');
 const Team = require('../models/Team');
 const Agent = require('../models/Agent');
 const Schedule = require('../models/Schedule');
-const {getAgentWithId, getAllBusinessUnits, getTeams, getAgents} = require('./getTeleoptiData');
+const {logStd, logErr} = require('./logger')
+const {getAgentWithId, getAllBusinessUnits, getTeams, getAgents, getBusinessUnit} = require('./getTeleoptiData');
 
-const {getBusinessUnits, getAllTeamsWithAgents, getPeopleByTeamId, getSchedulesByPersonIds, getScheduleByTeamId, getUpdatedSchedules} = require('./config');
+const {getBusinessUnits, getAllTeamsWithAgents, getPeopleByTeamId, getSchedulesByPersonIds, getScheduleByTeamId, getUpdatedSchedules, getPersonById, getTeamById} = require('./config');
 
-const runScheduleUpdate = async _ =>{
+const runScheduleUpdate = _ =>{
+    return new Promise(async (resolve, reject)=>{
     try {
-        
         const businessUnits = await getAllBusinessUnits();
-        new Promise(async (resolve, reject)=>{
-            let updatedSchedules = [];
-            for ( let j = 0; j < businessUnits.length; j++){
-                const unit = businessUnits[j];
-                const now = moment().format();
-                console.log(`${now} - running ${unit.name}`);
-                let query = updateGetUpdatedSchedulesQuery(getUpdatedSchedules, unit, 1, 100, now );
-                let results = JSON.parse(await request(query))["Result"][0];
-                updatedSchedules = [...updatedSchedules, ...results["Schedules"]];
-                if ( results["TotalPages"] > 1 ){
-                    for ( let i = 2; i <= results["TotalPages"]; i++ ){
-                        query = updateGetUpdatedSchedulesQuery(getUpdatedSchedules, unit, i, 100, now );
-                        updatedSchedules = [...updatedSchedules, ...JSON.parse(await request(query))["Result"][0]["Schedules"]]
-                    }
+        let updatedSchedules = [];
+        for ( let j = 0; j < businessUnits.length; j++){
+            const unit = businessUnits[j];
+            const now = moment().format();
+            //logStd(`Running ${unit.name} page 1`);
+            let query = updateGetUpdatedSchedulesQuery(getUpdatedSchedules, unit, 1, 100, now );
+            let results = JSON.parse(await request(query))["Result"][0];
+            //logStd(results)
+            updatedSchedules = [...updatedSchedules, ...results["Schedules"]];
+            if ( results["TotalPages"] > 1 ){
+                logStd(`Running ${unit.name} total of ${results["TotalPages"]} pages`);
+                for ( let i = 2; i <= results["TotalPages"]; i++ ){
+                    query = updateGetUpdatedSchedulesQuery(getUpdatedSchedules, unit, i, 100, now );
+                    updatedSchedules = [...updatedSchedules, ...JSON.parse(await request(query))["Result"][0]["Schedules"]]
                 }
-                //unit.lastScheduleUpdateTime = Date(now);
-                //await unit.save();
-            };
-            console.log('Lenght: ' + updatedSchedules.length);
-            resolve(updatedSchedules);
-        }).then(updatedSchedules=>{
-            asyncForEach(updatedSchedules, schedule=>{
-                console.log('Updating');
-                updateOrCreateSchedule(schedule);
-            });
-            console.log('Updated schedules: ' + updatedSchedules.length);
-        });
+            }
+            unit.lastScheduleUpdateTime = Date(now);
+            await unit.save();
+        };
+        logStd(`Number of updated schedules: ${updatedSchedules.length}`);
+
+        let newSchedules = []
+        for ( let i = 0; i < updatedSchedules.length; i++){
+            let schedule = updatedSchedules[i];
+            newSchedules.push(await updateOrCreateSchedule(schedule));
+        }
         
+        resolve(newSchedules);
         
     } catch (error) {
-        console.log(error);
-    }
+        reject(error);
+        //logErr(error, false);
+    }})
 }
 
 const updateGetUpdatedSchedulesQuery = (query, unit, page = 1, pageSize = 10, now)=>{
@@ -61,91 +63,149 @@ const updateGetUpdatedSchedulesQuery = (query, unit, page = 1, pageSize = 10, no
 }
 
 const getTodaysTeleoptiData = async (options = {
-    dropScheduleCollection: false
-})=>{
-
-    try { //Dropping what needs to be dropped
-        if (options.dropScheduleCollection){
-            await mongoose.connection.dropCollection('schedules')
-            console.log('Schedule collection dropped');
-        }
-    } catch (error) {
-        if (error.codeName === 'NamespaceNotFound'){
-            console.log('Could not find collection to drop');
-        }
-        else {
-            console.log('Error found: ' + error.codeName);
-        }
-    }
-
-    try {
-        
-        const units = JSON.parse(await request(getBusinessUnits))["Result"]
-        asyncForEach(units, async unit=>{
-            if (unit.Name != 'Default'){
-                const businessUnit = await updateOrCreateBusinessUnit(unit);
-                const teamsQuery = updateGetTeamQuery(getAllTeamsWithAgents, businessUnit);
-                const teams = JSON.parse(await request(teamsQuery))["Result"];
-                asyncForEach(teams, async t =>{
-                    const team = await updateOrCreateTeam(t, businessUnit);
-                    const peopleQuery = updateGetPeopleQuery(getPeopleByTeamId, team);
-                    const people = JSON.parse(await request(peopleQuery))["Result"];
-                    //console.log(people);
-                    asyncForEach(people, async person=>{
-                        //console.log('Trying ' + person.DisplayName);
-                        const agent = await updateOrCreateAgent(person, team);
-                    });
-                    const scheduleQuery = updateGetScheduleByTeamId(getScheduleByTeamId, team);
-                    const rawSchedules = JSON.parse(await request(scheduleQuery))["Result"];
-                    asyncForEach(rawSchedules, async personDay=>{
-                        for (let i = 0; i < personDay.Shift.length; i++){
-                            let shift = personDay.Shift[i];
-                            shift.StartTime = shift.Period.StartTime;
-                            shift.EndTime = shift.Period.EndTime;
-                        }
-                        updateOrCreateSchedule(personDay);
-                    });
-                });
+        dropScheduleCollection: false
+    })=>{
+    return new Promise(async (resolve, reject)=>{
+        try { //Dropping what needs to be dropped
+            if (options.dropScheduleCollection){
+                await mongoose.connection.dropCollection('schedules')
+                logStd('Schedule collection dropped');
             }
-        });
-    } catch (error) {
-        console.log(error);
-    } finally {
-        if (process.env.NODE_ENV != 'Production' ){
-            getAllBusinessUnits().then(units=> console.log(`Number of Business units in storage: ${units.length}`));
-            getTeams().then(teams=> console.log(`Number of teams in storage: ${teams.length}`));
-            getAgents().then(agents=>console.log(`Number of agents in storage: ${agents.length}`));
+        } catch (error) {
+            if (error.codeName === 'NamespaceNotFound'){
+                logStd('Could not find collection to drop');
+            }
+            else {
+                logErr('Error found: ' + error.codeName);
+            }
         }
-    }
+    
+        try {
+            
+            const units = JSON.parse(await request(getBusinessUnits))["Result"]
+            let schedulePromises = [];
+            for ( let m = 0; m < units.length; m++){
+                let unit = units[m]
+                if (unit.Name != 'Default'){
+                    const businessUnit = await updateOrCreateBusinessUnit(unit);
+                    const teamsQuery = updateGetTeamQuery(getAllTeamsWithAgents, businessUnit);
+                    const teams = JSON.parse(await request(teamsQuery))["Result"];
+                    
+                    for (let l = 0; l < teams.length; l++){
+                        let t = teams[l];
+                        const team = await updateOrCreateTeam(t, businessUnit);
+                        const peopleQuery = updateGetPeopleQuery(getPeopleByTeamId, team);
+                        const people = JSON.parse(await request(peopleQuery))["Result"];
+                        for ( let j = 0; j < people.length; j++){
+                            let person = people[j]
+                            const agent = await updateOrCreateAgent(person, team);
+                        };
+                        const scheduleQuery = updateGetScheduleByTeamId(getScheduleByTeamId, team);
+                        const rawSchedules = JSON.parse(await request(scheduleQuery))["Result"];
+                        schedulePromises = [...schedulePromises, ...rawSchedules.map(personDay=>updateOrCreateSchedule(personDay))];
+                    };
+                    
+                }
+            };
+            Promise.allSettled(schedulePromises)
+            .then(data=>{
+                resolve({status: 'completed'})
+            })
+            .catch(err=>{logErr(err)});
+            /*resolve({
+                status: 'Completed'
+            });*/
+        } catch (error) {
+            reject(error);
+            logErr(error);
+        } finally {
+            getAllBusinessUnits().then(units=> logStd(`Number of Business units in storage: ${units.length}`));
+            getTeams().then(teams=> logStd(`Number of teams in storage: ${teams.length}`));
+            getAgents().then(agents=>logStd(`Number of agents in storage: ${agents.length}`));
+        }
+    })
+
 
     
 }
 
-const updateOrCreateSchedule = async (personDay)=>{
-    try {
-        const agent = await getAgentWithId(personDay.PersonId);
-        //console.log({agent});
-        let schedule = await Schedule.findOne({agentId: personDay.PersonId, date: personDay.Date});
-        if (schedule){
-
-            schedule = await Schedule.findByIdAndUpdate(schedule._id, {
-                ...createScheduleObject(personDay, agent),
-                agent
-            }, {new: true});
-            
-            //await schedule.save();
-        } else {
-            schedule = await Schedule.create({
-                agentId: personDay.PersonId,
-                date: personDay.Date,
-                ...createScheduleObject(personDay, agent),
-                agent
-            });
+const getSingleTeam = (teamId, businessUnitId)=>{
+    return new Promise(async (resolve, reject)=>{
+        try {
+            const team = await request({
+                ...getTeamById,
+                body: JSON.stringify({
+                    BusinessUnitId: businessUnitId,
+                    Id: teamId
+                })
+            })["Result"][0];
+            if (!team){
+                reject('Team not found')
+            }else{
+                const savedTeam = await updateOrCreateTeam(team, await getBusinessUnit(businessUnitId));
+                resolve(savedTeam);
+            }
+        } catch (error) {
+            logErr(error);
+            reject('Team not found');
         }
-    } catch (error) {
-        console.log(`Failed on ${personDay.PersonId} @ ${personDay.Date}`);
-        console.log(error);
-    }
+    });
+}
+
+const getSingleAgent = (agentId, date = moment().format('YYYY-MM-DD')) =>{
+    return new Promise(async (resolve, reject)=>{
+        try {
+            const person = await request({
+                ...getPersonById, body: JSON.stringify({
+                    PersonId: agentId,
+                    Date: date
+                })
+            });
+            if (person){
+                let team = await Team.findOne({teamId: person.TeamId});
+                if ( !team ){
+                    team = await getSingleTeam(person.TeamId, person.BusinessUnitId)
+                }
+                resolve(await updateOrCreateAgent(person, team));
+            } else {
+                reject('No agent found')
+            }
+        } catch (error) {
+            logErr('Failed to get user: ' + agentId);
+            reject (error);
+        }
+    });
+}
+
+const updateOrCreateSchedule = (personDay)=>{
+    return new Promise(async (resolve, reject)=>{
+        try {
+            let agent = await getAgentWithId(personDay.PersonId);
+            if (!agent){
+                agent = await getSingleAgent(personDay.PersonId, personDay.Date)
+            }
+            let schedule = await Schedule.findOne({agentId: personDay.PersonId, date: personDay.Date});
+            if (schedule){
+    
+                schedule = await Schedule.findByIdAndUpdate(schedule._id, {
+                    ...createScheduleObject(personDay, agent),
+                    agent
+                }, {new: true});
+                
+            } else {
+                schedule = await Schedule.create({
+                    agentId: personDay.PersonId,
+                    date: personDay.Date,
+                    ...createScheduleObject(personDay, agent),
+                    agent
+                });
+            }
+            resolve(schedule);
+        } catch (error) {
+            logErr(`Failed on ${personDay.PersonId} @ ${personDay.Date}`);
+            reject(error);
+        }
+    })
 }
 
 const createScheduleObject = (personDay, agent) =>{
@@ -163,20 +223,21 @@ const createScheduleObject = (personDay, agent) =>{
         scheduleObject.shift = [];
         for (let i = 0; i < personDay.Shift.length; i++){
             let s = personDay.Shift[i];
-            const {StartTime, EndTime} = s;
-            let lengthOfShift = -moment(s.StartTime).diff(moment(s.EndTime), 'minutes');
+            const {StartTime, EndTime} = s["Period"];
+            let lengthOfShift = -moment(StartTime).diff(moment(EndTime), 'minutes');
+            let offset = moment(StartTime).hour()*60 + moment(StartTime).minute()
             let obj = {
                 name: s.Name,
                 activityId: s.ActivityId,
                 absenceId: s.AbsenceId,
                 displayColorHex: s.DisplayColorHex,
                 overtime: s.Overtime,
-                startTime: moment(s.StartTime).tz(agent.timeZone).format(),
-                endTime: moment(s.EndTime).tz(agent.timeZone).format(),
-                lengthOfShift
+                startTime: moment(StartTime).tz(agent.timeZone).format(),
+                endTime: moment(EndTime).tz(agent.timeZone).format(),
+                lengthOfShift,
+                offset
             }
             scheduleObject.shift.push(obj)
-            //console.log(scheduleObject.shift);
         }
     }
     return scheduleObject;
@@ -193,11 +254,9 @@ const updateGetScheduleByTeamId = (query, team, date = moment().format('YYYY-MM-
     });
     return query;
 }
-//60d9e611ef5a581a88aa3289
 
 const updateGetScheduleByIdsQuery = (query, agents, date = moment().format('YYYY-MM-DD'))=>{
     let agentIds = [];
-    //console.log(agents);
     agents.forEach(agent=>{
         agentIds.push(agent.personId);
     });
@@ -211,51 +270,56 @@ const updateGetScheduleByIdsQuery = (query, agents, date = moment().format('YYYY
     return query;
 }
 
-const updateOrCreateAgent = async (person, team)=>{
-    try {
-        let agent = await Agent.findById(person.Id);
-        let countryAbbr = 'NO';
-        switch(team.businessUnitName) {
-            case 'Denmark': 
-                countryAbbr = 'DK'
-                break;
-            case 'Finland': 
-                countryAbbr =  'FI' 
-                break;
-        } 
-        const timeZone = moment.tz.zonesForCountry(countryAbbr||'NO')[0];
-        //console.log(timeZone);
-        if (agent){
-            agent = await Agent.findByIdAndUpdate(person.Id, {
-                email: person.Email || 'hasnoemail@elkjop.no',
-                displayName: person.DisplayName,
-                businessUnitName: team.businessUnitName,
-                businessUnitId: team.businessUnitId,
-                departmentName: team.departmentName,
-                teamName: team.name,
-                teamId: team.teamId,
-                timeZone
-            }, {new: true})
-            
+const updateOrCreateAgent = (person, team)=>{
+
+    return new Promise(async (resolve, reject)=>{
+        try {
+            let agent = await Agent.findById(person.Id);
+
+            let countryAbbr = 'NO';
+
+            switch(team.businessUnitName) {
+                case 'Denmark': 
+                    countryAbbr = 'DK'
+                    break;
+                case 'Finland': 
+                    countryAbbr =  'FI' 
+                    break;
+            } 
+            const timeZone = moment.tz.zonesForCountry(countryAbbr||'NO')[0];
+            if (agent){
+                agent = await Agent.findByIdAndUpdate(person.Id, {
+                    email: person.Email || 'hasnoemail@elkjop.no',
+                    displayName: person.DisplayName,
+                    businessUnitName: team.businessUnitName,
+                    businessUnitId: team.businessUnitId,
+                    departmentName: team.departmentName,
+                    teamName: team.name,
+                    teamId: team.teamId,
+                    timeZone
+                }, {new: true})
+                
+            }
+            else {
+                agent = await Agent.create({
+                    displayName: person.DisplayName,
+                    _id: person.Id,
+                    email: person.Email || 'hasnoemail@elkjop.no',
+                    businessUnitName: team.businessUnitName,
+                    businessUnitId: team.businessUnitId,
+                    departmentName: team.departmentName,
+                    teamName: team.name,
+                    teamId: team.teamId,
+                    timeZone
+                });
+            }
+            resolve(agent);
+        } catch (error) {
+            logErr('Error on ' + person.DisplayName);
+            reject(error);
         }
-        else {
-            agent = await Agent.create({
-                displayName: person.DisplayName,
-                _id: person.Id,
-                email: person.Email || 'hasnoemail@elkjop.no',
-                businessUnitName: team.businessUnitName,
-                businessUnitId: team.businessUnitId,
-                departmentName: team.departmentName,
-                teamName: team.name,
-                teamId: team.teamId,
-                timeZone
-            });
-        }
-        return agent;
-    } catch (error) {
-        console.log('Error on ' + person.DisplayName);
-        console.log(error);
-    }
+    })
+    
     
 }
 
@@ -282,6 +346,9 @@ const updateOrCreateBusinessUnit = async teleoptiUnit => {
     let businessUnit = await BusinessUnit.findOne({'businessUnitId': teleoptiUnit.Id});
     if (businessUnit){
         businessUnit.name = teleoptiUnit.Name;
+        businessUnit.lastScheduleUpdateTime = Date.now();
+
+
         await businessUnit.save();
     }
     else {

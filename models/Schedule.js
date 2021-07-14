@@ -12,7 +12,11 @@ const ShiftSchema = new mongoose.Schema({
     lengthOfShift: {
       type: Number,
       required: true
-    } 
+    },
+    offset: {
+      type: Number,
+      required: true
+    }
 });
 
 const ScheduleSchema = new mongoose.Schema({
@@ -35,7 +39,7 @@ const ScheduleSchema = new mongoose.Schema({
       required: true,
       type: Date,
       default: Date.now,
-      index: {expires: '1d'}
+      index: {expires: '3d'}
     }
 }, {timestamps: true});
 

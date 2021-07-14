@@ -158,6 +158,22 @@ const teleoptiRequests = {
             'Authorization': 'Bearer ' + TELEOPTI_ACCESS_TOKEN,
             'Accept': 'application/json'
         }
+    },
+    getPersonById: {
+        method: 'POST',
+        url: TELEOPTI_URL + '/query/Person/PersonById',
+        headers: {
+            'Authorization': 'Bearer ' + TELEOPTI_ACCESS_TOKEN,
+            'Accept': 'application/json'
+        }
+    },
+    getTeamById: {
+        method: 'POST',
+        url: TELEOPTI_URL + '/query/Team/TeamById',
+        headers: {
+            'Authorization': 'Bearer ' + TELEOPTI_ACCESS_TOKEN,
+            'Accept': 'application/json'
+        }
     }
     
     
