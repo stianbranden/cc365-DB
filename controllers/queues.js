@@ -1,22 +1,23 @@
-require('dotenv').config();
+//require('dotenv').config();
 const {BASE64, NODE_ENV, USENEWAUTH, RUNRAI} = process.env;
 const {authQuery, queueStatusQuery, queueQuery, queueStatusQueryLive, contactsQuery, singleContactQuery} = require('./config')
 const {raiContactStatsToday} = require('./rai');
 const {logStd, logSys, logErr} = require('./logger')
+const Config = require('../models/Config');
 
 
 const request = require('request-promise').defaults({jar: true})
 const req = require('request').defaults({jar: true});
 const moment = require('moment');
-const fs = require('fs');
+//const fs = require('fs');
 
-const queueMap = {
+/*const queueMap = {
     updated: moment().subtract(1,'d'),
     map: {
 
     },
     queues: {}
-}
+}*/
 
 const data = {
 
@@ -30,54 +31,73 @@ function getQueues(authenticated, runCount){
         try {
             let a = moment();
             if (!authenticated){ //If not authenticated, then authenticate
-                //let buff = new Buffer(`${USER}:${PASS}`);
-                //let base64data = buff.toString('base64');
-                //let base64data = encode.encode(`${USER}:${PASS}`, 'base64');
-                //authQuery.body = 'Authorization=Basic ' + BASE64;
                 if (USENEWAUTH==='true'){
                     logSys(`Running x-api authentication`);
                 } else {
-                    let resp = JSON.parse(await request(authQuery));
+                    JSON.parse(await request(authQuery));
                 }
                 authenticated = true;
             }
-            if ( moment().date() != queueMap.updated.date() ){
-                queueMap.map = {};
-                queueMap.queues = {};
+            let queueMap = await Config.findOne({name: 'queueMap'});
+
+            let fetchQueueMap = false;
+            if ( !queueMap ) {
+                queueMap = await Config.create({
+                    name: 'queueMap',
+                    data: JSON.stringify({
+                        definition: ['map', 'queues'],
+                        map: {sample: 1},
+                        queues: {sample: 2}
+                    })
+                });
+                fetchQueueMap = true;
+
+            } else if (moment().date() != moment(queueMap.updatedAt).date()){
+                fetchQueueMap = true;
+            } 
+            else if (Object.keys(queueMap.data.map).length === 0 || Object.keys(queueMap.data.queues).length === 0){
+                fetchQueueMap = true;
+            }
+
+            if (fetchQueueMap){
+                logSys('Fetching new QueueMaps')
+                queueMap_map = {};
+                queueMap_queues = {};
                 let queues = JSON.parse(await request(queueQuery));
-                //fs.writeFileSync('./tmp/queue.json', JSON.stringify(queues), 'utf8')
-                queueMap.updated = moment();
+                //queueMap.updated = moment();
                 logStd(`Queues found: ${queues.length}`);
     
-                queues.forEach(q=>{
-                    if (typeof queueMap.map[q.description] === 'undefined' && q.description != null && q.description.length < 15 ){
-                        queueMap.map[q.description] = [q.id]
-                        queueMap.queues[q.id] = q.description;
+                for (q of queues){
+                    if (typeof queueMap_map[q.description] === 'undefined' && q.description != null && q.description.length < 15 ){
+                        queueMap_map[q.description] = [q.id]
+                        queueMap_queues[q.id] = q.description;
+                        
                     }
                     else if (q.description != null && q.description.length < 15) {
-                        queueMap.map[q.description].push(q.id)
-                        queueMap.queues[q.id] = q.description;
+                        queueMap_map[q.description].push(q.id)
+                        queueMap_queues[q.id] = q.description;
                     }
-                });
-                logStd(`QueueMap length: ${Object.keys(queueMap.map).length}`);             
-    
-                
+                };
+
+                queueMap = await Config.findOneAndUpdate({'name': 'queueMap'}, {data: {map: queueMap_map, queues: queueMap_queues}}, {new: true});
                 
             }
+            logStd(`QueueMap length: ${Object.keys(queueMap.data.map).length}`);     
             let queueStatus;
+            //const data = {}
             if ( runCount === 1 ){
                 //Get queue status all queues
                 queueStatus = JSON.parse(await request(queueStatusQuery));
                 data.queueStatus = queueStatus;
                 data.queueStatus.forEach(q=>{
-                    q.group = queueMap.queues[q.id];
+                    q.group = queueMap.data.queues[q.id];
                 })
     
                 if (RUNRAI === 'true'){
                     let rai = await raiContactStatsToday();
                     data.queueStats = rai;
                     data.queueStats.forEach(q=>{
-                        q.group = queueMap.queues[q.queueId];
+                        q.group = queueMap.data.queues[q.queueId];
                     });
     
                 }
@@ -88,7 +108,7 @@ function getQueues(authenticated, runCount){
                 queueStatus.forEach(qs=>{
                     data.queueStatus.forEach((dqs, i)=>{
                         if ( qs.id === dqs.id ){
-                            qs.group = queueMap.queues[qs.id]
+                            qs.group = queueMap.data.queues[qs.id]
                             data.queueStatus.splice(i,1,qs);
                         }
                     });
@@ -148,7 +168,7 @@ function getContactsWithLimit(req, offset, min, max){
         logStd(`${offset} run with ${b.length}`);
         
         if ( b.length > 0){
-            fs.writeFileSync(`./test${offset}.json`, JSON.stringify(b), 'utf8');
+            //fs.writeFileSync(`./test${offset}.json`, JSON.stringify(b), 'utf8');
             b.forEach(c=>{
                 if ( typeof c.arrivalQueueTime != 'undefined' && c.queueName === 'Delivery (DK)'){
                     let q = moment(c.arrivalQueueTime).format();
