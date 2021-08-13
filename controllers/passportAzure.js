@@ -13,12 +13,14 @@ module.exports = function (passport) {
         clientID: AZURE_CLIENTID,
         clientSecret: AZURE_CLIENTSECRET,
         callbackURL: '/auth/redirect',
+        resource: '00000003-0000-0000-c000-000000000000'
     },
     async (accessToken, refreshToken, params, provider, done) => {
         const profile = jwt.decode(accessToken);
         if (NODE_ENV !== 'production'){
             console.log({
-                jwt: jwt.decode(accessToken)
+                jwt: jwt.decode(accessToken),
+                accessToken
             });
         }
         try {
