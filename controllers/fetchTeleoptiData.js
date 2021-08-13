@@ -7,7 +7,7 @@ const BusinessUnit = require('../models/BusinessUnit');
 const Team = require('../models/Team');
 const Agent = require('../models/Agent');
 const Schedule = require('../models/Schedule');
-const {logStd, logErr} = require('./logger')
+const {logStd, logErr, logSys} = require('./logger')
 const {getAgentWithId, getAllBusinessUnits, getTeams, getAgents, getBusinessUnit} = require('./getTeleoptiData');
 
 const {getBusinessUnits, getAllTeamsWithAgents, getPeopleByTeamId, getSchedulesByPersonIds, getScheduleByTeamId, getUpdatedSchedules, getPersonById, getTeamById} = require('./config');
@@ -132,22 +132,23 @@ const getTodaysTeleoptiData = async (options = {
 const getSingleTeam = (teamId, businessUnitId)=>{
     return new Promise(async (resolve, reject)=>{
         try {
-            const team = await request({
+            const res = await request({
                 ...getTeamById,
                 body: JSON.stringify({
                     BusinessUnitId: businessUnitId,
                     Id: teamId
                 })
-            })["Result"][0];
+            });
+            const team = res["Result"][0];
             if (!team){
-                reject('Team not found')
+                reject(`Team not found, team ${teamId}, buId ${businessUnitId}`)
             }else{
                 const savedTeam = await updateOrCreateTeam(team, await getBusinessUnit(businessUnitId));
                 resolve(savedTeam);
             }
         } catch (error) {
             logErr(error);
-            reject('Team not found');
+            reject(`Something went wrong with GetSingelTeam, team ${teamId}, buId ${businessUnitId}`)
         }
     });
 }
@@ -155,23 +156,35 @@ const getSingleTeam = (teamId, businessUnitId)=>{
 const getSingleAgent = (agentId, date = moment().format('YYYY-MM-DD')) =>{
     return new Promise(async (resolve, reject)=>{
         try {
-            const person = await request({
+            const res = await request({
                 ...getPersonById, body: JSON.stringify({
                     PersonId: agentId,
                     Date: date
                 })
             });
-            if (person){
-                let team = await Team.findOne({teamId: person.TeamId});
-                if ( !team ){
-                    team = await getSingleTeam(person.TeamId, person.BusinessUnitId)
+            if ( !res["Result"] ){
+                logErr(JSON.stringify(res));
+                logErr(res.result);
+                logErr(Object.keys(res));
+                reject ('Agent returned from GetPersonById did not contain a Result node');
+            }
+            else {
+                const person = res["Result"][0];
+                if ( person ){
+                    let team = await Team.findOne({teamId: person.TeamId});
+                    if ( !team ){
+                        logSys(`Fetching one team with ID ${person.TeamId} and buid ${person.BusinessUnitId}`)
+                        logSys(`${person}`)
+                        team = await getSingleTeam(person.TeamId, person.BusinessUnitId)
+                    }
+                    resolve(await updateOrCreateAgent(person, team));
                 }
-                resolve(await updateOrCreateAgent(person, team));
-            } else {
-                reject('No agent found')
+                else {
+                    reject(`No agent found with id ${agentId} and date ${date}`)
+                }
             }
         } catch (error) {
-            logErr('Failed to get user: ' + agentId);
+            logErr(`Failed to get user: ${agentId} and date ${date}`);
             reject (error);
         }
     });

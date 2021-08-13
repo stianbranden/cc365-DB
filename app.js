@@ -147,26 +147,6 @@ function updateIntervalData(key, data){
     intervals[key].data = data;
 }
 
-function run(auth, i){
-    //getSingleContact('4599557514');
-    //getContacts();
-    
-    getQueues(auth, i).then(data=>{
-        //Do stuff with the data
-        //console.log(data);
-
-        updateQueues(data);
-        setTimeout(()=>{
-            run(true, data.runCount); //Redo fecth after 10 sec, incrementing runCount
-        }, queueUpdateFrequency)
-    }).catch(err=>{
-        logErr('An error has happened', err);
-        setTimeout(()=>{
-            run(false, 0); //If something is going wrong then restart after 60 sec
-        }, queueUpdateFrequency*6)
-    });
-}
-
 server.listen(process.env.PORT, ()=>{
     logSys(`Server listening on port ${process.env.PORT}`);
 
@@ -181,7 +161,7 @@ server.listen(process.env.PORT, ()=>{
     //Start up Teleopti data fetching
     getTodaysTeleoptiData({dropScheduleCollection: false}).then(_=>startInterval('scheduleUpdate'));
     
-    cron.schedule('0 0 * * * *', _=>{ //Getting data at 03:00 each night
+    cron.schedule('0 0 3 * * *', _=>{ //Getting data at 03:00 each night
         stopInterval('scheduleUpdate');
         logSys('Running daily read of Teleopti data');
         getTodaysTeleoptiData({dropScheduleCollection: true}).then(_=>{
@@ -250,6 +230,7 @@ let dataToUsers = {
 }
 
 function updateQueues({data, queueMap}){
+    queueMap = queueMap.data;
     let missingGroups = []
     let nordic = {}
     Object.keys(units).forEach(unit=>{        
@@ -318,11 +299,6 @@ function updateQueues({data, queueMap}){
     });
     io.in('nordic').emit('updateStats', nordicStats);
     dataToUsers.dailyStats.nordic = nordicStats;
-    //io.in('denmark').emit('agentStatus', agentStatus);
-    //io.in('denmark').emit('agentStatus', queueMap);
     logStd(`Number of missing groups: ${missingGroups.length}`);
-
-    
-    
     
 }
