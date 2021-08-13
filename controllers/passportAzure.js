@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const User = require('../models/User')
 
-const {AZURE_CLIENTID, AZURE_CLIENTSECRET, NODE_ENV} = process.env;
+const {AZURE_CLIENTID, AZURE_CLIENTSECRET, NODE_ENV,HOST_URL} = process.env;
 const {getAgentWithEmail} = require('./getTeleoptiData');
 const {getUserById} = require('./getUserData');
 
@@ -12,7 +12,7 @@ module.exports = function (passport) {
     new AzureStrategy({
         clientID: AZURE_CLIENTID,
         clientSecret: AZURE_CLIENTSECRET,
-        callbackURL: '/auth/redirect',
+        callbackURL: HOST_URL + '/auth/redirect',
         resource: '00000003-0000-0000-c000-000000000000'
     },
     async (accessToken, refreshToken, params, provider, done) => {

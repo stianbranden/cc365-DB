@@ -38,6 +38,7 @@ const mongoConnection = connectDB();
 // Passport config
 require('./controllers/passportAzure')(passport)
 
+//Middleware to take care of load balancer requests
 app.use(require('./middleware/loadbalancer'));
 
 // Sessions
@@ -64,7 +65,7 @@ app.use(function (req, res, next) {
 app.use(express.static('public'));
 
 //Logging middleware
-if (process.env.NODE_ENV !== 'production'){
+if (NODE_ENV !== 'production'){
     app.use(morgan('common'));
 }
 
