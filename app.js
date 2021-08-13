@@ -38,6 +38,7 @@ const mongoConnection = connectDB();
 // Passport config
 require('./controllers/passportAzure')(passport)
 
+app.use(require('./middleware/loadbalancer'));
 
 // Sessions
 const sessionMiddleware = session({
