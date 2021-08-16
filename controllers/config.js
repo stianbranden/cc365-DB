@@ -180,6 +180,23 @@ const teleoptiRequests = {
     
 }
 
+const graphApi = {
+    getPhoto: {
+        method: 'GET',
+        url: 'https://graph.microsoft.com/v1.0/me/photos/96x96/$value',
+        headers: {
+            
+        }
+    },
+    getProfileData: {
+        method: 'GET',
+        url: 'https://graph.microsoft.com/v1.0/me?$select=displayName,state,jobtitle',
+        headers: {
+            'Accept': 'application/json'
+        }
+    }
+}
+
 if (USEPROXY==="true"){
     Object.keys(queries).forEach(key=>{
         queries[key].proxy = PROXY;
@@ -191,6 +208,9 @@ if (USEPROXY==="true"){
     Object.keys(teleoptiRequests).forEach(key=>{
         teleoptiRequests[key].proxy = PROXY;
     });
+    Object.keys(graphApi).forEach(key=>{
+        graphApi[key].proxy = PROXY;
+    });
 }
 
 queries.kindly = kindly;
@@ -198,6 +218,9 @@ queries.tableauTicketRequest = tableauTicketRequest;
 
 Object.keys(teleoptiRequests).forEach(key=>{
     queries[key] = teleoptiRequests[key];
+});
+Object.keys(graphApi).forEach(key=>{
+    queries[key] = graphApi[key];
 });
 
 module.exports = queries

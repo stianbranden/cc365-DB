@@ -11,6 +11,15 @@ const UserSchema = new mongoose.Schema({
     agentId: {
         type: String
     },
+    photo: {
+        type: String
+    },
+    role: {
+        type: String
+    },
+    title: {
+        type: String
+    },
     first_login: {
         required: true,
         type: Date,

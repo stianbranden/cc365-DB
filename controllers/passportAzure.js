@@ -2,10 +2,13 @@ const AzureStrategy = require('passport-azure-ad-oauth2').Strategy
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const User = require('../models/User')
+const request = require('request-promise');
 
 const {AZURE_CLIENTID, AZURE_CLIENTSECRET, NODE_ENV,HOST_URL} = process.env;
 const {getAgentWithEmail} = require('./getTeleoptiData');
 const {getUserById} = require('./getUserData');
+
+const {getPhoto, getProfileData} = require('./config');
 
 module.exports = function (passport) {
   passport.use(
@@ -24,6 +27,15 @@ module.exports = function (passport) {
             });
         }
         try {
+            const photoQuery = {...getPhoto};
+            photoQuery.headers["Authorization"] = 'Bearer ' + accessToken;
+            const photo = Buffer.from(await request(photoQuery)).toString('base64');
+            profile.photo = photo;
+            const profileQuery = {...getProfileData}
+            profileQuery.headers["Authorization"] = 'Bearer ' + accessToken;
+            const graphProfile = JSON.parse(await request(profileQuery));
+            const {state, jobTitle} = graphProfile;
+            console.log({graphProfile});
             let agent = await getAgentWithEmail(profile.upn);
             console.log(agent);
             let agentId = null;
@@ -36,7 +48,10 @@ module.exports = function (passport) {
                 //Update user
               user = await User.findByIdAndUpdate(profile.upn, {
                 last_login: Date.now(),
-                agentId
+                agentId,
+                photo,
+                role: state,
+                title: jobTitle,
               }, {new: true})
             }
             else {
@@ -44,6 +59,9 @@ module.exports = function (passport) {
                     _id: profile.upn,
                     name: profile.name,
                     agentId,
+                    photo,
+                    role: state,
+                    title: jobTitle,
                     given_name: profile.given_name,
                     family_name: profile.family_name
                 });
