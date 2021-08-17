@@ -238,7 +238,7 @@ const createScheduleObject = (personDay, agent) =>{
             let s = personDay.Shift[i];
             const {StartTime, EndTime} = s["Period"];
             let lengthOfShift = -moment(StartTime).diff(moment(EndTime), 'minutes');
-            let offset = moment(StartTime).hour()*60 + moment(StartTime).minute()
+            let offset = moment(StartTime).tz(agent.timeZone).hour()*60 + moment(StartTime).minute()
             let obj = {
                 name: s.Name,
                 activityId: s.ActivityId,
