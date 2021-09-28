@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+const SkillSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: false
+  }
+})
+
 const AgentSchema = new mongoose.Schema({
     _id: {
       type: String,
@@ -33,7 +40,8 @@ const AgentSchema = new mongoose.Schema({
       type: String,
       required: true,
       default: 'Europe/Oslo'
-    }
+    },
+    skills: [String]
 });
 
 module.exports = mongoose.model('Agent', AgentSchema);

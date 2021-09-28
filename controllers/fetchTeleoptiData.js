@@ -7,10 +7,11 @@ const BusinessUnit = require('../models/BusinessUnit');
 const Team = require('../models/Team');
 const Agent = require('../models/Agent');
 const Schedule = require('../models/Schedule');
+const Skill = require('../models/Skill');
 const {logStd, logErr, logSys} = require('./logger')
-const {getAgentWithId, getAllBusinessUnits, getTeams, getAgents, getBusinessUnit} = require('./getTeleoptiData');
+const {getAgentWithId, getAllBusinessUnits, getTeams, getAgents, getBusinessUnit, getSkillById} = require('./getTeleoptiData');
 
-const {getBusinessUnits, getAllTeamsWithAgents, getPeopleByTeamId, getSchedulesByPersonIds, getScheduleByTeamId, getUpdatedSchedules, getPersonById, getTeamById} = require('./config');
+const {getBusinessUnits, getAllTeamsWithAgents, getPeopleByTeamId, getSchedulesByPersonIds, getScheduleByTeamId, getUpdatedSchedules, getPersonById, getTeamById, getSkillsByUnit} = require('./config');
 
 const runScheduleUpdate = _ =>{
     return new Promise(async (resolve, reject)=>{
@@ -88,6 +89,12 @@ const getTodaysTeleoptiData = async (options = {
                 let unit = units[m]
                 if (unit.Name != 'Default'){
                     const businessUnit = await updateOrCreateBusinessUnit(unit);
+                    const skillsQuery = await updateGetSkillsQuery(getSkillsByUnit, businessUnit);
+                    const skills = JSON.parse(await request(skillsQuery))["Result"];
+                    skills.forEach(skill=>{
+                        updateOrCreateSkill(skill)
+                    })
+
                     const teamsQuery = updateGetTeamQuery(getAllTeamsWithAgents, businessUnit);
                     const teams = JSON.parse(await request(teamsQuery))["Result"];
                     
@@ -98,6 +105,9 @@ const getTodaysTeleoptiData = async (options = {
                         const people = JSON.parse(await request(peopleQuery))["Result"];
                         for ( let j = 0; j < people.length; j++){
                             let person = people[j]
+                            /*if (j === 0){
+                                console.log(person);
+                            }*/
                             const agent = await updateOrCreateAgent(person, team);
                         };
                         const scheduleQuery = updateGetScheduleByTeamId(getScheduleByTeamId, team);
@@ -127,6 +137,29 @@ const getTodaysTeleoptiData = async (options = {
 
 
     
+}
+
+const updateOrCreateSkill = skill => {
+    return new Promise(async (resolve, reject)=>{
+        try {
+            let sk = await Skill.findOne({skillId: skill.Id});
+            if (sk){
+                Skill.findByIdAndUpdate(sk._id, {
+                    name: skill.Name
+                });
+            }
+            else {
+                sk = await Skill.create({
+                    skillId: skill.Id,
+                    name: skill.Name
+                })
+            }
+            resolve(sk)
+        } catch (error) {
+            logErr(`Failed to get Skill: ${skill.Id}`);
+            reject (error);
+        }
+    });
 }
 
 const getSingleTeam = (teamId, businessUnitId)=>{
@@ -256,6 +289,13 @@ const createScheduleObject = (personDay, agent) =>{
     return scheduleObject;
 }
 
+const updateGetSkillsQuery = (query, unit) =>{
+    query.body = JSON.stringify({
+        'BusinessUnitId': unit.businessUnitId
+    });
+    return query;
+}
+
 const updateGetScheduleByTeamId = (query, team, date = moment().format('YYYY-MM-DD'))=>{
         query.body = JSON.stringify({
         "BusinessUnitId": team.businessUnitId,
@@ -300,6 +340,17 @@ const updateOrCreateAgent = (person, team)=>{
                     break;
             } 
             const timeZone = moment.tz.zonesForCountry(countryAbbr||'NO')[0];
+            const skills = []
+            for ( let i = 0; i < person.PersonSkills.length; i++){
+                let id = person.PersonSkills[i].SkillId;
+                try {
+                    let skill = await getSkillById(id);
+                    skills.push(skill.name)
+                } catch (error) {
+                    skills.push('n/a')
+                }
+            }
+
             if (agent){
                 agent = await Agent.findByIdAndUpdate(person.Id, {
                     email: person.Email || 'hasnoemail@elkjop.no',
@@ -309,7 +360,8 @@ const updateOrCreateAgent = (person, team)=>{
                     departmentName: team.departmentName,
                     teamName: team.name,
                     teamId: team.teamId,
-                    timeZone
+                    timeZone,
+                    skills
                 }, {new: true})
                 
             }
@@ -323,7 +375,8 @@ const updateOrCreateAgent = (person, team)=>{
                     departmentName: team.departmentName,
                     teamName: team.name,
                     teamId: team.teamId,
-                    timeZone
+                    timeZone,
+                    skills
                 });
             }
             resolve(agent);

@@ -2,8 +2,22 @@ const Agent = require('../models/Agent');
 const BusinessUnit = require('../models/BusinessUnit');
 const Team = require('../models/Team');
 const Schedule = require('../models/Schedule');
+const Skill = require('../models/Skill')
 const moment = require('moment');
 const { logStd } = require('./logger');
+
+const getSkillById = id=>{
+    return new Promise(async (resolve, reject)=>{
+        const skill = await Skill.findOne({skillId: id});
+        if (skill){
+            resolve(skill)
+        }
+        else{
+            logStd(`Skill id ${id} not found`)
+            reject(skill)
+        }
+    })
+}
 
 const getSchedulesForTeam = (teamId, date = moment().format('YYYY-MM-DD'), includeEmpty = false)=>{
     return new Promise( async (resolve, reject)=>{
@@ -143,5 +157,6 @@ module.exports = {
     getAgents,
     getSchedulesForTeam,
     getSchedulesForDepartment,
-    getTeam
+    getTeam,
+    getSkillById
 }

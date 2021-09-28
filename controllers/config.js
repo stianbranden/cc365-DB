@@ -174,6 +174,14 @@ const teleoptiRequests = {
             'Authorization': 'Bearer ' + TELEOPTI_ACCESS_TOKEN,
             'Accept': 'application/json'
         }
+    },
+    getSkillsByUnit: {
+        method: 'POST',
+        url: TELEOPTI_URL + '/query/Skill/AllSkills',
+        headers: {
+            'Authorization': 'Bearer ' + TELEOPTI_ACCESS_TOKEN,
+            'Accept': 'application/json'
+        }
     }
     
     
