@@ -52,6 +52,7 @@ module.exports = function (passport) {
                 photo,
                 role: state,
                 title: jobTitle,
+                access_token: accessToken
               }, {new: true})
             }
             else {
@@ -63,7 +64,8 @@ module.exports = function (passport) {
                     role: state,
                     title: jobTitle,
                     given_name: profile.given_name,
-                    family_name: profile.family_name
+                    family_name: profile.family_name,
+                    access_token: accessToken
                 });
             }
             if ( NODE_ENV != 'Production' ){

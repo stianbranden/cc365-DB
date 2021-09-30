@@ -20,6 +20,7 @@ const UserSchema = new mongoose.Schema({
     title: {
         type: String
     },
+    access_token: {type: String},
     first_login: {
         required: true,
         type: Date,

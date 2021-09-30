@@ -49,13 +49,25 @@
     </header>
     <%- body %>
     <% if (locals.user) {%>
+    
     <footer class="loggedin">
         <div>Logged in as <%= user.name %></div>
         <div><a href="/auth/logout" title="Log out"><ion-icon name="log-out-outline"></ion-icon></a></div>
+        <img id='photo'>
+    </footer>
+    <script>
+        const auth ='<%= user.id %>';
+        fetch(`/getPicture/${auth}`).then(response=>response.blob())
+        .then(function(response) {
+            let objectURL = URL.createObjectURL(response);
+            document.getElementById('photo').src = objectURL;
+        })
+    </script>
     <% } else { %>
     <footer>
-    <% } %>
     </footer>
+    <% } %>
+    
     <script src="/js/card.js"></script>
     <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
 </body>

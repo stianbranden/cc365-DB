@@ -1,5 +1,8 @@
 const router = require('express').Router();
 const {units} = require('../config.js')
+const User = require('../models/User');
+const {getPhoto} = require('../controllers/config')
+const request= require('request-promise');
 
 router.get('/', (req, res)=>{
     //console.log({user: req.user, req});
@@ -16,8 +19,18 @@ router.get("/favicon.ico", function(req, res) {
     res.end(favicon);
 });
 
+router.get('/getPicture/:upn', async (req, res)=>{
+    try {
+        let user = await User.findById(req.params.upn);
+        let query = {...getPhoto};
+        query.headers["Authorization"] = 'Bearer ' + user.access_token;
+        let photo = await request(query);
+        res.send(photo);
+    } catch (error) {
+        res.status(400);
+    }
 
-
+});
 
 router.get('/:unit/', (req, res)=>{
     
