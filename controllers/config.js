@@ -51,7 +51,7 @@ const queries =  {
     },
     raiQuery: {
         method: "GET",
-        url: raiUrl + '/rai/contactStatistic?startTime=${today}&channelType=EmailIn,CallIn,ChatIn',
+        url: raiUrl + '/rai/contactStatistic?startTime=${today}&channelType=EmailIn,CallIn,ChatIn&timeCategory=hour',
         headers: {
             authorization: 'Basic ' + BASE64,
             'x-api-key': XAPIKEY
