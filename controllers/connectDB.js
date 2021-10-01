@@ -4,12 +4,7 @@ const {logStd, logSys, logErr} = require('./logger')
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(MONGODBURI + MONGODBNAME , {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-      useCreateIndex: true
-    });
+    const conn = await mongoose.connect(MONGODBURI + MONGODBNAME);
     
 
     logSys(`MongoDB Connected: ${conn.connection.name}@${conn.connection.host} on port ${conn.connection.port}`)
