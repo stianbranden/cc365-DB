@@ -16,6 +16,18 @@ burgermenu.addEventListener('click', ()=>{
 
 document.querySelector('.container').classList.add(key);
 
+/*
+    ----------------------
+        Footer Menu Controls
+        General
+      ----------------------
+
+*/
+let footer = document.querySelector('footer');
+footer.addEventListener('click', ()=>{
+    footer.classList.toggle('clicked');
+})
+
 
 /*
       ----------------------
@@ -511,3 +523,310 @@ function showBot(botKey){
     document.body.appendChild(script);
 
 }
+
+/*
+      ----------------------
+        Schedules
+      ----------------------
+*/
+
+if ( page === 'team' ){
+    const notifyMeOn = new Set();
+    let url = (key.startsWith('dep_') ? '/department/' : '/team/') + `schedules/${key}/${day}`;
+    fetch(url)
+    .then(response => response.json())
+    .then(data => {  
+        const container = document.querySelector('.container');
+        data = data.map(schedule=>{
+            if (schedule.shift && schedule.shift.length > 0){
+                schedule.startTime = schedule.shift[0].startTime;
+                schedule.endTime = schedule.shift[schedule.shift.length-1].endTime;
+            } else {
+                schedule.startTime = moment().hour(23).format();
+            }
+            return schedule;
+        });
+        data.sort((a,b)=> (moment(a.startTime).format('HH:mm') < moment(b.startTime).format('HH:mm')) ? -1 : 1)
+        console.log(data);
+        data.forEach(schedule=>{
+            createScheduleContainer(schedule, container)           
+            if (schedule.dayOff){
+                addDayOffBlock(schedule);                
+            } else {
+                addShiftBlocks(schedule);
+            }
+            socket.emit('connect-to-agent', schedule.agentId);
+      });
+      if ( moment().format('YYYY-MM-DD') === day ){
+        markActive();
+        setInterval(_=>{
+            markActive()
+            notifyChangeUpcoming();
+        }, 60000)
+      }
+      resizeTimeLabels();
+      //resizeActivityLabels()
+      window.onresize = _=>{
+          resizeTimeLabels();
+          //resizeActivityLabels()
+      }
+    });
+
+    const addNotification = async agentId =>{
+
+        let permission = false
+        if (Notification.permission === 'granted'){
+            permission = true;
+        } else if ( await Notification.requestPermission() === 'granted'){
+            permission = true;
+        }
+
+        if (permission){
+            const bell = document.querySelector(`[id="${agentId}"] ion-icon`)
+            if (bell.classList.contains('active')){
+                bell.classList.remove('active')
+                bell.name = 'notifications-outline'
+                notifyMeOn.delete(agentId);
+            }
+            else {
+                bell.classList.add('active')
+                bell.name = 'notifications'
+                notifyMeOn.add(agentId);
+            }
+        }
+    }
+
+    const createScheduleContainer = (schedule, container)=>{
+        let div = document.createElement("div");
+        div.id = schedule.agentId;
+        div.classList.add("schedule-container");
+        
+        container.appendChild(div);
+        div.insertAdjacentHTML( 'beforeend',`<ion-icon name="notifications-outline"></ion-icon><div class="name"><span>${schedule.agent.displayName}</span></div><div class="shift"></div>`);
+        let bell = div.querySelector('ion-icon');
+        bell.onclick = _=> addNotification(schedule.agentId);
+    }
+
+    const addShiftBlocks = (schedule)=>{
+        let shift = document.querySelector(`[id="${schedule.agentId}"] .shift`);
+        shift.innerHTML = '';
+        let first = true;
+        schedule.shift.forEach(activity=>{
+            let block = document.createElement("div");
+            let name = activity.name;
+            let bgColor = activity.displayColorHex;
+            block.id = activity._id;
+            block.setAttribute("data-start-time", activity.startTime)
+            block.setAttribute("data-end-time", activity.endTime)
+            block.setAttribute("data-name", schedule.agent.displayName)
+            block.className = "block";
+            let width = activity.lengthOfShift;
+            if (width < 60){
+                block.classList.add('extra-small');
+            }
+            if (activity.activityId){
+                block.classList.add("activity");
+            } else {
+                block.classList.add("absence");
+                name = 'Absence';
+                bgColor = '#ffffff'
+            }
+            block.setAttribute('data-activity', name);
+            
+            block.insertAdjacentHTML( 'beforeend',`<span class="activity-name"> ${name}</span><span class="time">${moment(activity.startTime).format("HH:mm")} - ${moment(activity.endTime).format("HH:mm")}</span>`);
+            block.insertAdjacentHTML('beforeend', `<div class="tooltiptext"><span class="activity-name"> ${name}</span><br><span class="time">${moment(activity.startTime).format("HH:mm")} - ${moment(activity.endTime).format("HH:mm")}</span></div>`)
+            
+            block.style.backgroundColor = bgColor;
+            let textColor = 'white';
+            if ( lightOrDark(bgColor) == 'light' ){
+                textColor = 'black';
+            }
+            block.style.color = textColor;  
+            block.style.border = "1px solid black";
+            
+            block.style["grid-column-end"] = "span " + width;
+            if (first){
+                first = false;
+                block.style["grid-column-start"] = activity.offset-360;
+            }
+            shift.appendChild(block)
+        });
+    }
+
+    const addDayOffBlock = (schedule) => {
+        let shift = document.querySelector(`[id="${schedule.agentId}"] .shift`);
+        shift.innerHTML = '';
+        let block = document.createElement("div");
+        block.insertAdjacentHTML( 'beforeend',`<span class="activity-name"> ${schedule.dayOff.name}</span>`);
+        block.className = "block dayoff";
+        block.style.backgroundColor = schedule.dayOff.displayColorHex;
+        let textColor = 'white';
+        if ( lightOrDark(schedule.dayOff.displayColorHex) == 'light' ){
+            textColor = 'black';
+        }
+        block.style.color = textColor;  
+        block.style.border = "1px solid black";
+        let width = 60
+        block.style["grid-column-end"] = "span " + width;
+        block.style["grid-column-start"] = 30;
+        shift.appendChild(block)
+
+    }
+
+    function resizeTimeLabels(){
+        let sizeToHide = 45;
+        document.querySelectorAll('.time-label.even').forEach(el=>{
+            if (el.offsetWidth < sizeToHide && el.style.visibility != "hidden") {
+                el.style.visibility = "hidden";
+            }
+            else if (el.offsetWidth >= sizeToHide && el.style.visibility == "hidden") {
+              el.style.visibility = "visible";
+            }
+        })
+    }
+
+    function resizeActivityLabels(){
+        let smallScreen = 700;
+        let body = document.querySelector('body');
+        let isSmallScreen = body.offsetWidth <= smallScreen;
+        document.querySelectorAll('.block span').forEach(el=>{
+            if (isSmallScreen && !el.classList.contains('small')){
+                el.classList.add('small');
+            }
+            else if (!isSmallScreen && el.classList.contains('small') ){
+                el.classList.remove('small');
+            }
+        })
+    }
+
+    function markActive(time = moment(), node = document){
+        node.querySelectorAll('.block.activity').forEach(block=>{
+            block.classList.remove('active');
+            block.classList.add('checked');
+            if ( time >= moment(block.getAttribute("data-start-time")) && time <= moment(block.getAttribute("data-end-time"))){
+                block.classList.add('active');
+            }
+
+
+        });
+    }
+
+    function notifyChangeUpcoming(verbose = false){
+        notifyMeOn.forEach(agentId=>{
+            let nextActivity = findNextActivity(moment(), document.querySelector(`[id="${agentId}"]`));
+            if ( verbose ){
+                console.log({agentId, nextActivity});
+            }
+            if ( nextActivity.nextIn === 5 ){
+                let title, body;
+                title = `Upcoming activity change for ${document.querySelector(`[id="${agentId}"] .name span`).innerText}!`;
+                body = `Get ready to change activity\nNext activity is ${nextActivity.nextActivity} @ ${nextActivity.nextAt}`;
+                new Notification(title, 
+                {
+                    body,
+                    icon: '/images/icon.png'
+                })
+            }
+        });
+    }
+
+    function findNextActivity(time = moment(), node = document){
+        let nextActivity = {
+            nextIn: 1000
+        }
+        node.querySelectorAll('.block.activity').forEach(block=>{
+            let timeTo = moment(block.getAttribute("data-start-time")).diff(time, 'minutes');
+            //console.log({time, block});
+            if (timeTo>=0 && timeTo < nextActivity.nextIn ){
+                nextActivity = {
+                    nextActivity: block.getAttribute('data-activity'),
+                    nextIn: timeTo,
+                    nextAt: moment(block.getAttribute("data-start-time")).format('HH:mm')
+                }
+            }
+        });
+        if ( nextActivity.nextIn < 1000 ){
+            return nextActivity
+        }
+        else {
+            return {}
+        }
+    }
+
+    socket.on('updatedSchedule', schedule=>{
+        //console.log('update to schedule', schedule);
+        if ( schedule.date === day ){
+            if ( schedule.dayOff ){
+                addDayOffBlock(schedule);
+            }
+            else {
+                addShiftBlocks(schedule);
+                markActive(null, document.querySelector(`[id="${schedule.agentId}"]`))
+            }
+            if ( notifyMeOn.has(schedule.agentId) ){
+                const nextActivity= findNextActivity(moment(), document.querySelector(`[id="${schedule.agentId}"]`));
+
+                new Notification(`Schedule change for ${schedule.agent.displayName}`, 
+                {
+                    body: 'A schedule you are watching has changed!\n' + nextActivity.nextIn > 0 ? `Next activity is ${nextActivity.nextActivity} @ ${nextActivity.nextAt}` : '',
+                    icon: '/images/icon.png'
+                })
+            }
+        }
+        
+    });
+    //'reconnect-to-agents'
+
+    const subscribedAgents = new Set();
+    socket.on('confirm-connection-to-agent', agentId => subscribedAgents.add(agentId));
+    socket.on('reconnect-to-agents', _=>{
+        //console.log(subscribedAgents);
+        subscribedAgents.forEach(agentId => socket.emit('connect-to-agent', agentId));
+    });
+
+}
+
+
+function lightOrDark(color) {
+
+    // Variables for red, green, blue values
+    let r, g, b, hsp;
+    
+    // Check the format of the color, HEX or RGB?
+    if (color.match(/^rgb/)) {
+
+        // If RGB --> store the red, green, blue values in separate variables
+        color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+        
+        r = color[1];
+        g = color[2];
+        b = color[3];
+    } 
+    else {
+        
+        // If hex --> Convert it to RGB: http://gist.github.com/983661
+        color = +("0x" + color.slice(1).replace(color.length < 5 && /./g, '$&$&'));
+
+        r = color >> 16;
+        g = color >> 8 & 255;
+        b = color & 255;
+    }
+    
+    // HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
+    hsp = Math.sqrt(
+        0.299 * (r * r) +
+        0.587 * (g * g) +
+        0.114 * (b * b)
+    );
+
+    // Using the HSP value, determine whether the color is light or dark
+    if (hsp>127.5) {
+
+        return 'light';
+    } 
+    else {
+
+        return 'dark';
+    }
+}
+

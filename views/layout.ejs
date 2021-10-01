@@ -17,10 +17,19 @@
     <header>
         <div class="brand"><h3><%= pageTitle %></h3><img src="/images/icon.png" alt="logo"></div>
         <nav>
+            <% if (locals.user) {%>
+            <div class="menu loggedin">
+            <% } else { %>
             <div class="menu">
+            <% } %>
                 <span class="burger"></span>
             </div>
+
+            <% if (locals.user) {%>
+            <div class="navitems no-anim closed loggedin">
+            <% } else { %>
             <div class="navitems no-anim closed">
+            <% } %>
                 <ul>
                     <li class="wide"><a href="/">Nordic</a></li>
                     <li><a href="/denmark">Denmark</a></li>
@@ -29,11 +38,36 @@
                     <li><a href="/sweden">Sweden</a></li>
                     <li><a href="/helpdesk">Helpdesk</a></li>
                     <li><a href="/kitchen">Kitchen&Interior</a></li>
+                    <% if (locals.user) {%>
+                    <li><a href="/auth/logout">Log out</a></li>
+                    <% } else { %>
+                    <!-- <li><a href="/auth/azure/login">Log in</a></li> -->
+                    <% } %>
                 </ul>
             </div>
         </nav>
     </header>
     <%- body %>
+    <% if (locals.user) {%>
+    
+    <footer class="loggedin">
+        <div>Logged in as <%= user.name %></div>
+        <div><a href="/auth/logout" title="Log out"><ion-icon name="log-out-outline"></ion-icon></a></div>
+        <img id='photo'>
+    </footer>
+    <script>
+        const auth ='<%= user.id %>';
+        fetch(`/getPicture/${auth}`).then(response=>response.blob())
+        .then(function(response) {
+            let objectURL = URL.createObjectURL(response);
+            document.getElementById('photo').src = objectURL;
+        })
+    </script>
+    <% } else { %>
+    <footer>
+    </footer>
+    <% } %>
+    
     <script src="/js/card.js"></script>
     <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
 </body>

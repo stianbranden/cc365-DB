@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const {getQueues, getContacts, getSingleContact} = require('./controllers/queues');
+const {getTodaysTeleoptiData, runScheduleUpdate} = require('./controllers/fetchTeleoptiData');
 const express = require('express')
 const app = express();
 const server = require('http').Server(app);
@@ -12,22 +13,61 @@ const tableauRoute = require('./routes/tableau');
 const chatBotTranscriptRoute = require('./routes/chatBotTranscript');
 const reportRoute = require('./routes/report');
 const myStatsRoute = require('./routes/myStats');
+const authRoute = require('./routes/auth');
+const teamRoute = require('./routes/team');
+const departmentRoute = require('./routes/department');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
+const connectDB = require('./controllers/connectDB');
+const passport = require('passport');
 const ejsLayouts = require('express-ejs-layouts');
 const morgan = require('morgan')
+const cron = require('node-cron');
 const {units} = require('./config')
-const updateFrequency = process.env.UPDATE_FREQUENCY || 10000;
-const {NODE_ENV} = process.env;
+const queueUpdateFrequency = process.env.UPDATE_FREQUENCY || 10000;
+const {NODE_ENV, SESSION_SECRET, MONGODBURI, MONGODBNAME, TELEOPTI_UPDATE_FREQUENCY} = process.env;
+const {logStd,logSys,logErr} = require('./controllers/logger');
 /*Setup EJS*/
 app.set('view engine', 'ejs');
 app.use(ejsLayouts);
+
+//Connect to MongoDB
+const mongoConnection = connectDB();
+
+// Passport config
+require('./controllers/passportAzure')(passport)
+
+//Middleware to take care of load balancer requests
+app.use(require('./middleware/loadbalancer'));
+
+// Sessions
+const sessionMiddleware = session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: MONGODBURI + MONGODBNAME }),
+});
+app.use(sessionMiddleware);
+  
+// Passport middleware
+app.use(passport.initialize())
+app.use(passport.session())
+
+// Set global var
+app.use(function (req, res, next) {
+    res.locals.user = req.user || null
+    next()
+})
+
 
 //Static file middleware
 app.use(express.static('public'));
 
 //Logging middleware
-if (process.env.NODE_ENV !== 'production'){
+if (NODE_ENV !== 'production'){
     app.use(morgan('common'));
-  }
+}
 
 
 //Routes
@@ -36,52 +76,137 @@ app.use('/tableau', tableauRoute);
 app.use('/chat', chatBotTranscriptRoute);
 app.use('/mngrs', reportRoute);
 app.use('/myStats', myStatsRoute);
+app.use('/auth', authRoute);
+app.use('/team', teamRoute);
+app.use('/department', departmentRoute);
 
 app.use('/', rootRoute);
 
+const intervals = {
+    scheduleUpdate: {
+        status: 'not running',
+        interval: null,
+        updateFrequency: TELEOPTI_UPDATE_FREQUENCY,
+        function: _=>{ 
+            runScheduleUpdate()
+            .then(newSchedules=>{
+                newSchedules.forEach(schedule =>{
+                    io.in(schedule.agentId).emit('updatedSchedule', schedule);
+                });
+            })
+            .catch(err=>logErr(err, false))}
+    },
+    queueUpdate: {
+        status: 'not running',
+        interval: null,
+        updateFrequency: queueUpdateFrequency,
+        function: _=>{
+            const {auth, i} = intervals.queueUpdate.data;
+            getQueues(auth, i)
+            .then(res=>{
+                updateQueues(res);
+                updateIntervalData('queueUpdate', {auth: true, i: res.runCount});
+            }).catch(err=>{
+                logErr('Error in queueUpdate');
+                logErr(err);
+                stopInterval('queueUpdate');
+                updateIntervalData('queueUpdate', {auth: false, i: 0});
+                setTimeout(_=>startInterval('queueUpdate'), queueUpdateFrequency*6)
+            });
+        },
+        data: {
+            auth: false,
+            i: 0
+        }
+    }
+}
 
-function run(auth, i){
-    //getSingleContact('4599557514');
-    //getContacts();
-    
-    getQueues(auth, i).then(data=>{
-        //Do stuff with the data
-        //console.log(data);
+function startInterval(key){
+    const action = intervals[key];
+    if ( action.status === 'not running'){
+        action.interval = setInterval(action.function, action.updateFrequency);
+        action.status = 'running';
+        logSys(`Action "${key}" has been set to ${action.status}`);
+    }
+    else {
+        logSys(`Cannot start ${key}, already running`);
+    }
+}
 
-        updateQueues(data);
-        setTimeout(()=>{
-            run(true, data.runCount); //Redo fecth after 10 sec, incrementing runCount
-        }, updateFrequency)
-    }).catch(err=>{
-        console.log(moment().toISOString() + ' - An error has happened', err);
-        setTimeout(()=>{
-            run(false, 0); //If something is going wrong then restart after 60 sec
-        }, updateFrequency*6)
-    });
+function stopInterval(key){
+    const action = intervals[key];
+    if ( action.status === 'not running'){
+        logSys(`Cannot stop ${key}, already stopped`);
+    }
+    else {
+        clearInterval(action.interval);
+        action.status = 'not running';
+        logSys(`Action "${key}" has been set to ${action.status}`);
+    }
+}
+
+function updateIntervalData(key, data){
+    intervals[key].data = data;
 }
 
 server.listen(process.env.PORT, ()=>{
-    console.log(`${moment().format()} - Server listening on port ${process.env.PORT}`);
-    run(false, 0);
+    logSys(`Server listening on port ${process.env.PORT}`);
+
+    //Start up Sinch ContactCenter fetching
+    //run(false, 0);
+    getQueues(false, 0).then(data=> {
+        updateQueues(data);
+        updateIntervalData('queueUpdate', {i: 1, auth: true});
+        startInterval('queueUpdate');
+    });
+
+    //Start up Teleopti data fetching
+    getTodaysTeleoptiData({dropScheduleCollection: false}).then(_=>startInterval('scheduleUpdate'));
+    
+    cron.schedule('0 0 3 * * *', _=>{ //Getting data at 03:00 each night
+        stopInterval('scheduleUpdate');
+        logSys('Running daily read of Teleopti data');
+        getTodaysTeleoptiData({dropScheduleCollection: true}).then(_=>{
+            startInterval('scheduleUpdate')
+        }).catch(err=>logErr(err));
+    })
+
 });
 
 //Socket.io stuff
+
+const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+
+io.use(wrap(sessionMiddleware));
+io.use(wrap(passport.initialize()));
+io.use(wrap(passport.session()));
+
 io.on('connection', socket =>{
-    if ( NODE_ENV != 'production'){
-        console.log('a user is connected')
+    if ( socket.request.user){
+        logStd(socket.request.user._id + ' is connected');
+    }
+    else {
+        logStd('a user is connected')
     }
     socket.emit('submit-room');
 
     socket.on('connect-to', room =>{
-        console.log(`Connect to ${room} from ${socket.id}`);
+        logStd(`Connect to ${room} from ${socket.id}`);
         socket.emit('connect-ok', {id: socket.id, room})
         if (dataToUsers.queueData[room] && dataToUsers.dailyStats[room]){
             socket.emit('updateQueues', dataToUsers.queueData[room])
             socket.emit('updateStats', dataToUsers.dailyStats[room])
             
         }
+        socket.emit('reconnect-to-agents');
         
         socket.join(room);
+    });
+
+    socket.on('connect-to-agent', agentId =>{
+        logStd(`Socket ${socket.id} is listening to agent id ${agentId} schedule`);
+        socket.emit('confirm-connection-to-agent', agentId);
+        socket.join(agentId);
     });
 });
 
@@ -107,6 +232,7 @@ let dataToUsers = {
 }
 
 function updateQueues({data, queueMap}){
+    queueMap = queueMap.data;
     let missingGroups = []
     let nordic = {}
     Object.keys(units).forEach(unit=>{        
@@ -128,7 +254,6 @@ function updateQueues({data, queueMap}){
                 });
             }
             else {
-                //console.log('Not found: ' + group);
                 //Some kind of error handling
                 missingGroups.push(group)
             }
@@ -176,12 +301,6 @@ function updateQueues({data, queueMap}){
     });
     io.in('nordic').emit('updateStats', nordicStats);
     dataToUsers.dailyStats.nordic = nordicStats;
-    //io.in('denmark').emit('agentStatus', agentStatus);
-    //io.in('denmark').emit('agentStatus', queueMap);
-    if ( NODE_ENV != 'production'){
-        console.log(`Number of missing groups: ${missingGroups.length}`);
-    }
-    
-    
+    logStd(`Number of missing groups: ${missingGroups.length}`);
     
 }
