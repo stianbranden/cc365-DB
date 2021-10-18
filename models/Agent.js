@@ -41,7 +41,12 @@ const AgentSchema = new mongoose.Schema({
       required: true,
       default: 'Europe/Oslo'
     },
-    skills: [String]
+    skills: [String],
+    contract: {
+      type: String,
+      required: true, 
+      default: 'N/A'
+    }
 });
 
 module.exports = mongoose.model('Agent', AgentSchema);

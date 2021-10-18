@@ -3,6 +3,7 @@ const BusinessUnit = require('../models/BusinessUnit');
 const Team = require('../models/Team');
 const Schedule = require('../models/Schedule');
 const Skill = require('../models/Skill')
+const Contract = require('../models/Contract')
 const moment = require('moment');
 const { logStd } = require('./logger');
 
@@ -15,6 +16,19 @@ const getSkillById = id=>{
         else{
             logStd(`Skill id ${id} not found`)
             reject(skill)
+        }
+    })
+}
+
+const getContractById = id =>{
+    return new Promise(async (resolve, reject)=>{
+        const contract = await Contract.findOne({contractId: id});
+        if (contract){
+            resolve(contract)
+        }
+        else{
+            logStd(`Contract id ${id} not found`)
+            reject(contract)
         }
     })
 }
@@ -158,5 +172,6 @@ module.exports = {
     getSchedulesForTeam,
     getSchedulesForDepartment,
     getTeam,
-    getSkillById
+    getSkillById,
+    getContractById
 }

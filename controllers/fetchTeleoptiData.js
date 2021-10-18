@@ -8,10 +8,11 @@ const Team = require('../models/Team');
 const Agent = require('../models/Agent');
 const Schedule = require('../models/Schedule');
 const Skill = require('../models/Skill');
+const Contract = require('../models/Contract');
 const {logStd, logErr, logSys} = require('./logger')
-const {getAgentWithId, getAllBusinessUnits, getTeams, getAgents, getBusinessUnit, getSkillById} = require('./getTeleoptiData');
+const {getAgentWithId, getAllBusinessUnits, getTeams, getAgents, getBusinessUnit, getSkillById, getContractById} = require('./getTeleoptiData');
 
-const {getBusinessUnits, getAllTeamsWithAgents, getPeopleByTeamId, getSchedulesByPersonIds, getScheduleByTeamId, getUpdatedSchedules, getPersonById, getTeamById, getSkillsByUnit} = require('./config');
+const {getBusinessUnits, getAllTeamsWithAgents, getPeopleByTeamId, getSchedulesByPersonIds, getScheduleByTeamId, getUpdatedSchedules, getPersonById, getTeamById, getSkillsByUnit, getAllContracts} = require('./config');
 
 const runScheduleUpdate = _ =>{
     return new Promise(async (resolve, reject)=>{
@@ -91,8 +92,16 @@ const getTodaysTeleoptiData = async (options = {
                     const businessUnit = await updateOrCreateBusinessUnit(unit);
                     const skillsQuery = await updateGetSkillsQuery(getSkillsByUnit, businessUnit);
                     const skills = JSON.parse(await request(skillsQuery))["Result"];
+                    const contractQuery = await updateGetAllContractsQuery(getAllContracts, businessUnit)
+                    const contracts = JSON.parse(await request(contractQuery))["Result"];
+
+
                     skills.forEach(skill=>{
                         updateOrCreateSkill(skill)
+                    })
+
+                    contracts.forEach(contract=>{
+                        updateOrCreateContract(contract);
                     })
 
                     const teamsQuery = updateGetTeamQuery(getAllTeamsWithAgents, businessUnit);
@@ -137,6 +146,29 @@ const getTodaysTeleoptiData = async (options = {
 
 
     
+}
+
+const updateOrCreateContract = contract =>{
+    return new Promise(async (resolve, reject)=>{
+        try {
+            let ct = await Contract.findOne({contractId: contract.Id});
+            if (ct){
+                Contract.findByIdAndUpdate(ct._id, {
+                    name: contract.Name
+                });
+            }
+            else {
+                ct = await Contract.create({
+                    contractId: contract.Id,
+                    name: contract.Name
+                })
+            }
+            resolve(ct)
+        } catch (error) {
+            logErr(`Failed to get Skill: ${contract.Id}`);
+            reject (error);
+        }
+    });
 }
 
 const updateOrCreateSkill = skill => {
@@ -289,6 +321,14 @@ const createScheduleObject = (personDay, agent) =>{
     return scheduleObject;
 }
 
+
+const updateGetAllContractsQuery = (query, unit) => {
+    query.body = JSON.stringify({
+        'BusinessUnitId': unit.businessUnitId
+    });
+    return query;
+}
+
 const updateGetSkillsQuery = (query, unit) =>{
     query.body = JSON.stringify({
         'BusinessUnitId': unit.businessUnitId
@@ -351,6 +391,8 @@ const updateOrCreateAgent = (person, team)=>{
                 }
             }
 
+            const contract = (await getContractById(person.ContractId)).name
+           
             if (agent){
                 agent = await Agent.findByIdAndUpdate(person.Id, {
                     email: person.Email || 'hasnoemail@elkjop.no',
@@ -361,7 +403,8 @@ const updateOrCreateAgent = (person, team)=>{
                     teamName: team.name,
                     teamId: team.teamId,
                     timeZone,
-                    skills
+                    skills,
+                    contract
                 }, {new: true})
                 
             }
@@ -376,7 +419,8 @@ const updateOrCreateAgent = (person, team)=>{
                     teamName: team.name,
                     teamId: team.teamId,
                     timeZone,
-                    skills
+                    skills,
+                    contract
                 });
             }
             resolve(agent);

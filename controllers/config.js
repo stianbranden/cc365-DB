@@ -182,10 +182,15 @@ const teleoptiRequests = {
             'Authorization': 'Bearer ' + TELEOPTI_ACCESS_TOKEN,
             'Accept': 'application/json'
         }
+    },
+    getAllContracts: {
+        method: 'POST',
+        url: TELEOPTI_URL + '/query/Contract/AllContracts',
+        headers: {
+            'Authorization': 'Bearer ' + TELEOPTI_ACCESS_TOKEN,
+            'Accept': 'application/json'
+        }
     }
-    
-    
-    
 }
 
 const graphApi = {
