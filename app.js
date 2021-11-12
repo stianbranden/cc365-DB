@@ -28,6 +28,8 @@ const {units} = require('./config')
 const queueUpdateFrequency = process.env.UPDATE_FREQUENCY || 10000;
 const {NODE_ENV, SESSION_SECRET, MONGODBURI, MONGODBNAME, TELEOPTI_UPDATE_FREQUENCY} = process.env;
 const {logStd,logSys,logErr} = require('./controllers/logger');
+const {getAlerts} = require('./controllers/getAlerts');
+const { checkChatStatus } = require('./controllers/checkChat');
 /*Setup EJS*/
 app.set('view engine', 'ejs');
 app.use(ejsLayouts);
@@ -170,6 +172,17 @@ server.listen(process.env.PORT, ()=>{
             startInterval('scheduleUpdate')
         }).catch(err=>logErr(err));
     })
+
+    cron.schedule('0 */1 * * * *', _=>{ //Alerts
+        //logStd('Checking for alerts');
+        getAlerts().then(alerts=>{
+            io.in('nordic').emit('new-alert', {alerts});
+        });
+    });
+
+    cron.schedule('0 */1 * * * *', _=>{ //Check chat
+        checkChatStatus();
+    });
 
 });
 

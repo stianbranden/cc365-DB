@@ -1,0 +1,56 @@
+<div class="splitcontainer">
+
+    <div class="alerts">
+        <div class="alerts-header">Alerts</div>
+        <div class="alerts-content">
+            <% alerts.forEach(alert=>{ %>
+                <div class="alert" data-closed=<%= alert.closed %> data-updated="<%= alert.updatedAt %>" id="<%= alert._id %>">
+                    <div class="alert-department"><%= alert.department %></div>
+                    <div class="alert-type" title="<%= alert.alerttype %>">
+                        <% if (alert.alerttype == 'Absence'){ %>
+                            <ion-icon name="thermometer-sharp"></ion-icon>
+                        <% } else if (alert.alerttype == 'Channel Chat') { %>
+                            <ion-icon name="chatbox-ellipses-sharp"></ion-icon>
+                        <% } else { %>
+                            <%= alert.alerttype %>
+                        <% } %>
+                    </div>
+                    <div class="alert-text"><%= alert.text %></div>
+                    <div class="alert-date"><%= alert.shortdate %></div>
+                </div>
+            <% }) %>
+        </div>
+        <!-- Trigger/Open The Modal -->
+        <button class="openModal" id="openAlertWriter">Add log</button>
+
+        <!-- The Modal -->
+        <div id="alertWriter" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span id="closeAlertWriter" class="close">&times;</span>
+                <p>Some text in the Modal..</p>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container">
+        <summary-card name="Denmark" id="dk" icon="grid" showLoader="true"></summary-card>
+        <summary-card name="Finland" id="fi" icon="grid"></summary-card>
+        <summary-card name="Norway" id="no" icon="grid"></summary-card>
+        <summary-card name="Sweden" id="se" icon="grid"></summary-card>
+        <summary-card name="Helpdesk" id="thd" icon="grid"></summary-card>
+        <summary-card name="Kitchen" id="ki" icon="grid"></summary-card>
+
+    </div>
+    
+</div>
+
+
+<!--<script id="kindly-chat" src="https://chat.kindlycdn.com/kindly-chat.js" data-bot-key="49359f26-44ed-4703-b301-b169a224955c" data-shadow-dom async></script>-->
+<script>
+    let key = 'nordic'
+    let page = key
+    let listeners = ['alerts']
+</script>

@@ -384,6 +384,156 @@ header .navitems.open li:hover:not(.disabled) a {
   color: #fff;
 }
 
+.alerts {
+  margin: 1rem auto;
+  width: 90%;
+  height: 600px;
+  background-color: #fff;
+  border-radius: 0.5rem;
+  overflow-y: hidden;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-rows: 2.5rem auto;
+      grid-template-rows: 2.5rem auto;
+  -webkit-box-shadow: 0.3rem 0.3rem 1rem rgba(0, 0, 0, 0.9);
+          box-shadow: 0.3rem 0.3rem 1rem rgba(0, 0, 0, 0.9);
+  /* The Modal (background) */
+  /* Modal Content/Box */
+  /* The Close Button */
+}
+
+.alerts .alerts-header {
+  background-color: #78be20;
+  color: #fff;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.alerts .alerts-content {
+  overflow-y: scroll;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.alerts .alert {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 4rem 5fr 5fr;
+      grid-template-columns: 4rem 5fr 5fr;
+  -ms-grid-rows: 1fr 2fr;
+      grid-template-rows: 1fr 2fr;
+      grid-template-areas: "type department date" "type text text";
+  padding: 0.5rem 2rem;
+  border-bottom: 1px grey dashed;
+}
+
+.alerts .alert > div {
+  text-align: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.alerts .alert[data-closed=false] {
+  background-color: #f7cbc8;
+}
+
+.alerts .alert-department {
+  -ms-grid-row: 1;
+  -ms-grid-column: 2;
+  grid-area: department;
+}
+
+.alerts .alert-type {
+  -ms-grid-row: 1;
+  -ms-grid-row-span: 2;
+  -ms-grid-column: 1;
+  grid-area: type;
+  font-size: 1.5rem;
+}
+
+.alerts .alert-text {
+  -ms-grid-row: 2;
+  -ms-grid-column: 2;
+  -ms-grid-column-span: 2;
+  grid-area: text;
+}
+
+.alerts .alert-date {
+  -ms-grid-row: 1;
+  -ms-grid-column: 3;
+  grid-area: date;
+}
+
+.alerts .modal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 10;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: black;
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+.alerts .modal.open {
+  display: block;
+}
+
+.alerts .openModal {
+  background-color: #141b4d;
+  color: #fff;
+  border: none;
+  font-size: 1rem;
+}
+
+.alerts .modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  /* Could be more or less, depending on screen size */
+}
+
+.alerts .close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.alerts .close:hover,
+.alerts .close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 footer {
   position: fixed;
   display: -webkit-box;
@@ -445,10 +595,13 @@ footer div a {
 }
 
 .splitcontainer {
-  display: -ms-grid;
-  display: grid;
-  -ms-grid-columns: 3fr 2fr;
-      grid-template-columns: 3fr 2fr;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
 }
 
 .splitcontainer .tableauPlaceholder {
@@ -739,6 +892,12 @@ footer div a {
 }
 
 @media only screen and (min-width: 700px) {
+  .splitcontainer {
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: 3fr 2fr;
+        grid-template-columns: 3fr 2fr;
+  }
   .container {
     -webkit-box-orient: horizontal;
     -webkit-box-direction: normal;
@@ -776,6 +935,9 @@ footer div a {
   }
   .schedule-container .shift .block.extra-small > span {
     visibility: hidden;
+  }
+  .alerts {
+    height: 80vh;
   }
 }
 

@@ -3,6 +3,7 @@ const {units} = require('../config.js')
 const User = require('../models/User');
 const {getPhoto} = require('../controllers/config')
 const request= require('request-promise');
+const {getAlerts} = require('../controllers/getAlerts');
 
 router.get('/', (req, res)=>{
     //console.log({user: req.user, req});
@@ -30,6 +31,11 @@ router.get('/getPicture/:upn', async (req, res)=>{
         res.status(400);
     }
 
+});
+
+router.get('/alerts', async (req, res)=>{
+    const alerts = await getAlerts();
+    res.render('alerts', {pageTitle: 'nordic', alerts});
 });
 
 router.get('/:unit/', (req, res)=>{

@@ -1,6 +1,114 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 @import 'variables', 'reset', 'header', 'msg';
 
+
+.alerts {
+    margin: 1rem auto;
+    width: 90%;
+    height: 600px;
+    background-color: $bar-font-color;
+    border-radius: 0.5rem; 
+    overflow-y: hidden;
+    display: grid;
+    grid-template-rows: 2.5rem auto;
+    box-shadow: 0.3rem 0.3rem 1rem rgba(0, 0, 0, 0.9);
+    .alerts-header {
+        background-color: $secondary-brand-color;
+        color: $bar-font-color;
+        text-align: center;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+    .alerts-content {
+        overflow-y: scroll;
+        height: 100%;
+        //padding: 1rem;
+        display: flex;
+        flex-direction: column;
+    }
+    .alert {
+        display: grid;
+        grid-template-columns: 4rem 5fr 5fr;
+        grid-template-rows: 1fr 2fr;
+        grid-template-areas: 
+            "type department date"
+            "type text text";
+            
+        & > div {
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        padding: 0.5rem 2rem;
+        border-bottom: 1px grey dashed;
+        &[data-closed=false]{
+            background-color: lighten($color-bad, 40%);
+        }
+    }
+    .alert-department {
+        grid-area: department;
+    }
+    .alert-type {
+        grid-area: type;
+        font-size: 1.5rem;
+    }
+    .alert-text {
+        grid-area: text;
+    }
+    .alert-date {
+        grid-area: date;
+    }
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 10; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        &.open {
+            display: block;
+        }
+    }
+    .openModal {
+        background-color: $brand-color;
+        color: $bar-font-color;
+        border: none;
+        font-size: 1rem;
+    }
+    
+    
+    /* Modal Content/Box */
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto; /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%; /* Could be more or less, depending on screen size */
+    }
+    
+    /* The Close Button */
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+}
+
 footer {
     position: fixed;
     display: flex;
@@ -50,8 +158,9 @@ footer {
 }
 
 .splitcontainer {
-    display: grid;
-    grid-template-columns: 3fr 2fr;
+
+    display: flex;
+    flex-direction: column;
     
 
     .tableauPlaceholder {
@@ -280,6 +389,10 @@ footer {
 
 
 @media only screen and (min-width: $small-size) {
+    .splitcontainer {
+        display: grid;
+        grid-template-columns: 3fr 2fr;
+    }
     .container {
         flex-direction: row;
         flex-wrap: wrap;
@@ -311,6 +424,10 @@ footer {
             visibility: hidden;
         }
 
+    }
+
+    .alerts {
+        height: 80vh;
     }
 }
 

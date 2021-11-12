@@ -9,8 +9,10 @@ const Agent = require('../models/Agent');
 const Schedule = require('../models/Schedule');
 const Skill = require('../models/Skill');
 const Contract = require('../models/Contract');
+const Alert = require('../models/Alert')
 const {logStd, logErr, logSys} = require('./logger')
 const {getAgentWithId, getAllBusinessUnits, getTeams, getAgents, getBusinessUnit, getSkillById, getContractById} = require('./getTeleoptiData');
+const {createAlert} = require('./createAlert');
 
 const {getBusinessUnits, getAllTeamsWithAgents, getPeopleByTeamId, getSchedulesByPersonIds, getScheduleByTeamId, getUpdatedSchedules, getPersonById, getTeamById, getSkillsByUnit, getAllContracts} = require('./config');
 
@@ -44,6 +46,22 @@ const runScheduleUpdate = _ =>{
             let schedule = updatedSchedules[i];
             newSchedules.push(await updateOrCreateSchedule(schedule));
         }
+
+        if ( newSchedules.length > 0 ){
+            newSchedules.forEach(s=>{
+                if (s.date === moment().format('YYYY-MM-DD') && s.shift[0].absenceId){
+                    createAlert(text = `${s.agent.displayName} is reported with ${s.shift[0].name} from ${moment(s.shift[0].startTime).format('HH:mm')} to ${moment(s.shift[0].endTime).format('HH:mm')}`, 
+                    s.agent.departmentName, true);
+                    /*
+                    Alert.create({
+                        personrelated: true, 
+                        alerttype: 'Absence',
+                        text: `${s.agent.displayName} is reported with ${s.shift[0].name} from ${moment(s.shift[0].startTime).format('HH:mm')} to ${moment(s.shift[0].endTime).format('HH:mm')}`,
+                        department: s.agent.departmentName
+                    });*/
+                }
+            });
+        }
         
         resolve(newSchedules);
         
@@ -72,6 +90,8 @@ const getTodaysTeleoptiData = async (options = {
             if (options.dropScheduleCollection){
                 await mongoose.connection.dropCollection('schedules')
                 logStd('Schedule collection dropped');
+                await Alert.remove({personrelated: true});
+                logStd('People alerts dropped');
             }
         } catch (error) {
             if (error.codeName === 'NamespaceNotFound'){
