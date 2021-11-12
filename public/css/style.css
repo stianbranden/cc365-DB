@@ -508,6 +508,7 @@ header .navitems.open li:hover:not(.disabled) a {
   color: #fff;
   border: none;
   font-size: 1rem;
+  height: 2rem;
 }
 
 .alerts .modal-content {
