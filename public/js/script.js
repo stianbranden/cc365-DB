@@ -1,3 +1,4 @@
+
 /*
       ----------------------
         Menu Controls
@@ -531,7 +532,7 @@ function showBot(botKey){
 */
 
 //alertWriter
-
+/*
 const modal = document.getElementById('alertWriter');
 document.getElementById('openAlertWriter').onclick= e=>{
     modal.classList.toggle('open');
@@ -544,47 +545,49 @@ window.onclick = e=> {
     if (e.target == modal) {
         modal.classList.toggle('open');;
     }
-}
+}*/
 
 if (listeners && listeners.indexOf('alerts') >= 0){
     socket.on('new-alert', data=>{
         console.log('new-alert', data);
         data.alerts.forEach(alert=>{
-            let div = document.getElementById(alert._id);
-            let updateOrNew = null
+            let div = document.querySelector('alerts-card').shadowRoot.getElementById(alert._id);
+            let updateOrNew = 'update'
             if (!div){
                 updateOrNew = 'new';
-                div = document.createElement('div');
+                
             }
-            else if (alert.updatedAt > div.getAttribute('data-updated')){
+            /*else if (alert.updatedAt > div.getAttribute('data-updated')){
                 updateOrNew = 'update'
-            }
-            if ( updateOrNew ){
-                console.log(`Updated ${alert._id}`);
+            }*/
+            if ( updateOrNew == 'new' ){
+                console.log(`New ${alert._id}`);
+                div = document.createElement('alert-row');
                 div.id = alert._id;
-                div.setAttribute('data-closed', alert.closed)
-                div.setAttribute('data-updated', alert.updatedAt)
-                div.className = 'alert';
-                div.innerHTML = `<div class="alert-department">${alert.department}</div>
-                <div class="alert-type" title="${alert.alerttype}"></div>
-                <div class="alert-text">${alert.text}</div>
-                <div class="alert-date">${alert.shortdate}</div>`
-                if (alert.alerttype == 'Absence' ){
-                    div.querySelector('.alert-type').innerHTML = '<ion-icon name="thermometer-sharp"></ion-icon>';
-                }
-                else if ( alert.alerttype == 'Channel Chat'){
-                    div.querySelector('.alert-type').innerHTML = '<ion-icon name="chatbox-ellipses-sharp"></ion-icon>';
-                }
-                else {
-                    div.querySelector('.alert-type').innerText = alert.alerttype;
-                }
+                div.setAttribute('closed', alert.closed)
+                div.setAttribute('updated', alert.updatedAt)
+                div.setAttribute('department', alert.department)
+                div.setAttribute('type', alert.alerttype)
+                div.setAttribute('text', alert.text)
+                div.setAttribute('date', alert.date)
+                div.setAttribute('top', true)
+
+                document.querySelector('alerts-card').prepend(div);
             }
-            if (updateOrNew === 'new'){
-                document.querySelector('.alerts-content').prepend(div);
+            else {
+                div.data = {
+                    closed: alert.closed!='false',
+                    updated: alert.updated,
+                    department: alert.department,
+                    type: alert.alerttype,
+                    text: alert.text,
+                    date: alert.date
+                };
             }
         });
     });
 }
+
 
 /*
       ----------------------

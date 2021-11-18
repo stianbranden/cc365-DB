@@ -81,8 +81,12 @@ const processResult = async result =>{
 const checkChatStatus = _=>{
     chains.forEach(async chain =>{
         const {exchange_slug, new_context} = await getChatStatus(chain);
-        const {quueLimit, queueStatus} = new_context
+        let {quueLimit, queueStatus} = new_context
         let country = getCountry(chain);
+        if ( !queueStatus ){
+            queueStatus = {inQueueCurrent: 0,name: country, agentsServing: 0, agentsNotReady: 0}
+        }
+        
     
         const result = {
             chain,

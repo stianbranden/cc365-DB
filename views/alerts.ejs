@@ -1,6 +1,18 @@
 <div class="splitcontainer">
-
-    <div class="alerts">
+    <alerts-card>
+        <% alerts.forEach(alert =>{ %>
+        <alert-row 
+            id="<%= alert._id %>"
+            closed=<%= alert.closed %> 
+            updated="<%= alert.updatedAt %>"
+            department="<%= alert.department %>"
+            type="<%= alert.alerttype %>"
+            text="<%= alert.text %>"
+            date="<%= alert.date %>"
+        ></alert-row>
+        <% }) %>
+    </alerts-card>
+    <!--<div class="alerts">
         <div class="alerts-header">Alerts</div>
         <div class="alerts-content">
             <% alerts.forEach(alert=>{ %>
@@ -20,20 +32,20 @@
                 </div>
             <% }) %>
         </div>
-        <!-- Trigger/Open The Modal -->
+        
         <button class="openModal" id="openAlertWriter">Add log</button>
 
-        <!-- The Modal -->
+        
         <div id="alertWriter" class="modal">
 
-            <!-- Modal content -->
+            
             <div class="modal-content">
                 <span id="closeAlertWriter" class="close">&times;</span>
                 <p>Some text in the Modal..</p>
             </div>
 
         </div>
-    </div>
+    </div> -->
 
     <div class="container">
         <summary-card name="Denmark" id="dk" icon="grid" showLoader="true"></summary-card>
