@@ -5,6 +5,10 @@ const {getPhoto} = require('../controllers/config')
 const request= require('request-promise');
 const {getAlerts} = require('../controllers/getAlerts');
 
+function capitalizeFLetter(str) {
+    return str[0].toUpperCase() + str.slice(1);
+}
+
 router.get('/', (req, res)=>{
     //console.log({user: req.user, req});
     res.render('root', {pageTitle: 'nordic'});
@@ -34,9 +38,23 @@ router.get('/getPicture/:upn', async (req, res)=>{
 });
 
 router.get('/alerts', async (req, res)=>{
-    const alerts = await getAlerts();
-    res.render('alerts', {pageTitle: 'nordic', alerts});
+    if ( !req.user ){
+        res.redirect('/');
+    } else {
+        const alerts = await getAlerts();
+        res.render('alerts', {pageTitle: 'nordic', alerts});
+    }
 });
+
+router.get('/alerts/:unit', async (req, res)=>{
+    const {unit} = req.params;
+    if ( !req.user ){
+        res.redirect('/' + unit);
+    } else {
+        const alerts = await getAlerts(capitalizeFLetter(unit));
+        res.render('unit-alerts',{pageTitle: unit, alerts, unit, site: null} )
+    }
+})
 
 router.get('/:unit/', (req, res)=>{
     

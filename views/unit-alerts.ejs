@@ -1,0 +1,53 @@
+<div class="splitcontainer">
+    <alerts-card>
+        <% alerts.forEach(alert =>{ %>
+        <alert-row 
+            id="<%= alert._id %>"
+            closed=<%= alert.closed %> 
+            updated="<%= alert.updatedAt %>"
+            department="<%= alert.department %>"
+            type="<%= alert.alerttype %>"
+            text="<%= alert.text %>"
+            date="<%= alert.date %>"
+            title="<%= alert.title %>"
+            icon="<%= alert.icon %>"
+        ></alert-row>
+        <% }) %>
+    </alerts-card>
+
+    <div class="container">
+        <% if (pageTitle === 'helpdesk'){ %>
+            <queue-card name="Denmark" id="dk" icon="call-outline" showLoader=true hide-country-abbr=true></queue-card>
+            <queue-card name="Finland" id="fi" icon="call-outline" hide-country-abbr=true></queue-card>
+            <queue-card name="Norway" id="no" icon="call-outline" hide-country-abbr=true></queue-card>
+            <queue-card name="Sweden" id="se" icon="call-outline" hide-country-abbr=true></queue-card>
+        <% } else if(pageTitle==='kitchen') { %> 
+            <queue-card name="Phone" id="ph" icon="call-outline" showLoader=true hide-channel-abbr=true></queue-card>
+            <queue-card name="Chat" id="ch" icon="chatbubbles-outline" hide-channel-abbr=true></queue-card>
+            <queue-card name="Email" id="em" icon="mail-outline" hide-channel-abbr=true trim-away="Kitchen"></queue-card>
+            <queue-card name="Action" id="ac" icon="document-attach-outline" hide-channel-abbr=true></queue-card>
+        <% } else { %>
+            <queue-card name="Phone" id="ph" icon="call-outline" showLoader=true hide-country-abbr=true hide-channel-abbr=true></queue-card>
+            <queue-card name="Chat" id="ch" icon="chatbubbles-outline" hide-country-abbr=true hide-channel-abbr=true></queue-card>
+            <queue-card name="Email" id="em" icon="mail-outline" hide-country-abbr=true hide-channel-abbr=true></queue-card>
+            <queue-card name="Action" id="ac" icon="document-attach-outline" hide-country-abbr=true hide-channel-abbr=true></queue-card>
+        <% } %>
+
+    </div>
+</div>
+<div id="site-nav" class='hidden'>
+    <div class="circle">
+        <ion-icon name="arrow-back-outline" id='site-picker'></ion-icon>
+    </div>
+    <div class="menu">
+        <button key='49359f26-44ed-4703-b301-b169a224955c'>CPH</button>
+        <button key='72a50932-2f24-4454-8d78-95f714e95d8c'>OSL</button>
+    </div>
+</div>
+
+<script>
+    let key = '<%= pageTitle %>'
+    let page = key
+    let site = '<%= site %>'
+    let listeners = ['alerts']
+</script>

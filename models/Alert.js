@@ -2,6 +2,14 @@ const mongoose = require('mongoose');
 //const moment = require('moment');
 
 const AlertSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    icon: {
+        type: String,
+        required: false
+    },
     text: {
         type: String,
         required: true
@@ -37,6 +45,11 @@ const AlertSchema = new mongoose.Schema({
     closed: {
         type: Boolean,
         required: true,
+        default: true
+    },
+    status: {
+        type: String,
+        default: 'Closed',
         default: true
     }
 }, {timestamps: true});

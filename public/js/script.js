@@ -571,17 +571,21 @@ if (listeners && listeners.indexOf('alerts') >= 0){
                 div.setAttribute('text', alert.text)
                 div.setAttribute('date', alert.date)
                 div.setAttribute('top', true)
+                div.setAttribute('title', alert.title)
+                div.setAttribute('icon', alert.icon)
 
                 document.querySelector('alerts-card').prepend(div);
             }
             else {
                 div.data = {
                     closed: alert.closed!='false',
-                    updated: alert.updated,
+                    updated: alert.updatedAt,
                     department: alert.department,
                     type: alert.alerttype,
                     text: alert.text,
-                    date: alert.date
+                    date: alert.date,
+                    title: data.title,
+                    icon: data.icon
                 };
             }
         });

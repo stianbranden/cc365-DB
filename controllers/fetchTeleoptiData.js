@@ -13,6 +13,7 @@ const Alert = require('../models/Alert')
 const {logStd, logErr, logSys} = require('./logger')
 const {getAgentWithId, getAllBusinessUnits, getTeams, getAgents, getBusinessUnit, getSkillById, getContractById} = require('./getTeleoptiData');
 const {createAlert} = require('./createAlert');
+const {getAlertByTextAndDate} = require('./getAlerts')
 
 const {getBusinessUnits, getAllTeamsWithAgents, getPeopleByTeamId, getSchedulesByPersonIds, getScheduleByTeamId, getUpdatedSchedules, getPersonById, getTeamById, getSkillsByUnit, getAllContracts} = require('./config');
 
@@ -49,9 +50,36 @@ const runScheduleUpdate = _ =>{
 
         if ( newSchedules.length > 0 ){
             newSchedules.forEach(s=>{
-                if (s.date === moment().format('YYYY-MM-DD') && s.shift[0].absenceId){
-                    createAlert(text = `${s.agent.displayName} is reported with ${s.shift[0].name} from ${moment(s.shift[0].startTime).format('HH:mm')} to ${moment(s.shift[0].endTime).format('HH:mm')}`, 
-                    s.agent.departmentName, true);
+                if (s.date === moment().format('YYYY-MM-DD')){
+
+                //} && s.shift[0].absenceId){
+                    let text;
+                    let alert = false;
+                    let name = s.agent.displayName;
+                    s.shift.forEach(shift=>{
+                        if (shift.absenceId){
+                            if (alert) {
+                                text += '<br>'
+                            } else {
+                                text = `${name} is reported with: <br>`
+                            }
+                            alert = true;
+                            text += `${shift.name} from ${moment(shift.startTime).format('HH:mm')} to ${moment(shift.endTime).format('HH:mm')}`
+                        }
+                    })
+
+                    if (alert){
+                        //Check if alert already has been created
+                        getAlertByTextAndDate(text)
+                            .then(a=>{
+                                if (!a){
+                                    createAlert(text,s.agent.departmentName, true, 'Absence', true, `${s.agent.displayName} is absent`);
+                                }
+                            });
+
+                    }
+
+                    
                     /*
                     Alert.create({
                         personrelated: true, 

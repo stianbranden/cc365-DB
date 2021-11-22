@@ -178,6 +178,13 @@ server.listen(process.env.PORT, ()=>{
         getAlerts().then(alerts=>{
             io.in('nordic').emit('new-alert', {alerts});
         });
+        ['Denmark', 'Finland', 'Norway', 'Sweden', 'Kitchen', 'Helpdesk'].forEach(department=>{
+            getAlerts(department).then(alerts=>{
+                const room = department.toLowerCase();
+                logStd(`Contacting ${room} with ${alerts.length} alerts`);
+                io.in(room).emit('new-alert', {alerts});
+            });
+        })
     });
 
     cron.schedule('0 */1 * * * *', _=>{ //Check chat

@@ -29,6 +29,9 @@ const rowTemplate = `<div class="alert">
     <div class="alert-type"></div>
     <div class="alert-text"></div>
     <div class="alert-date"></div>
+    <div class="alert-title"></div>
+    <div class="alert-arrow">
+    </div>
 </div>
 `
 /*<% alerts.forEach(alert=>{ %>
@@ -87,17 +90,13 @@ class Alert extends HTMLElement {
         this._updateData = data=>{
             this.querySelector('.alert-department').innerHTML= data.department;
             this.querySelector('.alert-type').setAttribute('title', data.type);
-            if ( data.type == 'Absence' ){
-                data.type = '<ion-icon name="thermometer-sharp"></ion-icon>'
-            }
-            else if ( data.type == 'Channel Chat'){
-                data.type = '<ion-icon name="chatbox-ellipses-sharp"></ion-icon>'
-            }
             this.querySelector('.alert-type').innerHTML= data.type;
             this.setAttribute('data-updated', this.updated);
             this.querySelector('.alert').setAttribute('data-closed', data.closed)
             this.querySelector('.alert-date').innerHTML= moment(data.date).format('MMM Do HH:mm');
             this.querySelector('.alert-text').innerHTML= data.text;
+            this.querySelector('.alert-title').innerHTML= data.title;
+            this.querySelector('.alert-type').innerHTML= data.icon;
         }
         
         
@@ -105,31 +104,28 @@ class Alert extends HTMLElement {
     }
     connectedCallback(){
         const closed = this.getAttribute('closed');
-        this.updated = moment(this.getAttribute('updated')).unix();
         const department = this.getAttribute('department');
         let type = this.getAttribute('type');
         const text = this.getAttribute('text');
         const date = this.getAttribute('date');
         const top = this.getAttribute('top');
+        const title = this.getAttribute('title')
+        const icon = this.getAttribute('icon');
         //this.attachShadow({mode: 'open'});
         //const shadow = this.shadowRoot;
         
         if (!this.moved){
             this.moved = true;
+            this.updated = moment(this.getAttribute('updated')).unix();
             this.innerHTML = rowTemplate;
             this.querySelector('.alert-department').innerHTML= department;
             this.querySelector('.alert-type').setAttribute('title', type);
-            if ( type == 'Absence' ){
-                type = '<ion-icon name="thermometer-sharp"></ion-icon>'
-            }
-            else if ( type == 'Channel Chat'){
-                type = '<ion-icon name="chatbox-ellipses-sharp"></ion-icon>'
-            }
-            this.querySelector('.alert-type').innerHTML= type;
+            this.querySelector('.alert-type').innerHTML= icon;
             this.setAttribute('updated', this.updated);
             this.querySelector('.alert').setAttribute('data-closed', closed)
-            this.querySelector('.alert-date').innerHTML= moment(date).format('MMM Do HH:mm');
+            this.querySelector('.alert-date').innerHTML= moment(date).format('DD.MM HH:mm');
             this.querySelector('.alert-text').innerHTML= text;
+            this.querySelector('.alert-title').innerHTML= title;
             if ( top ){
                 console.log(`Added ${this.id}`);
                 document.querySelector('alerts-card').shadowRoot.querySelector('.alerts-content').prepend(this)
@@ -137,6 +133,9 @@ class Alert extends HTMLElement {
             else {
                 document.querySelector('alerts-card').shadowRoot.querySelector('.alerts-content').appendChild(this)
             }
+            this.querySelector('.alert').onclick = _=>{
+                this.querySelector('.alert').classList.toggle('open')
+            };
             
         }
         
