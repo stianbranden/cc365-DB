@@ -64,7 +64,7 @@ const processResult = async result =>{
         }*/
         if (!alert && state){
             logStd(result.country + ': Alert not found, must be created');
-            alert = await createAlert(`${result.result.name}: <br> ${timeStamp} - closed due to ${state}`, result.country, false, 'Channel Chat', false, `${result.country}: Chat is closed`);
+            alert = await createAlert(`${result.result.name}: <br> ${timeStamp} - Closed due to ${state}`, result.country, false, 'Channel Chat', false, `${result.country}: Chat is closed`);
         }
         else if ( alert && state) {
             logStd(result.country + ': Alert found, still active')

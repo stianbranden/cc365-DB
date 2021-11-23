@@ -60,16 +60,17 @@ const runScheduleUpdate = _ =>{
                 //} && s.shift[0].absenceId){
                     let text;
                     let alert = false;
-                    let name = s.agent.displayName;
+                    const {agent} = s
+                    const {displayName} = agent;
                     s.shift.forEach(shift=>{
                         if (shift.absenceId){
                             if (alert) {
                                 text += '<br>'
                             } else {
-                                text = `${name} is reported with: <br>`
+                                text = `${displayName} is reported with: <br>`
                             }
                             alert = true;
-                            text += `${shift.name} from ${moment(shift.startTime).format('HH:mm')} to ${moment(shift.endTime).format('HH:mm')}`
+                            text += `${shift.name} from ${moment(shift.startTime).tz(agent.timeZone).format('HH:mmZ').substring(0,8)} to ${moment(shift.endTime).tz(agent.timeZone).format('HH:mmZ').substring(0,8)}`
                         }
                     })
 
@@ -112,7 +113,7 @@ const updateGetUpdatedSchedulesQuery = (query, unit, page = 1, pageSize = 10, no
         "PageSize": pageSize,
         "BusinessUnitId": unit.businessUnitId
     })
-    console.log('UpdateScheduleBody', query.body);
+    //console.log('UpdateScheduleBody', query.body);
     return query;
 }
 
