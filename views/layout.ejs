@@ -57,12 +57,12 @@
         <img id='photo'>
     </footer>
     <script>
-        const auth ='<%= user.id %>';
+        /*const auth ='<%= user.id %>';
         fetch(`/getPicture/${auth}`).then(response=>response.blob())
         .then(function(response) {
             let objectURL = URL.createObjectURL(response);
             document.getElementById('photo').src = objectURL;
-        })
+        })*/
     </script>
     <% } else { %>
     <footer>
