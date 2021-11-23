@@ -63,7 +63,7 @@ const processResult = async result =>{
         }*/
         if (!alert && state){
             logStd(result.country + ': Alert not found, must be created');
-            alert = await createAlert(`${result.result.name}: <br> ${left(moment().format('HH:mmZ'),8)} - closed due to ${state}`, result.country, false, 'Channel Chat', false, `${result.country}: Chat is closed`);
+            alert = await createAlert(`${result.result.name}: <br> ${substring(moment().format('HH:mmZ'),0,8)} - closed due to ${state}`, result.country, false, 'Channel Chat', false, `${result.country}: Chat is closed`);
         }
         else if ( alert && state) {
             logStd(result.country + ': Alert found, still active')
@@ -72,7 +72,7 @@ const processResult = async result =>{
             if ( result.result.inQueue > result.result.quueLimit * 0.8) {
                 if (alert.status === 'Open' ){
                     alert = await updateAlert(alert._id, {
-                        text: alert.text + `<br>${left(moment().format('HH:mmZ'),8)} - Queue is open, but close to limit`,
+                        text: alert.text + `<br>${substring(moment().format('HH:mmZ'),0,8)} - Queue is open, but close to limit`,
                         status: 'Pending'
                     })
                 }
@@ -83,7 +83,7 @@ const processResult = async result =>{
                 alert = await updateAlert(alert._id, {
                     closed: true, 
                     status: 'Closed',
-                    text: alert.text + `<br>${left(moment().format('HH:mmZ'),8)} - Queue is open`
+                    text: alert.text + `<br>${substring(moment().format('HH:mmZ'),0,8)} - Queue is open`
                 });
             }
         }
