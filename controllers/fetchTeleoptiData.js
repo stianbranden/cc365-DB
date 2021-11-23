@@ -1,7 +1,7 @@
 //require('dotenv').config();
 const req = require('request');
 const request= require('request-promise');
-const moment = require('moment');
+const moment = require('moment-timezone');
 const mongoose = require('mongoose');
 const BusinessUnit = require('../models/BusinessUnit');
 const Team = require('../models/Team');
@@ -24,7 +24,7 @@ const runScheduleUpdate = _ =>{
         let updatedSchedules = [];
         for ( let j = 0; j < businessUnits.length; j++){
             const unit = businessUnits[j];
-            const now = moment().format();
+            const now = moment().tz('Europe/Oslo').format();
             //logStd(`Running ${unit.name} page 1`);
             let query = updateGetUpdatedSchedulesQuery(getUpdatedSchedules, unit, 1, 100, now );
             let results = JSON.parse(await request(query))["Result"][0];
@@ -101,7 +101,7 @@ const runScheduleUpdate = _ =>{
 
 const updateGetUpdatedSchedulesQuery = (query, unit, page = 1, pageSize = 10, now)=>{
     query.body = JSON.stringify({
-        "ChangesFrom": moment(unit.lastScheduleUpdateTime).format(),
+        "ChangesFrom": moment(unit.lastScheduleUpdateTime).tz('Europe/Oslo').format(),
         "ChangesTo": now,
         "Page": page,
         "PageSize": pageSize,
