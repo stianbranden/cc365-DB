@@ -24,7 +24,7 @@ const runScheduleUpdate = _ =>{
         let updatedSchedules = [];
         for ( let j = 0; j < businessUnits.length; j++){
             const unit = businessUnits[j];
-            const now = moment().tz('Europe/Oslo').format();
+            const now = moment().toISOString();
             //logStd(`Running ${unit.name} page 1`);
             let query = updateGetUpdatedSchedulesQuery(getUpdatedSchedules, unit, 1, 100, now );
             const returnData = JSON.parse(await request(query))
@@ -106,7 +106,7 @@ const runScheduleUpdate = _ =>{
 
 const updateGetUpdatedSchedulesQuery = (query, unit, page = 1, pageSize = 10, now)=>{
     query.body = JSON.stringify({
-        "ChangesFrom": moment(unit.lastScheduleUpdateTime).tz('Europe/Oslo').format(),
+        "ChangesFrom": moment(unit.lastScheduleUpdateTime).toISOString(),
         "ChangesTo": now,
         "Page": page,
         "PageSize": pageSize,
