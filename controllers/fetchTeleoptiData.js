@@ -1,7 +1,7 @@
 //require('dotenv').config();
 const req = require('request');
 const request= require('request-promise');
-const moment = require('moment-timezone');
+const moment = require('moment');
 const mongoose = require('mongoose');
 const BusinessUnit = require('../models/BusinessUnit');
 const Team = require('../models/Team');
