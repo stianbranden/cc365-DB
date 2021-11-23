@@ -107,6 +107,7 @@ const updateGetUpdatedSchedulesQuery = (query, unit, page = 1, pageSize = 10, no
         "PageSize": pageSize,
         "BusinessUnitId": unit.businessUnitId
     })
+    console.log('UpdateScheduleBody', query.body);
     return query;
 }
 
