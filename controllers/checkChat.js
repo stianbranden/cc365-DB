@@ -58,12 +58,13 @@ const processResult = async result =>{
     return new Promise(async (resolve, reject)=>{
         let alert = await getRelatedAlert('Channel Chat', result.country);
         const state = isInErrorState(result.result.exchange_slug, result.result.agents);
+        const timeStamp = moment().format('HH:mmZ').substring(0,8);
        /* if (result.country == 'Finland' ){
             logStd(JSON.stringify({alert, state,slug: result.exchange_slug, result}))
         }*/
         if (!alert && state){
             logStd(result.country + ': Alert not found, must be created');
-            alert = await createAlert(`${result.result.name}: <br> ${substring(moment().format('HH:mmZ'),0,8)} - closed due to ${state}`, result.country, false, 'Channel Chat', false, `${result.country}: Chat is closed`);
+            alert = await createAlert(`${result.result.name}: <br> ${timeStamp} - closed due to ${state}`, result.country, false, 'Channel Chat', false, `${result.country}: Chat is closed`);
         }
         else if ( alert && state) {
             logStd(result.country + ': Alert found, still active')
@@ -72,7 +73,7 @@ const processResult = async result =>{
             if ( result.result.inQueue > result.result.quueLimit * 0.8) {
                 if (alert.status === 'Open' ){
                     alert = await updateAlert(alert._id, {
-                        text: alert.text + `<br>${substring(moment().format('HH:mmZ'),0,8)} - Queue is open, but close to limit`,
+                        text: alert.text + `<br>${timeStamp} - Queue is open, but close to limit`,
                         status: 'Pending'
                     })
                 }
@@ -83,7 +84,7 @@ const processResult = async result =>{
                 alert = await updateAlert(alert._id, {
                     closed: true, 
                     status: 'Closed',
-                    text: alert.text + `<br>${substring(moment().format('HH:mmZ'),0,8)} - Queue is open`
+                    text: alert.text + `<br>${timeStamp} - Queue is open`
                 });
             }
         }
