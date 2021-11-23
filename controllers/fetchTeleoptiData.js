@@ -95,7 +95,7 @@ const runScheduleUpdate = _ =>{
         
     } catch (error) {
         reject(error);
-        //logErr(error, false);
+        logErr(error, false);
     }})
 }
 
