@@ -93,7 +93,7 @@ class Alert extends HTMLElement {
             this.querySelector('.alert-type').innerHTML= data.type;
             this.setAttribute('data-updated', this.updated);
             this.querySelector('.alert').setAttribute('data-closed', data.closed)
-            this.querySelector('.alert-date').innerHTML= moment(data.date).format('MMM Do HH:mm');
+            this.querySelector('.alert-date').innerHTML= moment(data.date).format('DD.MM HH:mm');
             this.querySelector('.alert-text').innerHTML= data.text;
             this.querySelector('.alert-title').innerHTML= data.title;
             this.querySelector('.alert-type').innerHTML= data.icon;
