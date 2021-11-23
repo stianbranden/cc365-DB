@@ -155,7 +155,7 @@
 @media only screen and (min-width: $big-size){
     .alert {
         padding: 0.5rem 2rem;
-        grid-template-columns: 4rem 5fr 5fr;
+        grid-template-columns: 2rem 5fr 5fr 2rem; 
         .alert-type {
             font-size: 1.5rem;
         }

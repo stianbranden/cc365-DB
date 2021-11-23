@@ -584,8 +584,8 @@ if (listeners && listeners.indexOf('alerts') >= 0){
                     type: alert.alerttype,
                     text: alert.text,
                     date: alert.date,
-                    title: data.title,
-                    icon: data.icon
+                    title: alert.title,
+                    icon: alert.icon
                 };
             }
         });
