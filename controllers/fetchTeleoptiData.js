@@ -27,7 +27,12 @@ const runScheduleUpdate = _ =>{
             const now = moment().tz('Europe/Oslo').format();
             //logStd(`Running ${unit.name} page 1`);
             let query = updateGetUpdatedSchedulesQuery(getUpdatedSchedules, unit, 1, 100, now );
-            let results = JSON.parse(await request(query))["Result"][0];
+            const returnData = JSON.parse(await request(query))
+            const errors = returnData["Errors"];
+            if (errors.length > 0){
+                logErr(JSON.stringify(errors));
+            }
+            let results = returnData["Result"][0];
             //logStd(results)
             updatedSchedules = [...updatedSchedules, ...results["Schedules"]];
             if ( results["TotalPages"] > 1 ){
