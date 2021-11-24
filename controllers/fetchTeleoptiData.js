@@ -70,7 +70,7 @@ const runScheduleUpdate = _ =>{
                                 text = `${displayName} is reported with: <br>`
                             }
                             alert = true;
-                            text += `${shift.name} from ${moment(shift.startTime).tz(agent.timeZone).format('HH:mmZ').substring(0,8)} to ${moment(shift.endTime).tz(agent.timeZone).format('HH:mmZ').substring(0,8)}`
+                            text += `${shift.name} from ${moment(shift.startTime).tz(agent.timeZone).format('HH:mm')} to ${moment(shift.endTime).tz(agent.timeZone).format('HH:mm')} (${moment().tz(agent.timeZone).format('z')})`
                         }
                     })
 
