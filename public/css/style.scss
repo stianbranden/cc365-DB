@@ -24,14 +24,14 @@ footer {
             color: $bar-font-color;
             display: block;
         }
-    }
+    } 
 
     &.clicked {
         width: 100%;
         div {
             display: block;
             color: $bar-font-color;
-        }
+        } 
     }
     
     &.loggedin {
