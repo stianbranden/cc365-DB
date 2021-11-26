@@ -17,7 +17,44 @@ alertsTemplate.innerHTML = `
         <!-- Modal content -->
         <div class="modal-content">
             <span id="closeAlertWriter" class="close">&times;</span>
-            <p>Some text in the Modal..</p>
+            <div class="modal-header">Create log</div>
+            <div class="modal-subtext">Logs should only contain information related to events and decisions made<br>Do not enter information related to employees or customers</div>
+            <form>
+                <label for="type">Select type of log/event</label>
+                <select id="type" name="type">
+                    <option value="System Outage">System outage</option>
+                    <option value="Power Outage">Power Outage</option>
+                    <option value="Force Majeure event">Force Majeure event</option>
+                    <option value="Intraday log" selected>Intraday log</option>
+                </select>
+                <label for="status">Status</label>
+                <select id="status" name="status">
+                    <option value="Opened" selected>Opened</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Closed">Closed</option>
+                </select>
+
+                <div class="department-selector">
+                    <span>Select departments</span>
+                    <div>
+                        <input type="checkbox" id="log-denmark">
+                        <label for="log-denmark">Denmark</label>
+                        <input type="checkbox" id="log-finland">
+                        <label for="log-finland">Finland</label>
+                        <input type="checkbox" id="log-norway">
+                        <label for="log-norway">Norway</label>
+                        <input type="checkbox" id="log-sweden">
+                        <label for="log-sweden">Sweden</label>
+                        <input type="checkbox" id="log-kitchen">
+                        <label for="log-kitchen">Kitchen</label>
+                        <input type="checkbox" id="log-helpdesk">
+                        <label for="log-helpdesk">Helpdesk</label>
+                    </div>
+                </div>
+
+                <textarea id="text" name="text" rows=4 placeholder="Write log text"></textarea>
+                <input type="submit" value="Create log">
+            </form>
         </div>
 
     </div>

@@ -89,23 +89,115 @@ body {
   border: none;
   font-size: 1rem;
   height: 2rem;
+  cursor: pointer;
 }
 
 .alerts .modal-content {
+  position: relative;
   background-color: #fefefe;
   margin: 15% auto;
   /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
-  width: 80%;
+  width: 50%;
   /* Could be more or less, depending on screen size */
 }
 
+.alerts .modal-content .modal-header {
+  background-color: #141b4d;
+  color: #fff;
+  font-size: 3rem;
+  padding: 0.5rem;
+}
+
+.alerts .modal-content .modal-subtext {
+  font-style: italic;
+  padding: 0.5rem;
+}
+
+.alerts .modal-content form {
+  border: 1px solid #141b4d;
+  padding: 0.5rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.alerts .modal-content form label {
+  font-size: 1.2rem;
+  margin-top: 0.5rem;
+}
+
+.alerts .modal-content form select {
+  padding: 0.5rem 0;
+  border: none;
+}
+
+.alerts .modal-content form .department-selector {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin-top: 0.5rem;
+}
+
+.alerts .modal-content form .department-selector span {
+  font-size: 1.2rem;
+  -ms-flex-preferred-size: 100%;
+      flex-basis: 100%;
+}
+
+.alerts .modal-content form .department-selector > div {
+  margin-top: 0.5rem;
+}
+
+.alerts .modal-content form .department-selector input[type=checkbox] {
+  display: none;
+}
+
+.alerts .modal-content form .department-selector input[type=checkbox] + label {
+  padding: 0.5rem;
+  display: inline-block;
+  border: 1px solid #141b4d;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.alerts .modal-content form .department-selector input[type=checkbox]:checked + label {
+  background-color: #141b4d;
+  color: white;
+}
+
+.alerts .modal-content form textarea {
+  margin: 1rem 0;
+  padding: 0.5rem;
+}
+
+.alerts .modal-content form input[type=submit] {
+  cursor: pointer;
+  background-color: #141b4d;
+  color: #fff;
+  padding: 1rem;
+  border: none;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
 .alerts .close {
-  color: #aaa;
-  float: right;
+  color: #141b4d;
   font-size: 28px;
   font-weight: bold;
+  cursor: pointer;
+  position: absolute;
+  right: 0rem;
+  top: -0.5rem;
 }
 
 .alerts .close:hover,
