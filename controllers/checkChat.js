@@ -58,10 +58,11 @@ const processResult = async result =>{
     return new Promise(async (resolve, reject)=>{
         let alert = await getRelatedAlert('Channel Chat', result.country);
         const state = isInErrorState(result.result.exchange_slug, result.result.agents);
-        const timeStamp = moment().format('HH:mm');
+        let timeStamp = moment().tz('Europe/Oslo').format('HH:mm');
         let timeZone = moment().tz('Europe/Oslo').format('z')
         if (result.country == 'Finland'){
             timeZone = moment().tz('Europe/Helsinki').format('z')
+            timeStamp = moment().tz('Europe/Helsinki').format('HH:mm')
         }
        /* if (result.country == 'Finland' ){
             logStd(JSON.stringify({alert, state,slug: result.exchange_slug, result}))
