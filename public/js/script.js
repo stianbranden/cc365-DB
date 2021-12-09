@@ -578,7 +578,7 @@ if (listeners && listeners.indexOf('alerts') >= 0){
             }
             else {
                 div.data = {
-                    closed: alert.closed!='false',
+                    closed: alert.closed,
                     updated: alert.updatedAt,
                     department: alert.department,
                     type: alert.alerttype,
