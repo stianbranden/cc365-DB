@@ -10,6 +10,36 @@ const {getUserById} = require('./getUserData');
 
 const {getPhoto, getProfileData} = require('./config');
 
+const genAccessLevel = (label='Alerts', alter='root', path)=>{
+  if (!path){
+    path = `/${label.toLowerCase()}/${alter}`
+  }
+  return {
+    label,
+    path,
+    alter
+  }
+}
+
+const generateCustomAccess = (role, agent, upn)=>{
+  const custom_access = [];
+  if (role === 'CCC STAFFING' || role === 'CCC MANAGER' || upn === 'stianbra@elkjop.no'){
+    custom_access.push(genAccessLevel());
+    custom_access.push(genAccessLevel('Alerts', 'denmark'));
+    custom_access.push(genAccessLevel('Alerts', 'finland'));
+    custom_access.push(genAccessLevel('Alerts', 'norway'));
+    custom_access.push(genAccessLevel('Alerts', 'sweden'));
+    custom_access.push(genAccessLevel('Alerts', 'helpdesk'));
+    custom_access.push(genAccessLevel('Alerts', 'kitchen'));
+  }
+
+  if ( upn === 'stianbra@elkjop.no' ){
+    custom_access.push(genAccessLevel('Admin', 'new', '/admin'));
+  }
+
+  return custom_access;
+}
+
 module.exports = function (passport) {
   passport.use(
     new AzureStrategy({
@@ -42,6 +72,8 @@ module.exports = function (passport) {
             if (agent){
               agentId = agent._id;
             }
+
+            const custom_access = generateCustomAccess(state, agent, profile.upn);
             
             let user = await User.findById(profile.upn);
             if (user){
@@ -52,7 +84,8 @@ module.exports = function (passport) {
                 photo,
                 role: state,
                 title: jobTitle,
-                access_token: accessToken
+                access_token: accessToken,
+                custom_access
               }, {new: true})
             }
             else {
@@ -65,7 +98,8 @@ module.exports = function (passport) {
                     title: jobTitle,
                     given_name: profile.given_name,
                     family_name: profile.family_name,
-                    access_token: accessToken
+                    access_token: accessToken,
+                    custom_access
                 });
             }
             if ( NODE_ENV != 'Production' ){

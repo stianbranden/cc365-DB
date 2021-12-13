@@ -30,7 +30,12 @@ const UserSchema = new mongoose.Schema({
         required: true,
         type: Date,
         default: Date.now
-    }
+    },
+    custom_access: [{
+        label: String,
+        path: String,
+        alter: String
+    }]
 },{
     toJSON: { virtuals: true }, // So `res.json()` and other `JSON.stringify()` functions include virtuals
     toObject: { virtuals: true } // So `toObject()` output includes virtuals

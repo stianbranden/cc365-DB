@@ -32,13 +32,13 @@
             <div class="navitems no-anim closed">
             <% } %>
                 <ul>
-                    <li class="wide"><a href="/">Nordic</a></li>
-                    <li><a href="/denmark">Denmark</a></li>
-                    <li><a href="/finland">Finland</a></li>
-                    <li><a href="/norway">Norway</a></li>
-                    <li><a href="/sweden">Sweden</a></li>
-                    <li><a href="/helpdesk">Helpdesk</a></li>
-                    <li><a href="/kitchen">Kitchen&Interior</a></li>
+                    <li class="wide" data-alter="root"><a href="/">Nordic</a></li>
+                    <li data-alter="denmark"><a href="/denmark">Denmark</a></li>
+                    <li data-alter="finland"><a href="/finland">Finland</a></li>
+                    <li data-alter="norway"><a href="/norway">Norway</a></li>
+                    <li data-alter="sweden"><a href="/sweden">Sweden</a></li>
+                    <li data-alter="helpdesk"><a href="/helpdesk">Helpdesk</a></li>
+                    <li data-alter="kitchen"><a href="/kitchen">Kitchen&Interior</a></li>
                     <% if (locals.user) {%>
                     <li><a href="/auth/logout">Log out</a></li>
                     <% } else { %>

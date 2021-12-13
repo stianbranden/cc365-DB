@@ -238,6 +238,30 @@ header .navitems.open li {
   -webkit-transition: all 125ms ease-in-out;
   transition: all 125ms ease-in-out;
   width: 60%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+header .navitems.open li .alternative {
+  background-color: #78be20;
+  display: none;
+  font-size: 0.8rem;
+  border-radius: 0.5rem;
+}
+
+header .navitems.open li .alternative:hover {
+  font-size: 1rem;
+}
+
+header .navitems.open li:hover .alternative {
+  display: block;
 }
 
 header .navitems.open li a {

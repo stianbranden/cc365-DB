@@ -17,6 +17,23 @@ burgermenu.addEventListener('click', ()=>{
 
 document.querySelector('.container').classList.add(key);
 
+fetch('/user').then(response=>response.json()).then(user=>{
+    //console.log(user.custom_access);
+    user.custom_access.forEach(access=>{
+      //  console.log(access.alter);
+        if ( access.alter === 'new' ){ //New links
+        //    console.log('new', access);
+            document.querySelector('.navitems ul').insertAdjacentHTML('beforeend', `<li>
+                <a href='${access.path}'>${access.label}</a>
+            </li>`);
+        } else {
+            const li = document.querySelector(`[data-alter='${access.alter}']`)
+            if ( li ) li.insertAdjacentHTML( 'beforeend', `<a class='alternative' href='${access.path}'>${access.label}</a>`)
+        }
+    });
+})
+
+
 /*
     ----------------------
         Footer Menu Controls
@@ -546,10 +563,16 @@ window.onclick = e=> {
         modal.classList.toggle('open');;
     }
 }*/
+let lis = []
+if (typeof listeners != 'undefined'){
+    lis = listeners;
+}
 
-if (listeners && listeners.indexOf('alerts') >= 0){
+
+
+if (lis && lis.indexOf('alerts') >= 0){
     socket.on('new-alert', data=>{
-        console.log('new-alert', data);
+        //console.log('new-alert', data);
         data.alerts.forEach(alert=>{
             let div = document.querySelector('alerts-card').shadowRoot.getElementById(alert._id);
             let updateOrNew = 'update'

@@ -166,6 +166,24 @@ header {
                 background-color: $bar-font-color;
                 transition: all 125ms ease-in-out;
                 width: 60%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                .alternative {
+                    background-color: $secondary-brand-color;
+                    display: none;
+                    font-size: 0.8rem;
+                    border-radius: 0.5rem;
+
+                    &:hover {
+                        font-size: 1rem;
+                    }
+                }
+
+                &:hover .alternative {
+                    display: block;
+                }
                 
 
                 a {
