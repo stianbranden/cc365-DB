@@ -568,8 +568,6 @@ if (typeof listeners != 'undefined'){
     lis = listeners;
 }
 
-
-
 if (lis && lis.indexOf('alerts') >= 0){
     socket.on('new-alert', data=>{
         //console.log('new-alert', data);
