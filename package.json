@@ -23,6 +23,7 @@
     "mongoose": "^6.0.8",
     "node-cron": "^3.0.0",
     "nodejs-base64-encode": "^1.1.0",
+    "os-utils": "0.0.14",
     "passport": "^0.4.1",
     "passport-azure-ad-oauth2": "0.0.4",
     "request": "^2.88.2",

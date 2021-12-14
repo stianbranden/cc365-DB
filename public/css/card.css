@@ -201,6 +201,23 @@ body {
   font-size: 1.3rem;
 }
 
+.card .card-main.card-admin {
+  z-index: 1;
+  overflow: hidden;
+  font-size: 0.85rem;
+}
+
+.card .card-main.card-admin th {
+  text-align: right;
+  width: 40%;
+  font-size: 0.75rem;
+}
+
+.card .card-main.card-admin td {
+  text-align: right;
+  padding-right: 3rem;
+}
+
 .card .card-main {
   background-color: #fff;
   -webkit-transform: translate(0%, 0%);

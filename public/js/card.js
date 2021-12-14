@@ -1,3 +1,5 @@
+//const moment = require('moment-timezone');
+
 function msToTime(ms){
     let s = Math.round(ms/1000);
     if ( s < 100 ){
@@ -206,6 +208,57 @@ function getMainElement(type, num, key){
     return mainTemp;
 }
 
+const adminTemp = document.createElement('template');
+adminTemp.innerHTML = `
+<link rel="stylesheet" type="text/css" href="/css/card.css" />
+<div class="card">
+    <div class="card-header">
+        <ion-icon></ion-icon>
+        <h2>Admin data</h2>
+        <ion-icon></ion-icon>
+    </div>
+    <div class="card-main card-admin">
+        <table>
+            <tr><th>Plattform</th><td id='plattform'></td></tr>
+            <tr><th>CPU Usage</th><td id='cpuUsage'></td></tr>
+            <tr><th>CPU Free</th><td id='cpuFree'></td></tr>
+            <tr><th>#CPUs</th><td id='cpuCount'></td></tr>
+            <tr><th>Free memory</th><td id='freeMem'></td></tr>
+            <tr><th>Total memory</th><td id='totalMem'></td></tr>
+            <tr><th>System uptime</th><td id='sysUptime'></td></tr>
+            <tr><th>Process uptime</th><td id='processUptime'></td></tr>
+            <tr><th>Last updated</th><td id='time'></td></tr>
+        </table>
+    </div>
+    <div class="card-sub card-menu">
+        <div class="arrow-up">
+            <!--<ion-icon name="chevron-up-outline"></ion-icon>
+            <ion-icon name="chevron-back-outline"></ion-icon>-->
+        </div>
+        <div class="center active">
+            <ion-icon name="build"></ion-icon>
+        </div>
+        <div class="arrow-down">
+            <!--<ion-icon name="chevron-down-outline"></ion-icon>
+            <ion-icon name="chevron-forward-outline"></ion-icon>-->
+        </div>
+    </div>
+</div>`
+
+/*
+                cpuUsage: await getCpuUsage(),
+                cpuFree: await getCpuFree(),
+                plattform: os.platform(),
+                cpuCount: os.cpuCount(),
+                freeMem: Math.floor(os.freemem()), 
+                totalMem: Math.floor(os.totalmem()),
+                freeMemPercentage: Math.floor(os.freememPercentage()*100),
+                sysUptime: os.sysUptime(),
+                processUptime: Math.floor(os.processUptime()),
+                loadAvg10Min: os.loadavg(10),
+                time: moment().tz('Europe/Oslo').toISOString()
+
+*/
 
 
 class Card extends HTMLElement {
@@ -649,7 +702,63 @@ function getSubMenuElement(type, baseIcon, position){
     return menu;
 }
 
+class AdminCard extends HTMLElement{
+    set data(data){
+        this._update(data);
+    }
 
+    constructor(){
+        super();
+        this.attachShadow({mode: 'open'});
+        this.shadowRoot.appendChild(adminTemp.content.cloneNode(true));
+
+        this._update = (data)=>{
+
+            Object.keys(data).forEach(key=>{
+                const td = this.shadowRoot.getElementById(key);
+                if ( td ) td.innerText = formatAdminData(key, data[key]);
+            });
+
+            /*
+                cpuUsage: await getCpuUsage(),
+                cpuFree: await getCpuFree(),
+                plattform: os.platform(),
+                cpuCount: os.cpuCount(),
+                freeMem: Math.floor(os.freemem()), 
+                totalMem: Math.floor(os.totalmem()),
+                freeMemPercentage: Math.floor(os.freememPercentage()*100),
+                sysUptime: os.sysUptime(),
+                processUptime: Math.floor(os.processUptime()),
+                loadAvg10Min: os.loadavg(10),
+                time: moment().tz('Europe/Oslo').toISOString()
+            */
+        }
+    }
+}
+
+const formatAdminData = (key, value) =>{
+    const dataMap = {
+        cpuUsage: 'percentage',
+        cpuFree: 'percentage',
+        plattform: 'string',
+        cpuCount: 'integer',
+        freeMem: 'integer',
+        totalMem: 'integer',
+        freeMemPercentage: 'percentage',
+        sysUptime: 'seconds',
+        processUptime: 'seconds',
+        loadAvg10Min: 'integer',
+        time: 'datetime'
+    }
+
+    const v = dataMap[key];
+    if (v =='percentage') return value + '%';
+    if ( v == 'seconds') return msToTime(Number(value)*1000);
+    if ( v == 'datetime' ) return moment(value).format('DD/MM/YY HH:mm')
+    return value;
+}
 
 window.customElements.define('queue-card', Card);
 window.customElements.define('summary-card', SummaryCard);
+window.customElements.define('admin-card', AdminCard);
+

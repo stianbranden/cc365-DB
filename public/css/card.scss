@@ -120,6 +120,20 @@
         }
 
     }
+    .card-main.card-admin {
+        z-index: 1;
+        overflow: hidden;
+        font-size: 0.85rem;
+        th {
+            text-align: right;
+            width: 40%;
+            font-size: 0.75rem;
+        }
+        td {
+            text-align: right;
+            padding-right: 3rem;
+        }
+    }
     .card-main {
         background-color: $bar-font-color;
         transform: translate(0%, 0%);

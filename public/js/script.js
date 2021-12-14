@@ -568,6 +568,17 @@ if (typeof listeners != 'undefined'){
     lis = listeners;
 }
 
+if ( lis && lis.indexOf('admin')>=0 ){
+    fetch('/admindata').then(response=>response.json()).then(data=>{
+        document.querySelector('admin-card').data = data;
+    })
+
+    socket.on('admin-data', data=>{
+        console.log(data);
+        document.querySelector('admin-card').data = data;
+    });
+}
+
 if (lis && lis.indexOf('alerts') >= 0){
     socket.on('new-alert', data=>{
         //console.log('new-alert', data);

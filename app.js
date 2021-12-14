@@ -26,9 +26,10 @@ const morgan = require('morgan')
 const cron = require('node-cron');
 const {units} = require('./config')
 const queueUpdateFrequency = process.env.UPDATE_FREQUENCY || 10000;
-const {NODE_ENV, SESSION_SECRET, MONGODBURI, MONGODBNAME, TELEOPTI_UPDATE_FREQUENCY} = process.env;
-const {logStd,logSys,logErr} = require('./controllers/logger');
+const {NODE_ENV, SESSION_SECRET, MONGODBURI, MONGODBNAME, TELEOPTI_UPDATE_FREQUENCY, OSUPDATEFREQ} = process.env;
+const {logStd,logSys,logErr, logTab} = require('./controllers/logger');
 const {getAlerts} = require('./controllers/getAlerts');
+const {getOsData} = require('./controllers/getOsData');
 const { checkChatStatus } = require('./controllers/checkChat');
 /*Setup EJS*/
 app.set('view engine', 'ejs');
@@ -190,6 +191,13 @@ server.listen(process.env.PORT, ()=>{
     cron.schedule('0 */1 * * * *', _=>{ //Check chat
         checkChatStatus();
     });
+
+    cron.schedule(`0 */${OSUPDATEFREQ} * * * *`, _=>{
+        getOsData().then(osData=>{
+            logTab(osData);
+            io.in('nordic').emit('admin-data', osData);
+        });
+    })
 
 });
 

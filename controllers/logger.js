@@ -24,8 +24,17 @@ const logErr = (text, devOnly = true)=>{
     }
 }
 
+const logTab = (obj, devOnly = true)=>{
+    const time = moment().format('YYYY-MM-DD HH:mm:ss')
+    if ( !devOnly || ( NODE_ENV != 'production' ) ){
+        console.log(`${_.green(time)}`);
+        console.table(obj);
+    }
+}
+
 module.exports = {
     logStd,
     logSys,
-    logErr
+    logErr,
+    logTab
 }

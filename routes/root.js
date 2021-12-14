@@ -4,6 +4,8 @@ const User = require('../models/User');
 const {getPhoto} = require('../controllers/config')
 const request= require('request-promise');
 const {getAlerts} = require('../controllers/getAlerts');
+const {getOsData} = require('../controllers/getOsData');
+const { logErr } = require('../controllers/logger.js');
 
 function capitalizeFLetter(str) {
     return str[0].toUpperCase() + str.slice(1);
@@ -83,9 +85,20 @@ router.get('/admin', async (req, res)=>{
     else if (!foundAccess(req.user, '/admin')){
         res.redirect('/' + unit)
     } else {
-        res.send('Arrived at admin page')
+        const alerts = await getAlerts();
+        res.render('admin', {pageTitle: 'nordic', alerts})
     }
 })
+
+router.get('/admindata', async (req, res)=>{
+    try {
+        const osData = await getOsData();
+        res.send(osData);
+    } catch (error) {
+        logErr(error.message);
+        res.send({});
+    }
+});
 
 router.get('/user', async (req, res)=>{
     res.send(req.user || {custom_access:[]});
