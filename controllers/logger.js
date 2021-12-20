@@ -24,10 +24,10 @@ const logErr = (text, devOnly = true)=>{
     }
 }
 
-const logTab = (obj, devOnly = true)=>{
+const logTab = (obj, title = 'Table data', devOnly = true)=>{
     const time = moment().format('YYYY-MM-DD HH:mm:ss')
     if ( !devOnly || ( NODE_ENV != 'production' ) ){
-        console.log(`${_.green(time)}`);
+        console.log(`${_.green(time)} - ${title}`);
         console.table(obj);
     }
 }

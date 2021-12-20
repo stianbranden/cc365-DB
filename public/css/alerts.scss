@@ -85,9 +85,15 @@
                 //margin-left: 1rem;
                 border: none;
                 //background-color: $color-light-grey;
-                option {
-                    //background-color: $brand-color;
-                }
+               
+            }
+            .error {
+                border: 1px solid $color-bad;
+            }
+            .error-text {
+                margin-bottom: 1rem;
+                height: 1rem;
+                color: $color-bad;
             }
             .department-selector {
                 display: flex;

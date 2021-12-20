@@ -137,6 +137,16 @@ body {
   border: none;
 }
 
+.alerts .modal-content form .error {
+  border: 1px solid #d52b1e;
+}
+
+.alerts .modal-content form .error-text {
+  margin-bottom: 1rem;
+  height: 1rem;
+  color: #d52b1e;
+}
+
 .alerts .modal-content form .department-selector {
   display: -webkit-box;
   display: -ms-flexbox;

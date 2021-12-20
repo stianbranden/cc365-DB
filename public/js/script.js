@@ -574,14 +574,13 @@ if ( lis && lis.indexOf('admin')>=0 ){
     })
 
     socket.on('admin-data', data=>{
-        console.log(data);
+        //console.log(data);
         document.querySelector('admin-card').data = data;
     });
 }
 
 if (lis && lis.indexOf('alerts') >= 0){
     socket.on('new-alert', data=>{
-        //console.log('new-alert', data);
         data.alerts.forEach(alert=>{
             let div = document.querySelector('alerts-card').shadowRoot.getElementById(alert._id);
             let updateOrNew = 'update'
@@ -589,24 +588,8 @@ if (lis && lis.indexOf('alerts') >= 0){
                 updateOrNew = 'new';
                 
             }
-            /*else if (alert.updatedAt > div.getAttribute('data-updated')){
-                updateOrNew = 'update'
-            }*/
             if ( updateOrNew == 'new' ){
-                console.log(`New ${alert._id}`);
-                div = document.createElement('alert-row');
-                div.id = alert._id;
-                div.setAttribute('closed', alert.closed)
-                div.setAttribute('updated', alert.updatedAt)
-                div.setAttribute('department', alert.department)
-                div.setAttribute('type', alert.alerttype)
-                div.setAttribute('text', alert.text)
-                div.setAttribute('date', alert.date)
-                div.setAttribute('top', true)
-                div.setAttribute('title', alert.title)
-                div.setAttribute('icon', alert.icon)
-
-                document.querySelector('alerts-card').prepend(div);
+                document.querySelector('alerts-card').addAlert = alert;
             }
             else {
                 div.data = {

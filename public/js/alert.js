@@ -27,32 +27,33 @@ alertsTemplate.innerHTML = `
                     <option value="Force Majeure event">Force Majeure event</option>
                     <option value="Intraday log" selected>Intraday log</option>
                 </select>
-                <label for="status">Status</label>
-                <select id="status" name="status">
-                    <option value="Opened" selected>Opened</option>
+                <label for="status" hidden>Status</label>
+                <select id="status" name="status" hidden>
+                    <option value="Open">Open</option>
                     <option value="Pending">Pending</option>
-                    <option value="Closed">Closed</option>
+                    <option value="Closed" selected>Closed</option>
                 </select>
 
                 <div class="department-selector">
                     <span>Select departments</span>
                     <div>
-                        <input type="checkbox" id="log-denmark">
+                        <input type="checkbox" id="log-denmark" name="Denmark">
                         <label for="log-denmark">Denmark</label>
-                        <input type="checkbox" id="log-finland">
+                        <input type="checkbox" id="log-finland" name="Finland">
                         <label for="log-finland">Finland</label>
-                        <input type="checkbox" id="log-norway">
+                        <input type="checkbox" id="log-norway" name="Norway">
                         <label for="log-norway">Norway</label>
-                        <input type="checkbox" id="log-sweden">
+                        <input type="checkbox" id="log-sweden" name="Sweden">
                         <label for="log-sweden">Sweden</label>
-                        <input type="checkbox" id="log-kitchen">
+                        <input type="checkbox" id="log-kitchen" name="Kitchen">
                         <label for="log-kitchen">Kitchen</label>
-                        <input type="checkbox" id="log-helpdesk">
+                        <input type="checkbox" id="log-helpdesk" name="Helpdesk">
                         <label for="log-helpdesk">Helpdesk</label>
                     </div>
                 </div>
 
                 <textarea id="text" name="text" rows=4 placeholder="Write log text"></textarea>
+                <div class="error-text"></div>
                 <input type="submit" value="Create log">
             </form>
         </div>
@@ -90,6 +91,10 @@ const rowTemplate = `<div class="alert">
             */
 
 class Alerts extends HTMLElement {
+    set addAlert(alert){
+        this._addAlert(alert);
+    }
+
     constructor(){
         super();
         this.attachShadow({mode: 'open'});
@@ -108,10 +113,91 @@ class Alerts extends HTMLElement {
             if (e.target == modal) {
                 modal.classList.toggle('open');;
             }
+        }
+        modal.querySelector('input[type="submit"]').onclick = async e =>{
+            e.preventDefault();
+            this._verifyAndSubmit()
         } 
+
+        this._addAlert = alert =>{
+            //console.log(`New ${alert._id}`);
+            let div = document.createElement('alert-row');
+            div.id = alert._id;
+            div.setAttribute('closed', alert.closed)
+            div.setAttribute('updated', alert.updatedAt)
+            div.setAttribute('department', alert.department)
+            div.setAttribute('type', alert.alerttype)
+            div.setAttribute('text', alert.text)
+            div.setAttribute('date', alert.date)
+            div.setAttribute('top', true)
+            div.setAttribute('title', alert.title)
+            div.setAttribute('icon', alert.icon)
+
+            this.prepend(div);
+        }
+
+        this._verifyAndSubmit = id =>{
+            const shadow = this.shadowRoot;
+            //console.log(form);
+            const text = shadow.getElementById('text').value;
+            const alerttype = shadow.getElementById('type').value;
+            const status = shadow.getElementById('status').value;
+            const departments = [];
+            const checkboxes = shadow.querySelectorAll('.department-selector input');
+            checkboxes.forEach(checkbox=>{
+                if (checkbox.checked){
+                    departments.push(checkbox.getAttribute('name'));
+                }
+            });
+            let error = false;
+            let errorText = '';
+            if (departments.length === 0){
+                error = true;
+                errorText = 'Add one or more department to the log!'
+                console.error(errorText);
+                shadow.querySelector('.department-selector').classList.add('error')
+            }
+            if ( text.length === 0 ){
+                error = true;
+                errorText = 'Add log text'
+                console.error(errorText);
+                shadow.getElementById('text').classList.add('error');
+            }
+            if (error){
+                shadow.querySelector('.error-text').textContent = errorText;
+            }
+            else {
+                const body = {id, text, alerttype, status, departments}
+                console.table(body);
+                fetch('/alerts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                }).then(response=>{
+                    if ( response.ok ){
+                        shadow.querySelector('form').reset();
+                        shadow.getElementById('alertWriter').classList.toggle('open');
+                        response.json().then(data=>{
+                            data.newAlerts.forEach(alert=>{
+                                this._addAlert(alert)
+                            });
+                        
+                        });
+
+                    } else {
+
+                    }
+                    
+                });
+            }
+
+        }
         
     }
 }
+
 
 class Alert extends HTMLElement {
     set data(data){

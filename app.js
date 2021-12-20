@@ -16,6 +16,7 @@ const myStatsRoute = require('./routes/myStats');
 const authRoute = require('./routes/auth');
 const teamRoute = require('./routes/team');
 const departmentRoute = require('./routes/department');
+const alertsRoute = require('./routes/alerts');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
@@ -67,6 +68,9 @@ app.use(function (req, res, next) {
 //Static file middleware
 app.use(express.static('public'));
 
+//Body middleware
+app.use(express.json())
+
 //Logging middleware
 if (NODE_ENV !== 'production'){
     app.use(morgan('common'));
@@ -82,6 +86,7 @@ app.use('/myStats', myStatsRoute);
 app.use('/auth', authRoute);
 app.use('/team', teamRoute);
 app.use('/department', departmentRoute);
+app.use('/alerts', alertsRoute);
 
 app.use('/', rootRoute);
 
@@ -194,7 +199,7 @@ server.listen(process.env.PORT, ()=>{
 
     cron.schedule(`0 */${OSUPDATEFREQ} * * * *`, _=>{
         getOsData().then(osData=>{
-            logTab(osData);
+            logTab(osData, 'OS-Data');
             io.in('nordic').emit('admin-data', osData);
         });
     })

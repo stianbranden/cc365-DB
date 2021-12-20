@@ -49,34 +49,7 @@ router.get('/getPicture/:upn', async (req, res)=>{
 
 });
 
-router.get('/alerts', async (req, res)=>{
-    if ( !req.user ){
-        res.redirect('/');
-    }
-    else if (!foundAccess(req.user, '/alerts/root')){
-        res.redirect('/')
-    } else {
 
-        const alerts = await getAlerts();
-        res.render('alerts', {pageTitle: 'nordic', alerts});
-    }
-});
-
-router.get('/alerts/:unit', async (req, res)=>{
-    const {unit} = req.params;
-    if ( unit == 'root' ) return res.redirect('/alerts');
-
-    if ( !req.user ){
-        res.redirect('/' + unit);
-    } 
-    else if (!foundAccess(req.user, '/alerts/' + unit)){
-        res.redirect('/' + unit)
-    } 
-    else {
-        const alerts = await getAlerts(capitalizeFLetter(unit));
-        res.render('unit-alerts',{pageTitle: unit, alerts, unit, site: null} )
-    }
-})
 
 router.get('/admin', async (req, res)=>{
     if ( !req.user ){
