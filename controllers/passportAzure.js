@@ -3,12 +3,14 @@ const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const User = require('../models/User')
 const request = require('request-promise');
+const Access = require('../models/Access');
+const {logStd, logTab} = require('./logger');
 
 const {AZURE_CLIENTID, AZURE_CLIENTSECRET, NODE_ENV,HOST_URL} = process.env;
 const {getAgentWithEmail} = require('./getTeleoptiData');
 const {getUserById} = require('./getUserData');
 
-const {getPhoto, getProfileData} = require('./config');
+const { getProfileData} = require('./config');
 
 const genAccessLevel = (label='Alerts', alter='root', path)=>{
   if (!path){
@@ -21,9 +23,33 @@ const genAccessLevel = (label='Alerts', alter='root', path)=>{
   }
 }
 
-const generateCustomAccess = (role, agent, upn)=>{
+const generateCustomAccess = async (role, title, upn)=>{
   const custom_access = [];
-  if (role === 'CCC STAFFING' || role === 'CCC MANAGER' || role === 'ECC1010' || upn === 'stianbra@elkjop.no'){
+  const accesses = await Access.find();
+
+  accesses.forEach(access=>{
+    let hasAccess = []
+    access.rule.forEach((value, key)=>{
+      //logTab({key, value, role, title, upn}, 'Rule map');
+      if ( key === 'role' ) hasAccess.push(role === value);
+      if ( key === 'title' ) hasAccess.push(title === value);
+      if ( key === 'upn' ) hasAccess.push(upn === value);
+    })
+    /*logStd(hasAccess);
+    logStd(hasAccess.length);
+    logStd(hasAccess.indexOf(false));*/
+    const grantedAccess = hasAccess.length > 0 && hasAccess.indexOf(false) < 0;
+    //logStd(`Granted Access:  ${grantedAccess}`)
+    if (grantedAccess){
+      access.grant.forEach(ca=>{
+        custom_access.push(genAccessLevel(ca.label, ca.alter, ca.path));
+      });
+    }
+  })
+
+  
+  
+  /*if (role === 'CCC STAFFING' || role === 'CCC MANAGER' || role === 'ECC1010' || upn === 'stianbra@elkjop.no'){
     custom_access.push(genAccessLevel());
     custom_access.push(genAccessLevel('Alerts', 'denmark'));
     custom_access.push(genAccessLevel('Alerts', 'finland'));
@@ -35,7 +61,9 @@ const generateCustomAccess = (role, agent, upn)=>{
 
   if ( upn === 'stianbra@elkjop.no' ){
     custom_access.push(genAccessLevel('Admin', 'new', '/admin'));
-  }
+  }*/
+
+
 
   return custom_access;
 }
@@ -73,7 +101,7 @@ module.exports = function (passport) {
               agentId = agent._id;
             }
 
-            const custom_access = generateCustomAccess(state, agent, profile.upn);
+            const custom_access = await generateCustomAccess(state, jobTitle, profile.upn);
             
             let user = await User.findById(profile.upn);
             if (user){
