@@ -61,6 +61,7 @@ const runScheduleUpdate = _ =>{
                     let text;
                     let title;
                     let alert = false;
+                    let icon; 
                     const {agent} = s
                     const {displayName} = agent;
                     s.shift.forEach(shift=>{
@@ -72,8 +73,10 @@ const runScheduleUpdate = _ =>{
                             }
                             alert = true;
                             title = `${s.agent.displayName} is absent`;
+                            icon = null;
                             if ( shift.name.startsWith('Late') ){
                                 title = `${s.agent.displayName} is late`
+                                icon = '<ion-icon name="alarm-sharp"></ion-icon>'
                             }
                             text += `${shift.name} from ${moment(shift.startTime).tz(agent.timeZone).format('HH:mm')} to ${moment(shift.endTime).tz(agent.timeZone).format('HH:mm')} (${moment().tz(agent.timeZone).format('z')})`
                         }
@@ -84,7 +87,7 @@ const runScheduleUpdate = _ =>{
                         getAlertByTextAndDate(text)
                             .then(a=>{
                                 if (!a){
-                                    createAlert(text,s.agent.departmentName, true, 'Absence', true, title);
+                                    createAlert(text,s.agent.departmentName, true, 'Absence', true, title, icon);
                                 }
                             });
 
