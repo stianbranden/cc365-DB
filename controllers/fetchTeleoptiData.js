@@ -529,14 +529,21 @@ const updateOrCreateTeam = async (teleoptiTeam, businessUnit)=>{
     let team = await Team.findOne({teamId: teleoptiTeam.Id});
     if ( team ){
         team.name = teleoptiTeam.Name.split('/')[1];
-        team.departmentName = businessUnit.name == 'Finland' ? 'Finland' : teleoptiTeam.Name.split('/')[0];
+        let depname = teleoptiTeam.Name.split('/')[0];
+        if (businessUnit.name === 'Finland' && team.name === 'B2B') depname = 'Finland B2B';
+        else if (businessUnit.name === 'Finland') depname = 'Finland';
+        team.departmentName = depname;
         await team.save();
     }
     else {
+        let depname = teleoptiTeam.Name.split('/')[0];
+        if (businessUnit.name === 'Finland' && teleoptiTeam.Name.split('/')[1] === 'B2B') depname = 'Finland B2B';
+        else if (businessUnit.name === 'Finland') depname = 'Finland';
+        team.departmentName = depname;
         team = await Team.create({
             teamId: teleoptiTeam.Id,
             name: teleoptiTeam.Name.split('/')[1],
-            departmentName: businessUnit.name == 'Finland' ? 'Finland' : teleoptiTeam.Name.split('/')[0],
+            departmentName: depname,
             businessUnitName: businessUnit.name,
             businessUnitId: businessUnit.businessUnitId
         });
