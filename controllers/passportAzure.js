@@ -57,10 +57,10 @@ module.exports = function (passport) {
             });
         }
         try {
-            const photoQuery = {...getPhoto};
+            /*const photoQuery = {...getPhoto};
             photoQuery.headers["Authorization"] = 'Bearer ' + accessToken;
             const photo = Buffer.from(await request(photoQuery)).toString('base64');
-            profile.photo = photo;
+            profile.photo = photo;*/
             const profileQuery = {...getProfileData}
             profileQuery.headers["Authorization"] = 'Bearer ' + accessToken;
             const graphProfile = JSON.parse(await request(profileQuery));
@@ -81,7 +81,7 @@ module.exports = function (passport) {
               user = await User.findByIdAndUpdate(profile.upn, {
                 last_login: Date.now(),
                 agentId,
-                photo,
+                //photo,
                 role: state,
                 title: jobTitle,
                 access_token: accessToken,
@@ -93,7 +93,7 @@ module.exports = function (passport) {
                     _id: profile.upn,
                     name: profile.name,
                     agentId,
-                    photo,
+                    //photo,
                     role: state,
                     title: jobTitle,
                     given_name: profile.given_name,
