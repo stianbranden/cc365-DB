@@ -59,6 +59,7 @@ const runScheduleUpdate = _ =>{
 
                 //} && s.shift[0].absenceId){
                     let text;
+                    let title;
                     let alert = false;
                     const {agent} = s
                     const {displayName} = agent;
@@ -70,6 +71,10 @@ const runScheduleUpdate = _ =>{
                                 text = `${displayName} is reported with: <br>`
                             }
                             alert = true;
+                            title = `${s.agent.displayName} is absent`;
+                            if ( shift.name.startsWith('Late') ){
+                                title = `${s.agent.displayName} is late`
+                            }
                             text += `${shift.name} from ${moment(shift.startTime).tz(agent.timeZone).format('HH:mm')} to ${moment(shift.endTime).tz(agent.timeZone).format('HH:mm')} (${moment().tz(agent.timeZone).format('z')})`
                         }
                     })
@@ -79,7 +84,7 @@ const runScheduleUpdate = _ =>{
                         getAlertByTextAndDate(text)
                             .then(a=>{
                                 if (!a){
-                                    createAlert(text,s.agent.departmentName, true, 'Absence', true, `${s.agent.displayName} is absent`);
+                                    createAlert(text,s.agent.departmentName, true, 'Absence', true, title);
                                 }
                             });
 
