@@ -4,7 +4,10 @@ const alertsTemplate = document.createElement('template');
 alertsTemplate.innerHTML = `
 <link rel="stylesheet" type="text/css" href="/css/alerts.css" />
 <div class="alerts">
-    <div class="alerts-header">Alerts</div>
+    <div class="alerts-header">
+        <ion-icon name="notifications-off-sharp"></ion-icon>
+        <div>Alerts</div>
+    </div>
     <div class="alerts-content">
         
     </div>
@@ -97,6 +100,7 @@ class Alerts extends HTMLElement {
 
     constructor(){
         super();
+        this.notifications = false;
         this.attachShadow({mode: 'open'});
         const shadow = this.shadowRoot;
         shadow.appendChild(alertsTemplate.content.cloneNode(true));
@@ -119,7 +123,43 @@ class Alerts extends HTMLElement {
             this._verifyAndSubmit()
         } 
 
+        const bell = shadow.querySelector('.alerts-header > ion-icon');
+        bell.onclick = _=>{
+            //console.log('Bell clicked: ' + this.notifications);
+            this._toggleNotification();
+        }
+
+        this._toggleNotification = _=>{
+            if ( this.notifications ){
+                this.notifications = false;
+                bell.setAttribute('name', 'notifications-off-sharp');
+            }
+            else {
+                //console.log(Notification.permission);
+                if (Notification.permission !== "granted"){
+                    Notification.requestPermission().then(permission =>{
+                        //console.log(permission);
+                        if ( permission === 'granted' ) {
+                            this.notifications = true;
+                            bell.setAttribute('name', 'notifications-sharp');
+                        }
+                    })
+                }
+                else {
+                    this.notifications = true;
+                    bell.setAttribute('name', 'notifications-sharp');
+                }
+            }
+        }
+
         this._addAlert = alert =>{
+            //console.log(this.notifications);
+            if ( this.notifications ){
+                //const notif = 
+                new Notification(alert.title, {icon: '/images/icon.png', badge: '/images/icon.png', body: alert.text.replace('<br>', '\n')});
+                //console.log(notif);
+            }
+
             //console.log(`New ${alert._id}`);
             let div = document.createElement('alert-row');
             div.id = alert._id;

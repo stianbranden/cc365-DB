@@ -2,7 +2,7 @@
 
 .alerts {
     margin: 1rem auto;
-    width: 300px;
+    width: 400px;
     height: 600px;
     background-color: $bar-font-color;
     border-radius: 0.5rem; 
@@ -16,6 +16,21 @@
         text-align: center;
         font-size: 2rem;
         font-weight: bold;
+        display: grid;
+        grid-template-columns: 1fr 3fr 1fr;
+        align-items: center;
+        ion-icon {
+            font-size: 1rem;
+            margin-left: 0.5rem;
+            cursor: pointer;
+            color: $brand-color;
+            &[name="notifications-off-sharp"]{
+                color: $color-grey;
+                &:hover {
+                    color: $bar-font-color;
+                }
+            }
+        }
     }
     .alerts-content {
         overflow-y: scroll;
@@ -59,7 +74,7 @@
         margin: 15% auto; /* 15% from the top and centered */
         padding: 20px;
         border: 1px solid #888;
-        width: 50%; /* Could be more or less, depending on screen size */
+        width: 80%; /* Could be more or less, depending on screen size */
         .modal-header {
             background-color: $brand-color;
             color: $bar-font-color;
@@ -233,6 +248,9 @@
         height: 80vh;
         width: 90%;
         min-width: 300px;
+        .modal-content {
+            width: 50%;
+        }
     }
     
 }

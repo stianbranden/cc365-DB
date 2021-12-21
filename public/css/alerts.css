@@ -22,7 +22,7 @@ body {
 
 .alerts {
   margin: 1rem auto;
-  width: 300px;
+  width: 400px;
   height: 600px;
   background-color: #fff;
   border-radius: 0.5rem;
@@ -44,6 +44,28 @@ body {
   text-align: center;
   font-size: 2rem;
   font-weight: bold;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 3fr 1fr;
+      grid-template-columns: 1fr 3fr 1fr;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.alerts .alerts-header ion-icon {
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  color: #141b4d;
+}
+
+.alerts .alerts-header ion-icon[name="notifications-off-sharp"] {
+  color: #666666;
+}
+
+.alerts .alerts-header ion-icon[name="notifications-off-sharp"]:hover {
+  color: #fff;
 }
 
 .alerts .alerts-content {
@@ -99,7 +121,7 @@ body {
   /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
-  width: 50%;
+  width: 80%;
   /* Could be more or less, depending on screen size */
 }
 
@@ -322,6 +344,9 @@ body {
     height: 80vh;
     width: 90%;
     min-width: 300px;
+  }
+  .alerts .modal-content {
+    width: 50%;
   }
 }
 
