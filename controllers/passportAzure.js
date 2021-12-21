@@ -23,7 +23,7 @@ const genAccessLevel = (label='Alerts', alter='root', path)=>{
 
 const generateCustomAccess = (role, agent, upn)=>{
   const custom_access = [];
-  if (role === 'CCC STAFFING' || role === 'CCC MANAGER' || upn === 'stianbra@elkjop.no'){
+  if (role === 'CCC STAFFING' || role === 'CCC MANAGER' || role === 'ECC1010' || upn === 'stianbra@elkjop.no'){
     custom_access.push(genAccessLevel());
     custom_access.push(genAccessLevel('Alerts', 'denmark'));
     custom_access.push(genAccessLevel('Alerts', 'finland'));

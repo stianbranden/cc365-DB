@@ -193,6 +193,10 @@ server.listen(process.env.PORT, ()=>{
         })
     });
 
+    cron.schedule('0 42 * * * *', _=>{
+        //getQueues(true, 0).then(data=>console.log(data.data.queueStatus[1]))
+    })
+
     cron.schedule('0 */1 * * * *', _=>{ //Check chat
         checkChatStatus();
     });
