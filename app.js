@@ -201,7 +201,7 @@ server.listen(process.env.PORT, ()=>{
         checkChatStatus();
     });
 
-    cron.schedule(`0 */${OSUPDATEFREQ} * * * *`, _=>{
+    cron.schedule(`0 */${OSUPDATEFREQ} * * * *`, _=>{ //Get Admin data
         getOsData().then(osData=>{
             logTab(osData, 'OS-Data');
             io.in('nordic').emit('admin-data', osData);
