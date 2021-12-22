@@ -232,8 +232,8 @@ header .navitems.open li {
           box-shadow: 0.3rem 0.3rem 1rem rgba(0, 0, 0, 0.9);
   text-align: center;
   overflow: hidden;
-  margin: 1rem;
-  padding: 1rem 2rem;
+  margin: 0.5rem;
+  padding: 0.5rem;
   background-color: #fff;
   -webkit-transition: all 125ms ease-in-out;
   transition: all 125ms ease-in-out;
@@ -281,13 +281,13 @@ header .navitems.open li.disabled a {
   cursor: not-allowed;
 }
 
-header .navitems.open li:hover:not(.disabled) {
+header .navitems.open li:hover:not(.disabled), header .navitems.open li:focus:not(.disabled) {
   background-color: #141b4d;
   -webkit-transform: scale(1.1);
           transform: scale(1.1);
 }
 
-header .navitems.open li:hover:not(.disabled) a {
+header .navitems.open li:hover:not(.disabled) a, header .navitems.open li:focus:not(.disabled) a {
   color: #fff;
   font-weight: bold;
 }
@@ -382,6 +382,8 @@ header .navitems.open li:hover:not(.disabled) a {
     width: 20vw;
   }
   header .navitems .open ul {
+    margin: 0.5rem;
+    padding: 0.5rem;
     /*li {
                     flex-basis: 30%;
                     

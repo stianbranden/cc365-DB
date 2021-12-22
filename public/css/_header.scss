@@ -117,15 +117,15 @@ header {
         width: 2rem;
         right: 1.5rem;
         border-radius: 50%;
-                border-radius: 0;
-                //bottom: 0;
-                right: 0;
-                top: 0;
-                //top: 0;
-                width: 100vw;
-                height: 100vh;
-                transform-origin: top right;
-                transform: scale(0);
+        border-radius: 0;
+        //bottom: 0;
+        right: 0;
+        top: 0;
+        //top: 0;
+        width: 100vw;
+        height: 100vh;
+        transform-origin: top right;
+        transform: scale(0);
         transition: all 0.5s ease-in-out 1s;
 
         &.loggedin {
@@ -161,8 +161,10 @@ header {
                 box-shadow: 0.3rem 0.3rem 1rem rgba(0, 0, 0, 0.9);
                 text-align: center;
                 overflow: hidden;
-                margin: 1rem;
-                padding: 1rem 2rem;
+                margin: 0.5rem;
+                padding: 0.5rem;
+                //margin: 1rem;
+                //padding: 1rem 2rem;
                 background-color: $bar-font-color;
                 transition: all 125ms ease-in-out;
                 width: 60%;
@@ -201,7 +203,7 @@ header {
                     }
                 }
 
-                &:hover:not(.disabled) {
+                &:hover:not(.disabled), &:focus:not(.disabled) {
                     background-color: $brand-color;
                     transform: scale(1.1);
 
@@ -281,7 +283,8 @@ header {
             width: 20vw;
             
             .open ul {
-                
+                margin: 0.5rem;
+                padding: 0.5rem;
                 /*li {
                     flex-basis: 30%;
                     
