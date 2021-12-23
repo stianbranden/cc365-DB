@@ -1,5 +1,5 @@
 const {NODE_ENV} = process.env;
-const {logStd} = require('../controllers/logger');
+//const {logStd} = require('../controllers/logger');
 
 module.exports = function(req, res, next){
     if ( req.ip === '::ffff:10.7.50.43' || req.ip === '::ffff:10.7.50.44'){
