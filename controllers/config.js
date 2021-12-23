@@ -190,6 +190,22 @@ const teleoptiRequests = {
             'Authorization': 'Bearer ' + TELEOPTI_ACCESS_TOKEN,
             'Accept': 'application/json'
         }
+    },
+    getPersonAccounts: {
+        method: 'POST',
+        url: TELEOPTI_URL + '/query/PersonAccount/PersonAccountsByPersonId',
+        headers: {
+            'Authorization': 'Bearer ' + TELEOPTI_ACCESS_TOKEN,
+            'Accept': 'application/json'
+        }
+    },
+    getAbsences: {
+        method: 'POST',
+        url: TELEOPTI_URL + '/query/Absence/AllAbsences',
+        headers: {
+            'Authorization': 'Bearer ' + TELEOPTI_ACCESS_TOKEN,
+            'Accept': 'application/json'
+        }
     }
 }
 
