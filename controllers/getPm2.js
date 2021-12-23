@@ -20,6 +20,7 @@ const getPm2Data = async _=>{
                             cpu: p.monit.cpu, 
                             status: p.pm2_env.status,
                             uptime: moment(p.pm2_env.pm2_uptime).format(),
+                            createdAt: moment(p.pm2_env.createdAt).format(),
                             restarts: p.pm2_env.unstable_restarts
                         })
                     });
