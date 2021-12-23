@@ -45,6 +45,13 @@ header .brand {
   margin-left: 1em;
 }
 
+header .brand h5.beta {
+  -ms-flex-item-align: baseline;
+      align-self: baseline;
+  margin-top: 1rem;
+  margin-left: -1rem;
+}
+
 header .brand h3 {
   display: block;
   text-transform: uppercase;

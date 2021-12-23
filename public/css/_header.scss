@@ -11,6 +11,12 @@ header {
         display: flex;
         align-items: center;
         margin-left: 1em;
+
+        h5.beta {
+            align-self: baseline;
+            margin-top: 1rem;
+            margin-left: -1rem;
+        }
     }
 
     .brand h3 {

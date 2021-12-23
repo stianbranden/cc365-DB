@@ -32,6 +32,7 @@ const {logStd,logSys,logErr, logTab} = require('./controllers/logger');
 const {getAlerts} = require('./controllers/getAlerts');
 const {getOsData} = require('./controllers/getOsData');
 const { checkChatStatus } = require('./controllers/checkChat');
+const {setGlobalLocalsVariables} = require('./middleware/setLocals');
 /*Setup EJS*/
 app.set('view engine', 'ejs');
 app.use(ejsLayouts);
@@ -58,11 +59,8 @@ app.use(sessionMiddleware);
 app.use(passport.initialize())
 app.use(passport.session())
 
-// Set global var
-app.use(function (req, res, next) {
-    res.locals.user = req.user || null
-    next()
-})
+// Set global locals var
+app.use(setGlobalLocalsVariables);
 
 
 //Static file middleware

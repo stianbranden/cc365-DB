@@ -6,6 +6,7 @@ const request= require('request-promise');
 const {getAlerts} = require('../controllers/getAlerts');
 const {getOsData} = require('../controllers/getOsData');
 const { logErr } = require('../controllers/logger.js');
+const {setBeta} = require('../middleware/setLocals');
 
 function capitalizeFLetter(str) {
     return str[0].toUpperCase() + str.slice(1);
@@ -51,7 +52,7 @@ router.get('/getPicture/:upn', async (req, res)=>{
 
 
 
-router.get('/admin', async (req, res)=>{
+router.get('/admin', setBeta, async (req, res)=>{
     if ( !req.user ){
         res.redirect('/' + unit);
     } 

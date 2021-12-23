@@ -16,7 +16,11 @@
 </head>
 <body>
     <header>
-        <div class="brand"><h3><%= pageTitle %></h3><img src="/images/icon.png" alt="logo"></div>
+        <div class="brand"><h3><%= pageTitle %></h3><img src="/images/icon.png" alt="logo"> 
+        <% if (locals.beta){ %>
+            <h5 class="beta" title="This page contains beta-features">BETA</h5>
+        <% } %>
+        </div>
         <nav>
             <% if (locals.user) {%>
             <div class="menu loggedin">

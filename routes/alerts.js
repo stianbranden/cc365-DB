@@ -2,6 +2,7 @@ const router = require('express').Router();
 const {getAlerts} = require('../controllers/getAlerts');
 const {logTab} = require('../controllers/logger');
 const {createAlert} = require('../controllers/createAlert')
+const {setBeta} = require('../middleware/setLocals');
 
 //createAlert = async (text = 'Undefined', department, personrelated = false, alerttype = 'Absence', closed = true, title = null, icon=null, author = 'ccc.elkjop.com', date = new Date())=>{
 
@@ -20,7 +21,7 @@ function foundAccess(user, path){
 }
 
 
-router.get('/', async (req, res)=>{
+router.get('/', setBeta, async (req, res)=>{
     if ( !req.user ){
         res.redirect('/');
     }
@@ -51,7 +52,7 @@ router.post ('/', async (req, res)=>{
     }
 });
 
-router.get('/:unit', async (req, res)=>{
+router.get('/:unit', setBeta, async (req, res)=>{
     const {unit} = req.params;
     if ( unit == 'root' ) return res.redirect('/alerts');
 
