@@ -1,11 +1,20 @@
 require('dotenv').config();
+const {NODE_ENV, SESSION_SECRET, MONGODBURI, MONGODBNAME, TELEOPTI_UPDATE_FREQUENCY, OSUPDATEFREQ} = process.env;
 
 const {getQueues, getContacts, getSingleContact} = require('./controllers/queues');
 const {getTodaysTeleoptiData, runScheduleUpdate} = require('./controllers/fetchTeleoptiData');
 const express = require('express')
 const app = express();
 const server = require('http').Server(app);
-const io = require('socket.io')(server);
+
+const ioCors = {}
+if (NODE_ENV !== 'production') {
+    ioCors.cors ={
+        origin: "http://localhost:8080",
+        methods: ["GET", "POST"]
+    }
+}
+const io = require('socket.io')(server, ioCors);
 const moment = require('moment')
 const rootRoute = require('./routes/root');
 const contactRoute = require('./routes/contact');
@@ -27,12 +36,13 @@ const morgan = require('morgan')
 const cron = require('node-cron');
 const {units} = require('./config')
 const queueUpdateFrequency = process.env.UPDATE_FREQUENCY || 10000;
-const {NODE_ENV, SESSION_SECRET, MONGODBURI, MONGODBNAME, TELEOPTI_UPDATE_FREQUENCY, OSUPDATEFREQ} = process.env;
+
 const {logStd,logSys,logErr, logTab} = require('./controllers/logger');
 const {getAlerts} = require('./controllers/getAlerts');
 const {getOsData} = require('./controllers/getOsData');
 const { checkChatStatus } = require('./controllers/checkChat');
 const {setGlobalLocalsVariables} = require('./middleware/setLocals');
+const { getPm2Data } = require('./controllers/getPm2');
 /*Setup EJS*/
 app.set('view engine', 'ejs');
 app.use(ejsLayouts);
@@ -199,11 +209,12 @@ server.listen(process.env.PORT, ()=>{
         checkChatStatus();
     });
 
-    cron.schedule(`0 */${OSUPDATEFREQ} * * * *`, _=>{ //Get Admin data
-        getOsData().then(osData=>{
-            logTab(osData, 'OS-Data');
-            io.in('nordic').emit('admin-data', osData);
-        });
+    cron.schedule(`0 */${OSUPDATEFREQ} * * * *`, async _=>{ //Get Admin data
+        const osData = await getOsData();
+        const pm2Data = await pm2Data();
+        io.in('nordic').emit('admin-data', {osData, pm2Data});
+        logTab(osData, 'OS-DATA')
+        logTab(pm2Data, "PM-DATA");
     })
 
 });
@@ -212,16 +223,21 @@ server.listen(process.env.PORT, ()=>{
 
 const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
 
-io.use(wrap(sessionMiddleware));
-io.use(wrap(passport.initialize()));
-io.use(wrap(passport.session()));
+//if (NODE_ENV === 'production'){
+    io.use(wrap(sessionMiddleware));
+    io.use(wrap(passport.initialize()));
+    io.use(wrap(passport.session()));
+//}
 
 io.on('connection', socket =>{
     if ( socket.request.user){
         logStd(socket.request.user._id + ' is connected');
     }
     else {
-        logStd('a user is connected')
+        logStd('a user is connected(' + socket.id + ')')
+        socket.on('disconnecting', reason=>{
+            logStd('Disconnected: ', reason)
+        })
     }
     socket.emit('submit-room');
 
