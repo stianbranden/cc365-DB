@@ -64,23 +64,29 @@ const runScheduleUpdate = _ =>{
                     let icon; 
                     const {agent} = s
                     const {displayName} = agent;
-                    s.shift.forEach(shift=>{
-                        if (shift.absenceId){
-                            if (alert) {
-                                text += '<br>'
-                            } else {
-                                text = `${displayName} is reported with: <br>`
+                    if ( s.shift ){
+                        s.shift.forEach(shift=>{
+                            if (shift.absenceId){
+                                if (alert) {
+                                    text += '<br>'
+                                } else {
+                                    text = `${displayName} is reported with: <br>`
+                                }
+                                alert = true;
+                                title = `${s.agent.displayName} is absent`;
+                                icon = null;
+                                if ( shift.name.startsWith('Late') ){
+                                    title = `${s.agent.displayName} is late`
+                                    icon = '<ion-icon name="alarm-sharp"></ion-icon>'
+                                }
+                                text += `${shift.name} from ${moment(shift.startTime).tz(agent.timeZone).format('HH:mm')} to ${moment(shift.endTime).tz(agent.timeZone).format('HH:mm')} (${moment().tz(agent.timeZone).format('z')})`
                             }
-                            alert = true;
-                            title = `${s.agent.displayName} is absent`;
-                            icon = null;
-                            if ( shift.name.startsWith('Late') ){
-                                title = `${s.agent.displayName} is late`
-                                icon = '<ion-icon name="alarm-sharp"></ion-icon>'
-                            }
-                            text += `${shift.name} from ${moment(shift.startTime).tz(agent.timeZone).format('HH:mm')} to ${moment(shift.endTime).tz(agent.timeZone).format('HH:mm')} (${moment().tz(agent.timeZone).format('z')})`
-                        }
-                    })
+                        })
+                    }
+                    else {
+                        logStd(`${agent} has no shift`)
+                    }
+                    
 
                     if (alert){
                         //Check if alert already has been created
