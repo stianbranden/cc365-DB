@@ -10,7 +10,7 @@ const server = require('http').Server(app);
 const ioCors = {}
 if (NODE_ENV !== 'production') {
     ioCors.cors ={
-        origin: "http://localhost:8080",
+        origin: "*",
         methods: ["GET", "POST"]
     }
 }
@@ -210,10 +210,12 @@ server.listen(process.env.PORT, ()=>{
     });
 
     cron.schedule(`0 */${OSUPDATEFREQ} * * * *`, async _=>{ //Get Admin data
+        logStd('Getting admin data')
         const osData = await getOsData();
-        const pm2Data = await pm2Data();
-        io.in('nordic').emit('admin-data', {osData, pm2Data});
         logTab(osData, 'OS-DATA')
+        const pm2Data = await getPm2Data();
+        io.in('nordic').emit('admin-data', {osData, pm2Data});
+        io.in('vue').emit('admin-data', {osData, pm2Data} )
         logTab(pm2Data, "PM-DATA");
     })
 
