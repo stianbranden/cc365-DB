@@ -547,7 +547,7 @@ const updateOrCreateTeam = async (teleoptiTeam, businessUnit)=>{
         let depname = teleoptiTeam.Name.split('/')[0];
         if (businessUnit.name === 'Finland' && teleoptiTeam.Name.split('/')[1] === 'B2B') depname = 'Finland B2B';
         else if (businessUnit.name === 'Finland') depname = 'Finland';
-        team.departmentName = depname;
+        //team.departmentName = depname;
         team = await Team.create({
             teamId: teleoptiTeam.Id,
             name: teleoptiTeam.Name.split('/')[1],
