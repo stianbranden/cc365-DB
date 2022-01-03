@@ -4,7 +4,7 @@ const moment = require('moment');
 const User = require('../models/User')
 const request = require('request-promise');
 const Access = require('../models/Access');
-const {logStd, logTab} = require('./logger');
+const {logStd, logTab, logErr} = require('./logger');
 
 const {AZURE_CLIENTID, AZURE_CLIENTSECRET, NODE_ENV,HOST_URL} = process.env;
 const {getAgentWithEmail} = require('./getTeleoptiData');
@@ -93,9 +93,9 @@ module.exports = function (passport) {
             profileQuery.headers["Authorization"] = 'Bearer ' + accessToken;
             const graphProfile = JSON.parse(await request(profileQuery));
             const {state, jobTitle} = graphProfile;
-            console.log({graphProfile});
+            //console.log({graphProfile});
             let agent = await getAgentWithEmail(profile.upn);
-            console.log(agent);
+            //console.log(agent);
             let agentId = null;
             if (agent){
               agentId = agent._id;
@@ -131,11 +131,11 @@ module.exports = function (passport) {
                 });
             }
             if ( NODE_ENV != 'Production' ){
-              getUserById(user._id).then(saved_user=>console.log(saved_user));
+              //getUserById(user._id).then(saved_user=>console.log(saved_user));
             }
             done(null, user);
         } catch (e) {
-            console.log(e);
+            logErr(e);
             done(e, null);
         }
 
