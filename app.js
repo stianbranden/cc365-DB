@@ -26,6 +26,7 @@ const authRoute = require('./routes/auth');
 const teamRoute = require('./routes/team');
 const departmentRoute = require('./routes/department');
 const alertsRoute = require('./routes/alerts');
+const apiRoute = require('./routes/api')
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
@@ -95,6 +96,7 @@ app.use('/auth', authRoute);
 app.use('/team', teamRoute);
 app.use('/department', departmentRoute);
 app.use('/alerts', alertsRoute);
+app.use('/api', apiRoute)
 
 app.use('/', rootRoute);
 
@@ -319,6 +321,7 @@ function updateQueues({data, queueMap}){
         nordic[units[unit].abbr] = objs;
     });
     io.in('nordic').emit('updateQueues', nordic);
+    io.in('vue').emit('updateQueues', nordic);
     dataToUsers.queueData.nordic = nordic;
 
     //Update daily stats

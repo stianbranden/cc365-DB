@@ -7,6 +7,7 @@ const {getAlerts} = require('../controllers/getAlerts');
 const {getOsData} = require('../controllers/getOsData');
 const { logErr } = require('../controllers/logger.js');
 const {setBeta} = require('../middleware/setLocals');
+const { getPm2Data } = require('../controllers/getPm2.js');
 
 function capitalizeFLetter(str) {
     return str[0].toUpperCase() + str.slice(1);
@@ -64,14 +65,10 @@ router.get('/admin', setBeta, async (req, res)=>{
     }
 })
 
-router.get('/admindata', async (req, res)=>{
-    try {
-        const osData = await getOsData();
-        res.send(osData);
-    } catch (error) {
-        logErr(error.message);
-        res.send({});
-    }
+
+
+router.get('/vue', (req, res)=>{
+    res.sendFile(require('path').join(__dirname,'../public/vue/index.html'));
 });
 
 router.get('/user', async (req, res)=>{
