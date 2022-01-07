@@ -9,9 +9,7 @@
 
 <script>
 // @ is an alias to /src
-import { watch, computed, ref } from '@vue/runtime-core'
 import QueueCard from '../components/QueueCard.vue'
-import {useStore} from 'vuex'
 
 export default {
   name: 'Home',
@@ -19,27 +17,15 @@ export default {
     QueueCard
   },
   setup() {
-    const store = useStore();
-    const ping = computed(_=>store.state.lastPing)
-    let phoneObj = ref(store.getters.getQueueData('PH'));
-    //console.log(phoneObj.value);
-    watch(
-      ping, 
-      _=>{
-        phoneObj.value = store.getters.getQueueData('PH');
-    })
-
-
-    return {store, phoneObj}
-
+    
   }
-    //dfd
 }
 </script>
 
 <style lang="scss">
 .home {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   padding: 2rem;
 }
