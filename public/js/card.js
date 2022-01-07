@@ -217,7 +217,7 @@ adminTemp.innerHTML = `
         <h2>Admin data</h2>
         <ion-icon></ion-icon>
     </div>
-    <div class="card-main card-admin">
+    <div class="card-main card-admin" id="plattform_tab">
         <table>
             <tr><th>Plattform</th><td id='plattform'></td></tr>
             <tr><th>CPU Usage</th><td id='cpuUsage'></td></tr>
@@ -230,13 +230,21 @@ adminTemp.innerHTML = `
             <tr><th>Last updated</th><td id='time'></td></tr>
         </table>
     </div>
+    <div class="card-main" id="pm2">
+        <table>
+
+        </table>
+    </div>
     <div class="card-sub card-menu">
         <div class="arrow-up">
             <!--<ion-icon name="chevron-up-outline"></ion-icon>
             <ion-icon name="chevron-back-outline"></ion-icon>-->
         </div>
-        <div class="center active">
+        <div class="center active" data-activate="plattform_tab">
             <ion-icon name="build"></ion-icon>
+        </div>
+        <div  data-activate="pm2">
+            <ion-icon name="cog-sharp"></ion-icon>
         </div>
         <div class="arrow-down">
             <!--<ion-icon name="chevron-down-outline"></ion-icon>
@@ -704,13 +712,36 @@ function getSubMenuElement(type, baseIcon, position){
 
 class AdminCard extends HTMLElement{
     set data(data){
-        this._update(data);
+        console.table(data.osData)
+        console.table(data.pm2Data)
+        this._update(data.osData);
+        this._pm2data(data.pm2Data)
     }
 
     constructor(){
         super();
         this.attachShadow({mode: 'open'});
         this.shadowRoot.appendChild(adminTemp.content.cloneNode(true));
+        
+
+        this._pm2data = data =>{
+            const shadow = this.shadowRoot
+            data.forEach(row=>{
+                let exists = shadow.getElementById(row.name);
+                if ( exists ){
+                    shadow.querySelector(`#${row.name} .status`).innerText = row.status
+                }
+                else {
+                    let tr = document.createElement('tr');
+                    tr.id = row.name
+                    tr.innerHTML=`<th class="name">${row.name}</th><td class="status">${row.status}</td>`
+
+                    shadow.querySelector('#pm2 table').append(tr);
+                }
+
+            })
+            
+        }
 
         this._update = (data)=>{
 
