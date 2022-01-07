@@ -273,7 +273,8 @@ let dataToUsers = {
         sweden: null, 
         helpdesk: null,
         kitchen: null,
-        nordic: null
+        nordic: null,
+        vue: null
     },
     dailyStats: {
         denmark: null,
@@ -282,7 +283,8 @@ let dataToUsers = {
         sweden: null, 
         helpdesk: null,
         kitchen: null,
-        nordic: null
+        nordic: null,
+        vue: null
     }
 }
 
@@ -323,6 +325,8 @@ function updateQueues({data, queueMap}){
     io.in('nordic').emit('updateQueues', nordic);
     io.in('vue').emit('updateQueues', nordic);
     dataToUsers.queueData.nordic = nordic;
+    dataToUsers.queueData.vue = nordic;
+    
 
     //Update daily stats
     let nordicStats = {}
@@ -357,6 +361,7 @@ function updateQueues({data, queueMap}){
     });
     io.in('nordic').emit('updateStats', nordicStats);
     dataToUsers.dailyStats.nordic = nordicStats;
+    dataToUsers.dailyStats.vue = nordicStats;
     logStd(`Number of missing groups: ${missingGroups.length}`);
     
 }

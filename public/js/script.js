@@ -17,7 +17,7 @@ burgermenu.addEventListener('click', ()=>{
 
 document.querySelector('.container').classList.add(key);
 
-fetch('/user').then(response=>response.json()).then(user=>{
+fetch('/api/user').then(response=>response.json()).then(user=>{
     //console.log(user.custom_access);
     user.custom_access.forEach(access=>{
       //  console.log(access.alter);
@@ -569,7 +569,7 @@ if (typeof listeners != 'undefined'){
 }
 
 if ( lis && lis.indexOf('admin')>=0 ){
-    fetch('/admindata').then(response=>response.json()).then(data=>{
+    fetch('/api/admin').then(response=>response.json()).then(data=>{
         document.querySelector('admin-card').data = data;
     })
 

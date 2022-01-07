@@ -4,10 +4,8 @@ const User = require('../models/User');
 const {getPhoto} = require('../controllers/config')
 const request= require('request-promise');
 const {getAlerts} = require('../controllers/getAlerts');
-const {getOsData} = require('../controllers/getOsData');
 const { logErr } = require('../controllers/logger.js');
 const {setBeta} = require('../middleware/setLocals');
-const { getPm2Data } = require('../controllers/getPm2.js');
 
 function capitalizeFLetter(str) {
     return str[0].toUpperCase() + str.slice(1);
@@ -69,10 +67,6 @@ router.get('/admin', setBeta, async (req, res)=>{
 
 router.get('/vue', (req, res)=>{
     res.sendFile(require('path').join(__dirname,'../public/vue/index.html'));
-});
-
-router.get('/user', async (req, res)=>{
-    res.send(req.user || {custom_access:[]});
 });
 
 router.get('/:unit/', (req, res)=>{
