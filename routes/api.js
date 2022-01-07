@@ -1,15 +1,17 @@
 const router= require('express').Router();
 const cors = require('cors')
 const {NODE_ENV} = process.env
-const User = require('../models/User')
+
 
 if (NODE_ENV !== 'production'){
     router.use(cors())
 } 
 
 const {getOsData} = require('../controllers/getOsData');
-const { logErr, logStd } = require('../controllers/logger.js');
+const { logErr, logStd, logTab } = require('../controllers/logger.js');
 const { getPm2Data } = require('../controllers/getPm2.js');
+const {createAlert} = require('../controllers/createAlert')
+const User = require('../models/User')
 
 router.get('/admin', async (req, res)=>{
     try {
@@ -30,6 +32,24 @@ router.get('/user', async (req, res)=>{
     }
     else {
         res.send(req.user || {custom_access:[]});
+    }
+});
+
+router.post ('/alerts', async (req, res)=>{
+    if ( !req.user ){
+        res.status(401).send({msg: 'Not logged in'})
+    }
+    else {
+        const {body} = req;
+        body.user = req.user.name;
+        logTab(body, 'Post request to Alerts');
+        const newAlerts = []
+        for (let i = 0; i < body.departments.length; i++){
+            const department = body.departments[i];
+            newAlerts.push(await createAlert(body.text, department, false, body.alerttype, body.status == 'Closed', `${department} - ${body.alerttype}`, '<ion-icon name="clipboard-outline"></ion-icon>', body.user));
+        }
+        
+        res.status(200).send({msg: 'Alert created', newAlerts});
     }
 });
 

@@ -209,7 +209,7 @@ class Alerts extends HTMLElement {
             else {
                 const body = {id, text, alerttype, status, departments}
                 console.table(body);
-                fetch('/alerts', {
+                fetch('/api/alerts', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
