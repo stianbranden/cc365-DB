@@ -6,10 +6,18 @@
     <nav>
         <router-link to="/">Nordic</router-link>
         <router-link to="/admin">Admin</router-link>
+        <router-link to="/denmark">Denmark</router-link>
         
         <button title="Toggle dark mode" @click="store.commit('toggleDark')">
             <font-awesome-icon icon="lightbulb" />
         </button>
+        <span 
+            class="connection-status" 
+            :class="{green: store.getters.connectionStatus}"
+            :title="[store.getters.connectionStatus ? 'Connected to server': 'Not connected to server']"
+        >
+            <font-awesome-icon icon="circle-notch" />
+        </span>
     </nav>
   </header>
 </template>
@@ -20,7 +28,9 @@ export default {
     setup(){
         const store = useStore();
         const dark = store.getters.getDark;
-        return {store, dark}
+        const socketStatus = store.getters.socketStatus
+
+        return {store, dark, socketStatus}
     }
 }
 </script>
@@ -46,11 +56,10 @@ export default {
             color: var(--linkcolor);
             display: inline-block;
             text-decoration: none;
-            margin: 0 1rem;
+            margin: 0 0.5rem;
                 &:hover {
                     text-decoration: underline;
                 }
-
                 &.router-link-exact-active {
                     color: var(--activelinkcolor);
                 }
@@ -67,10 +76,14 @@ export default {
                     color: var(--activelinkcolor)
                 }
             }
-        }
-
-
-        
+            .connection-status{
+                color: $color-bad;
+                margin: 0 0.5rem;
+            }
+            .green {
+                color: $secondary-brand-color;
+            }
+        }        
     }
 
 </style>

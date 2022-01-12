@@ -23,6 +23,7 @@ export default {
       //console.log(store.state);
       store.dispatch('getAdminData');
       store.dispatch('getUser')
+      store.dispatch('getDarkFromLocal')
     })
     /*onMounted(_=>{
       socket = io(VUE_APP_SOCKET_ADRESS, {
@@ -50,6 +51,9 @@ body {
   --linkcolor: white;
   --buttoncolor: white;
   --cardbgcolor: white;
+  --cardmenucolor: #{$secondary-brand-color};
+  --cardmenuhovercolor: #{$brand-color};
+  --iconcolor : #aaa;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
@@ -64,10 +68,12 @@ body {
   --linkcolor: #eee;
   --buttoncolor: black;
   --cardbgcolor: #{$color-dark-grey};
+  --cardmenucolor: black; //#{$brand-color};
+  --cardmenuhovercolor: #{$secondary-brand-color};
 }
 
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+ // font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center; 

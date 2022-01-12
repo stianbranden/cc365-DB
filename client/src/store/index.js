@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 import io from 'socket.io-client'
 import moment from 'moment'
 const {VUE_APP_SOCKET_ADRESS, VUE_APP_API_ROOT} = process.env
+const {localStorage} = window;
 
 export default createStore({
   state: {
@@ -10,9 +11,11 @@ export default createStore({
     counter: 0,
     adminData: null,
     queueData: [],
+    dailyStats: [],
     lastPing: null,
     dark: true,
-    user: null
+    user: null,
+    queuesPerPage: 5
   },
   mutations: {
     ioConnect(state){
@@ -34,13 +37,31 @@ export default createStore({
         state.queueData = flattenQueueData(data);
         state.lastPing = moment().format()
       })
+      state.socket.on('updateStats', data=>{
+        state.dailyStats = flattenQueueData(data)
+        //console.log(state.dailyStats);
+      })
+
+
+      //Socket state mngmnt
+      state.socket.on('disconnect', _=>{
+        state.socketConnected = false;
+      })
+      state.socket.on('connect', _=>{
+        state.socketConnected = true;
+      })
       //console.log(state.socket);
     },
     addCounter(state){
       state.counter++;
     },
     toggleDark(state){
-      state.dark = !state.dark;
+      const newValue = !state.dark;
+      state.dark = newValue;
+      localStorage.setItem('dark', newValue)
+    }, 
+    setDark(state, value){
+      state.dark = value;
     }
   },
   actions: {
@@ -53,13 +74,17 @@ export default createStore({
       fetch(VUE_APP_API_ROOT + 'user')
         .then(response=>response.json())
         .then(user=> state.user = user)
+    },
+    getDarkFromLocal({commit}){
+      let localDark = localStorage.getItem('dark') == 'false' || !Boolean(localStorage.getItem('dark')) ? false : true;
+      commit('setDark', localDark)
     }
   },
   modules: {
   },
   getters: {
     connectionStatus(state){
-      return state.socket.connected
+      return state.socketConnected
     },
     timeFromLastPing(state){
       if (!state.lastPing) return 'no ping recieved'
@@ -90,30 +115,123 @@ export default createStore({
       return state.dark
     },
     getQueueData: (state) => (channel, department, country, area)=>{
-      let arr = [...state.queueData];
+      const data = computeQueues(state, channel, department, country, area)
+      return data;
+    },
+    getSummaryData: (state) => (department) =>{
 
-      if ( channel ) arr = arr.filter(q=>q.channel === channel)
-      if ( department ) arr = arr.filter(q=>q.department === department)
-      if ( country ) arr = arr.filter(q=>q.country === country)
-      if ( area ) arr = arr.filter(q=>q.area === area)
-
-      const object= {
-        queues: arr,
+      const object = {
+        queues: [],
+        pages: [],
         summary: {
           inQueue: 0,
           maxWait: 0
         }
       }
-      arr.forEach(q=>{
-        object.summary.inQueue += q.inQueueCurrent;
-        if ( q.waitingDurationCurrentMax > object.summary.maxWait) object.summary.maxWait = q.waitingDurationCurrentMax;
+      const result = {
+        department,
+        data: {
+          ph: {...object},
+          ch: {...object},
+          em: {...object},
+          ac: {...object}
+        }
+      };
+      ['PH', 'CH', 'EM', 'AC'].forEach(channel=>{
+        //console.log(channel, department);
+        const data = computeQueues(state, channel, department)
+        if (data.queues.length > 0){
+          result.data[channel.toLowerCase()] = data;
+        }
       })
-      //console.log(object);
-      object.summary.timeWait = msToTime(object.summary.maxWait)
-      return object;
+      return result;
+    },
+    getSummaryDaily: (state) => (department)=>{
+
+      const data = {
+        ph: null,
+        ch: null,
+        em: null,
+        ac: null
+      }
+      Object.keys(data).forEach(channel=>{
+        data[channel] = computeDaily(state, channel.toUpperCase(), department)
+      })
+      data.department = department
+      return data;
     }
+
   }
 })
+
+function computeDaily(state, channel, department, country, area ){
+  let arr = [...state.dailyStats];
+
+  if ( channel ) arr = arr.filter(q=>q.channel === channel)
+  if ( department ) arr = arr.filter(q=>q.department === department)
+  if ( country ) arr = arr.filter(q=>q.country === country)
+  if ( area ) arr = arr.filter(q=>q.area === area)
+
+  const summary = {
+    inSla: 0,
+    answered: 0,
+    offered: 0,
+    speedOfAnswer: 0,
+    handling: 0
+  }
+  if (arr.length > 0){
+    arr.forEach(q=>{
+     summary.inSla += q.countOfAnsweredOnTimeContacts;
+     summary.answered += q.countOfHandledContacts;
+     summary.offered += q.countOfArrivedContacts;
+     summary.speedOfAnswer += q.waitingDurationForHandled;
+     summary.handling += q.handlingDuration;
+    })
+  }
+  if (summary.answered > 0){
+    summary.sla = Math.round(summary.inSla/summary.offered*100)
+    summary.asa = Math.round(summary.speedOfAnswer/summary.answered)
+    summary.aht = Math.round(summary.handling/summary.answered)
+  }
+  else {
+    summary.sla = 0
+    summary.asa = 0
+    summary.aht = 0
+  }
+  summary.timeAsa = msToTime(summary.asa)
+  return {queues: arr, summary}
+}
+
+function computeQueues(state, channel, department, country, area ){
+  let arr = [...state.queueData];
+  if ( channel ) arr = arr.filter(q=>q.channel === channel)
+  if ( department ) arr = arr.filter(q=>q.department === department)
+  if ( country ) arr = arr.filter(q=>q.country === country)
+  if ( area ) arr = arr.filter(q=>q.area === area)
+
+  const object= {
+    queues: arr,
+    pages: [],
+    summary: {
+      inQueue: 0,
+      maxWait: 0
+    }
+  }
+  if (arr.length > 0){
+    let page = []
+    arr.forEach((q, index)=>{
+      object.summary.inQueue += q.inQueueCurrent;
+      if ( q.waitingDurationCurrentMax > object.summary.maxWait) object.summary.maxWait = q.waitingDurationCurrentMax;
+      if ( index % state.queuesPerPage == 0 ) page = [];
+      page.push(q);
+      if ( index % state.queuesPerPage == state.queuesPerPage - 1) object.pages.push(page)
+    })
+    object.pages.push(page)
+  }
+
+  object.summary.timeWait = msToTime(object.summary.maxWait)
+  return object;
+}
 
 function msToTime(ms){
   let s = Math.round(ms/1000);
@@ -151,6 +269,7 @@ function flattenQueueData(queueData){
         queue.channel = queue.group.split('-')[2]
         queue.area = queue.group.split('-')[1]
         queue.country = queue.group.split('-')[0]
+        queue.timeWait = msToTime(queue.waitingDurationCurrentMax)
         flat.push(queue);
       })
     })

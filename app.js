@@ -360,6 +360,7 @@ function updateQueues({data, queueMap}){
         nordicStats[units[unit].abbr] = objs;
     });
     io.in('nordic').emit('updateStats', nordicStats);
+    io.in('vue').emit('updateStats', nordicStats);
     dataToUsers.dailyStats.nordic = nordicStats;
     dataToUsers.dailyStats.vue = nordicStats;
     logStd(`Number of missing groups: ${missingGroups.length}`);

@@ -18,3 +18,27 @@ $blackish: #222;
 
 $small-size: 700px;
 $big-size: 1360px;
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    
+}
+
+*[hidden] {
+    display: none !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    overflow-x: hidden;
+    min-width: 350px;
+}
