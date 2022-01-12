@@ -50,7 +50,7 @@ export default {
         const {department} = toRefs(props);
         const ping = computed(_=>store.state.lastPing)
         const queue = ref(store.getters.getSummaryData(department.value));
-
+        //console.log(queue);
        
         watch(
             ping, 

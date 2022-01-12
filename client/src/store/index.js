@@ -35,6 +35,7 @@ export default createStore({
       })
       state.socket.on('updateQueues', data=>{
         state.queueData = flattenQueueData(data);
+        //console.log(state.queueData);
         state.lastPing = moment().format()
       })
       state.socket.on('updateStats', data=>{

@@ -9,10 +9,10 @@
         </div>
         <transition name="slide-fade" mode="out-in">
             <summary-card-body v-if="page=='menu'" :department="department" />
-            <QueueCardBody v-else-if="page=='phone'" :department="department" channel="PH" />
-            <QueueCardBody v-else-if="page=='chat'" :department="department" channel="CH" />
-            <QueueCardBody v-else-if="page=='email'" :department="department" channel="EM" />
-            <QueueCardBody v-else-if="page=='action'" :department="department" channel="AC" />
+            <QueueCardBody v-else-if="page=='phone'" :department="department" channel="PH" :queue="queue.data.ph" />
+            <QueueCardBody v-else-if="page=='chat'" :department="department" channel="CH" :queue="queue.data.ch" />
+            <QueueCardBody v-else-if="page=='email'" :department="department" channel="EM" :queue="queue.data.em" />
+            <QueueCardBody v-else-if="page=='action'" :department="department" channel="AC" :queue="queue.data.ac" />
             <SummaryCardStatBody v-else-if="page=='stat'" :department="department" />
         </transition>
 
