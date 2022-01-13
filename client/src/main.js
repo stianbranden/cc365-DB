@@ -16,11 +16,12 @@ import {
     faSink, 
     faMicrochip,
     faAngleLeft,
-    faAngleRight
+    faAngleRight,
+    faBars
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 library.add(faLightbulb, faPhoneAlt, faComments, faEnvelope, faFolder, faCircleNotch
-    , faChartBar, faThLarge, faSink, faMicrochip, faAngleLeft, faAngleRight )
+    , faChartBar, faThLarge, faSink, faMicrochip, faAngleLeft, faAngleRight, faBars )
 
 createApp(App).component('font-awesome-icon', FontAwesomeIcon).use(store).use(router).mount('#app')

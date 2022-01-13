@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Department from '../views/Department.vue'
+import store from '../store'
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
+    name: 'Nordic',
     component: Home
   },
   {
@@ -26,6 +27,12 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+router.afterEach(to=>{
+  let name = to.name;
+  if ( name === 'Department' ) name = to.params.department
+  store.commit('setPageName', name)
 })
 
 export default router

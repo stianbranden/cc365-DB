@@ -36,6 +36,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="scss">
+.flag {
+    writing-mode: vertical-lr;
+}
 </style>

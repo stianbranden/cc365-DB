@@ -1,7 +1,7 @@
 <template>
     <div class="card summarycard">
         <div class="card-header">
-            <Logo :department="department" />
+
             <span>{{title}}</span>
             <span class="icon" @click="statClick" :class="{active: page=='stat'}">
                 <font-awesome-icon icon="chart-bar" />  
@@ -13,11 +13,16 @@
             <QueueCardBody v-else-if="page=='chat'" :department="department" channel="CH" :queue="queue.data.ch" />
             <QueueCardBody v-else-if="page=='email'" :department="department" channel="EM" :queue="queue.data.em" />
             <QueueCardBody v-else-if="page=='action'" :department="department" channel="AC" :queue="queue.data.ac" />
+            <QueueCardBody v-else-if="page=='dk'" :department="department" channel="PH" :queue="queue.data.dk" />
+            <QueueCardBody v-else-if="page=='fi'" :department="department" channel="PH" :queue="queue.data.fi" />
+            <QueueCardBody v-else-if="page=='no'" :department="department" channel="PH" :queue="queue.data.no" />
+            <QueueCardBody v-else-if="page=='se'" :department="department" channel="PH" :queue="queue.data.se" />
+            
             <SummaryCardStatBody v-else-if="page=='stat'" :department="department" />
         </transition>
 
 
-        <div class="card-menu">
+        <div class="card-menu" v-if="department !== 'thd'">
             <div @click="page='phone'" :class="{active: page=='phone'}" v-if="queue.data.ph.queues.length > 0">
                 <font-awesome-icon icon='phone-alt'/>
             </div>
@@ -32,6 +37,23 @@
             </div>
             <div @click="page='action'" :class="{active: page=='action'}"  v-if="queue.data.ac.queues.length > 0">
                 <font-awesome-icon icon='folder'/>
+            </div>
+        </div>
+        <div class="card-menu" v-else>
+            <div @click="page='dk'" :class="{active: page=='dk'}" v-if="queue.data.dk.queues.length > 0">
+                <Logo department="dk" />
+            </div>
+            <div @click="page='fi'" :class="{active: page=='fi'}" v-if="queue.data.fi.queues.length > 0">
+                <Logo department="fi" />
+            </div>
+            <div @click="page='menu'" :class="{active: page=='menu'}" v-if="channelPages != 1">
+                <font-awesome-icon icon="th-large" />
+            </div>  
+            <div @click="page='no'" :class="{active: page=='no'}" v-if="queue.data.no.queues.length > 0">
+                <Logo department="no" />
+            </div>
+            <div @click="page='se'" :class="{active: page=='se'}" v-if="queue.data.se.queues.length > 0">
+                <Logo department="se" />
             </div>
         </div>
     </div>
@@ -64,19 +86,19 @@ export default {
         }
         const {department} = toRefs(props);
         const ping = computed(_=>store.state.lastPing)
-        const queue = ref(store.getters.getSummaryData(department.value));
-        channelPages.value = countChannelPages(queue)
-        const daily = ref(store.getters.getSummaryDaily(department.value))
+        const queue = ref(null)
+        const daily = ref(null)
+        updateData();
        
         watch(
             ping, 
-            _=>{
-                queue.value = store.getters.getSummaryData(department.value);
-                channelPages.value = countChannelPages(queue)
-                daily.value = store.getters.getSummaryDaily(department.value)
-                //console.log(queue.value.data);
-            }
+            updateData
         ) 
+        function updateData() {
+            queue.value = store.getters.getSummaryData(department.value);
+            channelPages.value = countChannelPages(queue)
+            daily.value = store.getters.getSummaryDaily(department.value)
+        }
 
         function countChannelPages(queue){
             let i = 0;
@@ -146,6 +168,12 @@ export default {
             cursor: pointer;
             &:hover, &.active {
                 color: var(--cardmenuhovercolor);
+                .flag {
+                    background-color: var(--cardmenuhovercolor);
+                }
+            }
+            &.flag {
+                padding: 0.1rem;
             }
         }
             

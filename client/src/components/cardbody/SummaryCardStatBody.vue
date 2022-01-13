@@ -1,5 +1,24 @@
 <template>
     <div class="card-body stats">
+        <div class="stat-row" v-for="key in keys" :key="key">
+            <span v-if="getIcon(key)">
+                <font-awesome-icon :icon="getIcon(key)" />
+            </span>
+            <Logo :department="key" v-else />
+             <span>
+                <span class="label">SLA</span>
+                <span class="result bigger">{{daily[key].summary.sla}}%</span>
+            </span>
+            <span>
+                <span class="label">Offered</span>
+                <span class="result">{{daily[key].summary.offered}}</span>
+            </span>
+            <span>
+                <span class="label">Answered</span>
+                <span class="result">{{daily[key].summary.answered}}</span>
+            </span>
+        </div>
+        <!--
         <div class="stat-row" v-if="daily.ph.summary.offered">
             <span>
                 <font-awesome-icon icon='phone-alt' />
@@ -67,14 +86,16 @@
                 <span class="label">Answered</span>
                 <span class="result">{{daily.ac.summary.answered}}</span>
             </span>
-        </div>
+        </div> -->
     </div>
 </template>
 
 <script>
 import {useStore} from 'vuex'
 import { toRefs, computed, ref, watch } from '@vue/runtime-core';
+import Logo from '../Logo.vue'
 export default {
+    components: {Logo},
     props: {
         title: String, 
         channel: String,
@@ -87,17 +108,49 @@ export default {
         const {department} = toRefs(props);
         const ping = computed(_=>store.state.lastPing)
         //const queue = ref(store.getters.getSummaryData(department.value));
-        const daily = ref(store.getters.getSummaryDaily(department.value))
-       
+        const daily = ref(null)
+        let keys = []
+        setDailyData()
+        
+
+        function getIcon(key){
+            let icon = null
+            switch (key) {
+                case 'ph':
+                    icon = 'phone-alt'
+                    break;
+                case 'ch':
+                    icon = 'comments'
+                    break;
+                case 'em':
+                    icon = 'envelope'
+                    break;
+                case 'ac':
+                    icon = 'folder'
+                    break;
+            
+                default:
+                    break;
+            }
+            return icon
+        }
+
+
         watch(
             ping, 
-            _=>{
-                //queue.value = store.getters.getSummaryData(department.value);
-                daily.value = store.getters.getSummaryDaily(department.value)
-                //console.log(queue.value.data);
-            }
-        ) 
-        return {daily}
+            setDailyData
+        )
+
+        function setDailyData(){
+            if ( department.value === 'thd' ) daily.value = store.getters.getThdSummary;
+            else daily.value = store.getters.getSummaryDaily(department.value)
+            keys = []
+            Object.keys(daily.value).forEach(key=>{
+                if (daily.value[key].queues.length > 0 ) keys.push(key)
+            });
+            
+        }
+        return {daily, getIcon, keys}
     }
 }
 </script>

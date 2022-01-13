@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
 import io from 'socket.io-client'
 import moment from 'moment'
+import { computed } from 'vue';
 const {VUE_APP_SOCKET_ADRESS, VUE_APP_API_ROOT} = process.env
 const {localStorage} = window;
 
@@ -15,7 +16,8 @@ export default createStore({
     lastPing: null,
     dark: true,
     user: null,
-    queuesPerPage: 5
+    queuesPerPage: 5,
+    pageName: ''
   },
   mutations: {
     ioConnect(state){
@@ -63,6 +65,9 @@ export default createStore({
     }, 
     setDark(state, value){
       state.dark = value;
+    },
+    setPageName(state, value) {
+      state.pageName = value;
     }
   },
   actions: {
@@ -119,6 +124,10 @@ export default createStore({
       const data = computeQueues(state, channel, department, country, area)
       return data;
     },
+    getDailyData: (state) => (channel, department, country, area)=>{
+      const data = computeDaily(state, channel, department, country, area )
+      return data
+    },
     getSummaryData: (state) => (department) =>{
 
       const object = {
@@ -138,13 +147,27 @@ export default createStore({
           ac: {...object}
         }
       };
-      ['PH', 'CH', 'EM', 'AC'].forEach(channel=>{
-        //console.log(channel, department);
-        const data = computeQueues(state, channel, department)
-        if (data.queues.length > 0){
-          result.data[channel.toLowerCase()] = data;
+      if (department === 'thd'){
+        result.data = {
+          dk: {...object},
+          fi: {...object},
+          no: {...object},
+          se: {...object},
         }
-      })
+        Object.keys(result.data).forEach(country=>{
+          const data = computeQueues(state, 'PH', department, country.toUpperCase())
+          if ( data.queues.length > 0) result.data[country] = data;
+        })
+      }
+      else {
+        ['PH', 'CH', 'EM', 'AC'].forEach(channel=>{
+          //console.log(channel, department);
+          const data = computeQueues(state, channel, department)
+          if (data.queues.length > 0){
+            result.data[channel.toLowerCase()] = data;
+          }
+        })
+      }
       return result;
     },
     getSummaryDaily: (state) => (department)=>{
@@ -158,7 +181,20 @@ export default createStore({
       Object.keys(data).forEach(channel=>{
         data[channel] = computeDaily(state, channel.toUpperCase(), department)
       })
-      data.department = department
+      //data.department = department
+      return data;
+    },
+    getThdSummary: state =>{
+      const data = {
+        dk: null,
+        fi: null,
+        no: null,
+        se: null
+      }
+      Object.keys(data).forEach(country =>{
+        data[country] = computeDaily(state, 'PH', 'thd', country.toUpperCase())
+      })
+      //data.department = 'thd'
       return data;
     }
 
@@ -200,6 +236,7 @@ function computeDaily(state, channel, department, country, area ){
     summary.aht = 0
   }
   summary.timeAsa = msToTime(summary.asa)
+  summary.timeAht = msToTime(summary.aht)
   return {queues: arr, summary}
 }
 
@@ -223,11 +260,14 @@ function computeQueues(state, channel, department, country, area ){
     arr.forEach((q, index)=>{
       object.summary.inQueue += q.inQueueCurrent;
       if ( q.waitingDurationCurrentMax > object.summary.maxWait) object.summary.maxWait = q.waitingDurationCurrentMax;
-      if ( index % state.queuesPerPage == 0 ) page = [];
+      //if ( index % state.queuesPerPage == 0 ) page = [];
       page.push(q);
-      if ( index % state.queuesPerPage == state.queuesPerPage - 1) object.pages.push(page)
+      if ( index % state.queuesPerPage == state.queuesPerPage - 1) {
+        object.pages.push(page)
+        page = []
+      }
     })
-    object.pages.push(page)
+    if ( page.length > 0) object.pages.push(page)
   }
 
   object.summary.timeWait = msToTime(object.summary.maxWait)

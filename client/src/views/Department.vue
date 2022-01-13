@@ -1,16 +1,22 @@
 <template>
-    <div class="home">
+    <div class="home" v-if="department !== 'thd'">
         <QueueCard title="Phone" channel="PH" :department="department" />
         <QueueCard title="Chat" channel="CH" :department="department" />
         <QueueCard title="Email" channel="EM" :department="department" />
         <QueueCard title="Action" channel="AC" :department="department" />
+    </div>
+    <div class="home" v-else>
+      <QueueCard title="DK THD Phone" channel="PH" country="DK" :department="department" />
+      <QueueCard title="FI THD Phone" channel="PH" country="FI" :department="department" />
+      <QueueCard title="NO THD Phone" channel="PH" country="NO" :department="department" />
+      <QueueCard title="SE THD Phone" channel="PH" country="SE" :department="department" /> 
     </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import QueueCard from '../components/QueueCard.vue'
-import {useRoute} from 'vue-router'
+import {onBeforeRouteUpdate, useRoute} from 'vue-router'
 import { computed, ref } from '@vue/reactivity'
 
 export default {
@@ -19,8 +25,16 @@ export default {
     QueueCard
   },
   setup() {
-    const departmentName = ref(useRoute().params.department)
+    const route = useRoute();
+    const departmentName = ref(route.params.department)
     let department = computed(_=> getAbbr(departmentName) )
+
+    onBeforeRouteUpdate((to, from)=>{
+      if ( to.params.department !== from.params.department){
+        departmentName.value= to.params.department
+        department = computed(_=> getAbbr(departmentName) )
+      }
+    })
 
     return {department}
   }

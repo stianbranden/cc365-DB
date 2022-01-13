@@ -1,5 +1,5 @@
 <template>
-    <div class="card-body" > 
+    <div class="card-body" v-if="department !== 'thd'"> 
         <div v-if="queue.data.ph.queues.length" :class="{'span-double': queue.data.ch.queues.length == 0}">
             <span 
                 class="large-ban"
@@ -27,6 +27,14 @@
                 :class="{'reduce-size': queue.data.ac.summary.inQueue>999}"
             >{{queue.data.ac.summary.inQueue}}</span>
             <span class="small-ban">Action</span>
+        </div>
+    </div>
+    <div class="card-body" v-else>
+        <div v-for="key in Object.keys(queue.data)" :key="key">
+            <span class="large-ban" :class="{'reduce-size': queue.data[key].summary.inQueue>999}" >
+                {{queue.data[key].summary.inQueue}}
+            </span>
+            <span class="small-ban">{{getCountryName(key)}}</span>
         </div>
     </div>
 </template>
@@ -61,8 +69,22 @@ export default {
             }
         ) 
 
+        function getCountryName(key){
+            switch (key) {
+                case 'dk':
+                    return 'Denmark'
+                case 'fi':
+                    return 'Finland'
+                case 'no':
+                    return 'Norway'
+                case 'se': 
+                    return 'Sweden' 
+                default:
+                    return key
+            }
+        }
        
-        return {store, queue}
+        return {store, queue, getCountryName}
     }
 }
 </script>

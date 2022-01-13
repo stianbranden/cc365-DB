@@ -54,15 +54,27 @@ body {
   --cardmenucolor: #{$secondary-brand-color};
   --cardmenuhovercolor: #{$brand-color};
   --iconcolor : #aaa;
+  --cardwidth: 300px;
+  --cardbodyheight: 225px;
+  --navhover: #{lighten($brand-color, 10%)};
   width: 100vw;
   height: 100vh;
   overflow: hidden;
   background-color: var(--bgcolor);
   color: var(--textcolor);
+
+  .card {
+    width: var(--cardwidth) !important;
+    min-width: var(--cardwidth) !important;
+    .card-body, .card-spinner {
+      height: 225px !important;
+    }
+  }
 }
 #everything.dark {
   --bgcolor: #{$blackish};
   --headercolor: black;
+  --navhover: #{lighten(black, 10%)};
   --textcolor: #eee;
   --activelinkcolor: #{$secondary-brand-color};
   --linkcolor: #eee;
