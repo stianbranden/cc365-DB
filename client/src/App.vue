@@ -54,7 +54,7 @@ body {
   --cardmenucolor: #{$secondary-brand-color};
   --cardmenuhovercolor: #{$brand-color};
   --iconcolor : #aaa;
-  --cardwidth: 300px;
+  --cardwidth: 275px;
   --cardbodyheight: 225px;
   --navhover: #{lighten($brand-color, 10%)};
   width: 100vw;
@@ -67,7 +67,7 @@ body {
     width: var(--cardwidth) !important;
     min-width: var(--cardwidth) !important;
     .card-body, .card-spinner {
-      height: 225px !important;
+      height: var(--cardbodyheight) !important;
     }
   }
 }

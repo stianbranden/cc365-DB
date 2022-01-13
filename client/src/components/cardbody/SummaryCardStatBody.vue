@@ -5,7 +5,11 @@
                 <font-awesome-icon :icon="getIcon(key)" />
             </span>
             <Logo :department="key" v-else />
-             <span>
+             <span v-if="key === 'em' || key === 'ac'">
+                <span class="label">ASA</span>
+                <span class="result bigger">{{daily[key].summary.timeAsa}}</span>
+            </span>
+             <span v-else>
                 <span class="label">SLA</span>
                 <span class="result bigger">{{daily[key].summary.sla}}%</span>
             </span>
@@ -18,75 +22,7 @@
                 <span class="result">{{daily[key].summary.answered}}</span>
             </span>
         </div>
-        <!--
-        <div class="stat-row" v-if="daily.ph.summary.offered">
-            <span>
-                <font-awesome-icon icon='phone-alt' />
-            </span>
-            <span>
-                <span class="label">SLA</span>
-                <span class="result bigger">{{daily.ph.summary.sla}}%</span>
-            </span>
-            <span>
-                <span class="label">Offered</span>
-                <span class="result">{{daily.ph.summary.offered}}</span>
-            </span>
-            <span>
-                <span class="label">Answered</span>
-                <span class="result">{{daily.ph.summary.answered}}</span>
-            </span>
-        </div>
-        <div class="stat-row" v-if="daily.ch.summary.offered">
-            <span>
-                <font-awesome-icon icon='comments' />
-            </span>
-            <span>
-                <span class="label">SLA</span>
-                <span class="result bigger">{{daily.ch.summary.sla}}%</span>
-            </span>
-            <span>
-                <span class="label">Offered</span>
-                <span class="result">{{daily.ch.summary.offered}}</span>
-            </span>
-            <span>
-                <span class="label">Answered</span>
-                <span class="result">{{daily.ch.summary.answered}}</span>
-            </span>
-        </div>
-        <div class="stat-row" v-if="daily.em.summary.offered">
-            <span>
-                <font-awesome-icon icon='envelope' />
-            </span>
-            <span>
-                <span class="label">ASA</span>
-                <span class="result bigger">{{daily.em.summary.timeAsa}}</span>
-            </span>
-            <span>
-                <span class="label">Offered</span>
-                <span class="result">{{daily.em.summary.offered}}</span>
-            </span>
-            <span>
-                <span class="label">Answered</span>
-                <span class="result">{{daily.em.summary.answered}}</span>
-            </span>
-        </div>
-        <div class="stat-row" v-if="daily.em.summary.offered">
-            <span>
-                <font-awesome-icon icon='folder' />
-            </span>
-            <span>
-                <span class="label">ASA</span>
-                <span class="result bigger">{{daily.ac.summary.timeAsa}}</span>
-            </span>
-            <span>
-                <span class="label">Offered</span>
-                <span class="result">{{daily.ac.summary.offered}}</span>
-            </span>
-            <span>
-                <span class="label">Answered</span>
-                <span class="result">{{daily.ac.summary.answered}}</span>
-            </span>
-        </div> -->
+        
     </div>
 </template>
 
