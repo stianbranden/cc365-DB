@@ -1,7 +1,6 @@
 import { createStore } from 'vuex'
 import io from 'socket.io-client'
 import moment from 'moment'
-import { computed } from 'vue';
 const {VUE_APP_SOCKET_ADRESS, VUE_APP_API_ROOT} = process.env
 const {localStorage} = window;
 
@@ -89,6 +88,10 @@ export default createStore({
   modules: {
   },
   getters: {
+    getUser(state){
+      if (state.user) return state.user
+      return {}
+    },
     connectionStatus(state){
       return state.socketConnected
     },

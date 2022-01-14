@@ -1,11 +1,11 @@
 <template>
   <header class=navigation>
-    <div class="brand">
+    <div class="brand" @click="navigate('Nordic', {})">
         <img alt="Logo" src="../assets/icon.png">
     </div>
     <nav>
         <h3>{{store.state.pageName}}</h3>
-        <button @click="menuOpen = !menuOpen" :class="{active: menuOpen}">
+        <button @click="menuOpen = !menuOpen" :class="{active: menuOpen, red: !store.getters.connectionStatus}" :title="[store.getters.connectionStatus ? 'Click to open menu': 'Not connected to server']" >
             <font-awesome-icon icon="bars" />
         </button>
         <transition name="slide-down"> 
@@ -54,6 +54,18 @@
                     </div>
                     <span>{{store.getters.getDark ? 'Light mode': 'Dark mode' }}</span>
                 </li>
+                <li v-if="user._id" :title="'Signed in as ' + user._id" @click="navigateExternal('/logout')">
+                    <div>
+                        <font-awesome-icon icon="sign-out-alt" />
+                    </div>
+                    <span>Log out</span>
+                </li>
+                <li v-else>
+                    <div>
+                        <font-awesome-icon icon="sign-in-alt" />
+                    </div>
+                    <span>Log in</span>
+                </li>
             </ul>
         </transition>
     </nav>
@@ -61,24 +73,32 @@
 </template>
 
 <script>
-import { ref } from '@vue/reactivity';
+import { computed, ref } from '@vue/reactivity';
 import {useStore} from 'vuex'
 import { useRouter } from 'vue-router';
 import Logo from './Logo'
+import { watch } from '@vue/runtime-core';
 export default {
     components: {Logo},
     setup(){
         const store = useStore();
-        const dark = ref(store.getters.getDark);
-        const socketStatus = store.getters.socketStatus
+        //const dark = ref(store.getters.getDark);
         const menuOpen = ref(false)
         const router = useRouter()
+        const user = ref(store.getters.getUser)
+        const ping = computed(_=>store.state.lastPing)
+
+        watch(ping, _=>user.value = store.getters.getUser);
 
         function navigate(name, params){
             router.push({name, params})
             menuOpen.value = false;
         }
-        return {store, dark, socketStatus, menuOpen, navigate}
+        function navigateExternal(path){
+            menuOpen.value = false
+            window.location.href = path
+        }
+        return {store, menuOpen, navigate, user, navigateExternal}
     }
 }
 </script>
@@ -126,7 +146,13 @@ header.navigation {
             border-radius: 0.25rem;
             background-color: var(--buttoncolor);
             color: var(--textcolor);
+            &.red {
+                border-color: $color-bad;
+            }
             &:hover, &.active {
+                &.red {
+                    border-color: $color-bad;
+                }
                 border-color: var(--activelinkcolor);
                 color: var(--activelinkcolor)
             }
