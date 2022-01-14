@@ -5,7 +5,6 @@
     </div>
     <nav>
         <h3>{{store.state.pageName}}</h3>
-<!--        <router-link to="/">Nordic</router-link> -->
         <button @click="menuOpen = !menuOpen" :class="{active: menuOpen}">
             <font-awesome-icon icon="bars" />
         </button>
@@ -79,8 +78,6 @@ export default {
             router.push({name, params})
             menuOpen.value = false;
         }
-        
-
         return {store, dark, socketStatus, menuOpen, navigate}
     }
 }
@@ -183,13 +180,11 @@ header.navigation {
     }
 
     .slide-down-enter-active, .slide-down-leave-active {
-        transition: transform 0.5s ease-in-out; //cubic-bezier(1, 0.5, 0.8, 1);
-        //transition: opacity 0.3s ease-in-out 0.3s;
+        transition: transform 0.5s ease-in-out; 
     }
 
     .slide-down-enter-from , .slide-down-leave-to{
         transform: scaleY(0)
-        //opacity: 0;
     }
  
 }

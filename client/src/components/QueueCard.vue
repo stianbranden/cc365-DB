@@ -60,7 +60,6 @@ export default {
             if (page.value+i === queue.value.pages.length) page.value = -1;
             else if ( page.value+i == -2) page.value = queue.value.pages.length-1
             else page.value += i
-            //console.log(page.value);
         }
         function statClick(){
             if (page.value === -2) page.value = -1
@@ -73,7 +72,6 @@ export default {
             (channel.value, department.value, country.value, area.value))
         const daily = ref(store.getters.getDailyData
             (channel.value, department.value, country.value, area.value))
-        //console.log(queue.value.pages);
 
         watch(
             ping, 
@@ -90,7 +88,6 @@ export default {
                     (channel.value, department.value, country.value, area.value);
             daily.value = store.getters.getDailyData
                 (channel.value, department.value, country.value, area.value)
-            //console.log(daily.value);
         }
 
 

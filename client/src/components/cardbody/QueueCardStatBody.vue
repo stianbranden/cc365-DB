@@ -24,7 +24,6 @@
 </template>
 
 <script>
-import { toRefs } from '@vue/reactivity'
 
 export default {
     props: {
@@ -35,9 +34,8 @@ export default {
         area: String,
         daily: Object
     },
-    setup(props) {
-        //const {daily} = toRefs(props)
-        //console.log(daily.value);
+    setup() {
+
 
     }
 }
@@ -45,7 +43,6 @@ export default {
 
 <style lang="scss" scoped>
 .card .card-body {
-    min-height: 185px;
     position: relative;
     padding: 0.5rem;
     display: grid;

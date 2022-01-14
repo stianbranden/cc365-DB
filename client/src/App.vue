@@ -8,9 +8,8 @@
 
 <script>
 import {useStore} from 'vuex'
-import { onBeforeMount} from '@vue/runtime-core';
+import { onBeforeMount } from '@vue/runtime-core';
 import Navigation from './components/Navigation.vue'
-//const {VUE_APP_SOCKET_ADRESS} = process.env
 
 export default {
   components: {
@@ -20,17 +19,11 @@ export default {
     const store = useStore();
     onBeforeMount(_=>{
       store.commit('ioConnect')
-      //console.log(store.state);
       store.dispatch('getAdminData');
       store.dispatch('getUser')
       store.dispatch('getDarkFromLocal')
     })
-    /*onMounted(_=>{
-      socket = io(VUE_APP_SOCKET_ADRESS, {
-        reconnection: false
-      });
-      console.log(socket);
-    })*/
+   
     return {store}
   },
 }
@@ -80,12 +73,11 @@ body {
   --linkcolor: #eee;
   --buttoncolor: black;
   --cardbgcolor: #{$color-dark-grey};
-  --cardmenucolor: black; //#{$brand-color};
+  --cardmenucolor: black;
   --cardmenuhovercolor: #{$secondary-brand-color};
 }
 
 #app {
- // font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center; 

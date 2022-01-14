@@ -6,10 +6,6 @@
     <SummaryCard title='CCC Sweden' department='se' @dblclick="navigate('sweden')" />
     <SummaryCard title='CCC Kitchen' department='ki' @dblclick="navigate('kitchen')" />
     <SummaryCard title='CCC Helpdesk' department='thd' @dblclick="navigate('helpdesk')" />
-    <!--<QueueCard title='Phone' channel='PH' />
-    <QueueCard title='Chat' channel='CH' />
-    <QueueCard title='Email' channel='EM' />
-    <QueueCard title='Action' channel='AC' />-->
 
   </div>
 </template>

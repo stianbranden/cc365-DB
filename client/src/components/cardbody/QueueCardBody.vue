@@ -30,7 +30,6 @@ export default {
 
 <style lang="scss" scoped>
 .card .card-body {
-    min-height: 185px;
     position: relative;
     padding: 0.5rem;
     display: grid;

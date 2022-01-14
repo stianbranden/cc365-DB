@@ -54,18 +54,14 @@ export default {
     },
     setup(props){
         const store = useStore();
-        
         const {department} = toRefs(props);
         const ping = computed(_=>store.state.lastPing)
         const queue = ref(store.getters.getSummaryData(department.value));
-        //console.log(queue);
        
         watch(
             ping, 
             _=>{
                 queue.value = store.getters.getSummaryData(department.value);
-
-                //console.log(queue.value.data);
             }
         ) 
 
@@ -93,7 +89,6 @@ export default {
 <style lang="scss" scoped>
 .card-body {
         overflow: hidden;
-        min-height: 185px;
         position: relative;
         padding: 0.5rem;
         display: grid;

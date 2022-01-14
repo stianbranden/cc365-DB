@@ -18,7 +18,7 @@
 
 <script>
 // @ is an alias to /src
-import { onMounted, computed, ref, watch, onUpdated } from '@vue/runtime-core'
+import { computed, ref, onUpdated } from '@vue/runtime-core'
 
 import {useStore} from 'vuex'
 
@@ -39,7 +39,6 @@ export default {
     const checkConnectionStatus = _=>{
       connectionStatus.value = store.getters.connectionStatus;
     }
-    //onUpdated
 
     onUpdated(_=>{
       checkConnectionStatus();

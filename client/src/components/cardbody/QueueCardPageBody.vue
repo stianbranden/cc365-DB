@@ -16,28 +16,22 @@
 </template>
 
 <script>
-import { toRefs } from '@vue/runtime-core'
 
 export default {
     props: {
         page: Number,
         pages: Object
-    }, setup (props){
-        //let {pages} = toRefs(props)
-        //console.log(pages.value[0][0]);
+    }, setup (){
+
     }
 }
 </script>
 
 <style lang="scss" scoped>
 .card-body {
-    height: 185px;
-    padding: 0 0.5rem;
-    
+    padding: 0 0.5rem;    
     display: grid;
-    grid-template-rows: 1fr repeat(5, 2fr);
-    
-    
+    grid-template-rows: 1fr repeat(5, 2fr);   
     .card-row {
         &.header{
             font-size: 0.7rem;

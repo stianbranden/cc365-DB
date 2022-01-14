@@ -17,7 +17,6 @@
             <QueueCardBody v-else-if="page=='fi'" :department="department" channel="PH" :queue="queue.data.fi" />
             <QueueCardBody v-else-if="page=='no'" :department="department" channel="PH" :queue="queue.data.no" />
             <QueueCardBody v-else-if="page=='se'" :department="department" channel="PH" :queue="queue.data.se" />
-            
             <SummaryCardStatBody v-else-if="page=='stat'" :department="department" />
         </transition>
 
@@ -104,7 +103,6 @@ export default {
             let i = 0;
             let l = null
             Object.keys(queue.value.data).forEach(ch=>{
-                //console.log(ch);
                 if (queue.value.data[ch].queues.length > 0) {
                     i++
                     l = ch;
@@ -147,7 +145,6 @@ export default {
             cursor: pointer;
             position: absolute;
             right: 0.65rem;
-            //top: 0.65rem;
         }
         .flag {
             position: absolute;
@@ -183,7 +180,7 @@ export default {
     }
 
     .slide-fade-leave-active {
-        transition: all 0.3s ease-in; //cubic-bezier(1, 0.5, 0.8, 1);
+        transition: all 0.3s ease-in;
     }
 
     .slide-fade-enter-from{

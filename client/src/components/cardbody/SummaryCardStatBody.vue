@@ -43,12 +43,10 @@ export default {
         const store = useStore();
         const {department} = toRefs(props);
         const ping = computed(_=>store.state.lastPing)
-        //const queue = ref(store.getters.getSummaryData(department.value));
         const daily = ref(null)
         let keys = []
         setDailyData()
-        
-
+    
         function getIcon(key){
             let icon = null
             switch (key) {
@@ -114,7 +112,6 @@ export default {
             }
         }
         overflow: hidden;
-        min-height: 185px;
         position: relative;
         padding: 0.5rem;
         display: grid;
