@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <SummaryCard title='CCC Denmark' department='dk' />
+    <SummaryCard title='CCC Denmark' department='dk' @dblclick="navigate('denmark')" />
     <SummaryCard title='CCC Finland' department='fi' />
     <SummaryCard title='CCC Norway' department='no' />
     <SummaryCard title='CCC Sweden' department='se' />
@@ -15,9 +15,11 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router'
 // @ is an alias to /src
 import QueueCard from '../components/QueueCard.vue'
 import SummaryCard from '../components/SummaryCard.vue'
+
 
 export default {
   name: 'Home',
@@ -26,7 +28,11 @@ export default {
     SummaryCard
   },
   setup() {
-    
+    const router = useRouter();
+    function navigate(dep){
+      router.push({name: 'Department', params: {department: dep}})
+    }
+    return {navigate}
   }
 }
 </script>
