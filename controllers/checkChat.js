@@ -1,7 +1,7 @@
 //https://kindlywebhook.azurewebsites.net/api/queues?code=KczvYf3ARDqa3mNUt5AgrflkuDUD11wC6IwO74O8K117xSN9ot6YTA==&clientId=default
 //require('dotenv').config();
 //require('./connectDB')();
-const {logStd, logErr} = require('./logger')
+const {logStd, logErr, logTab} = require('./logger')
 const {createAlert, updateAlert} = require('./createAlert')
 const {getRelatedAlert} = require('./getAlerts')
 const request = require('request-promise');
@@ -25,8 +25,9 @@ const getCountry = chain=>{
     }
 }
 
-const isInErrorState = (slug, agents) =>{
-    if (slug == 'q_full' && agents === 0){
+const isInErrorState = (slug, agents, error) =>{
+    if ( error ) return `error found (${error})`
+    else if (slug == 'q_full' && agents === 0){
         return 'no agents logged on'
     }
     else if (slug == 'q_full'){
@@ -57,7 +58,7 @@ const getChatStatus = async chain=>{
 const processResult = async result =>{
     return new Promise(async (resolve, reject)=>{
         let alert = await getRelatedAlert('Channel Chat', result.country);
-        const state = isInErrorState(result.result.exchange_slug, result.result.agents);
+        const state = isInErrorState(result.result.exchange_slug, result.result.agents, result.result.error);
         let timeStamp = moment().tz('Europe/Oslo').format('HH:mm');
         let timeZone = moment().tz('Europe/Oslo').format('z')
         if (result.country == 'Finland'){
@@ -103,11 +104,13 @@ const processResult = async result =>{
 const checkChatStatus = _=>{
     chains.forEach(async chain =>{
         const {exchange_slug, new_context} = await getChatStatus(chain);
-        let {quueLimit, queueStatus} = new_context
+        let {quueLimit, queueStatus, error} = new_context
         let country = getCountry(chain);
         if ( !queueStatus ){
             queueStatus = {inQueueCurrent: 0,name: country, agentsServing: 0, agentsNotReady: 0}
         }
+
+        
         
     
         const result = {
@@ -117,9 +120,12 @@ const checkChatStatus = _=>{
                 exchange_slug, quueLimit, 
                 inQueue: queueStatus.inQueueCurrent, 
                 name: queueStatus.name, 
+                error,
                 agents: queueStatus.agentsServing-queueStatus.agentsNotReady
             }
         }
+
+        //logTab(result, 'ChatStatus')
         //let ag = q.agentsServing - q.agentsNotReady;
         //logStd(JSON.stringify(result));
         processResult(result).then(result=>{
