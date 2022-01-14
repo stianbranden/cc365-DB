@@ -1,11 +1,11 @@
 <template>
   <div class="home">
     <SummaryCard title='CCC Denmark' department='dk' @dblclick="navigate('denmark')" />
-    <SummaryCard title='CCC Finland' department='fi' />
-    <SummaryCard title='CCC Norway' department='no' />
-    <SummaryCard title='CCC Sweden' department='se' />
-    <SummaryCard title='CCC Kitchen' department='ki' />
-    <SummaryCard title='CCC Helpdesk' department='thd' />
+    <SummaryCard title='CCC Finland' department='fi' @dblclick="navigate('finland')" />
+    <SummaryCard title='CCC Norway' department='no' @dblclick="navigate('norway')" />
+    <SummaryCard title='CCC Sweden' department='se' @dblclick="navigate('sweden')" />
+    <SummaryCard title='CCC Kitchen' department='ki' @dblclick="navigate('kitchen')" />
+    <SummaryCard title='CCC Helpdesk' department='thd' @dblclick="navigate('helpdesk')" />
     <!--<QueueCard title='Phone' channel='PH' />
     <QueueCard title='Chat' channel='CH' />
     <QueueCard title='Email' channel='EM' />
