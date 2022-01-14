@@ -62,9 +62,9 @@
 </template>
 
 <script>
-import { computed, ref } from '@vue/reactivity';
+import { ref } from '@vue/reactivity';
 import {useStore} from 'vuex'
-import { onBeforeRouteUpdate, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import Logo from './Logo'
 export default {
     components: {Logo},
@@ -149,19 +149,22 @@ header.navigation {
             right: 0;
             top: 3.2rem;
             z-index: 10;
-            width: calc(var(--cardwidth)/2);
+            width: calc(var(--cardwidth)/1.7);
             transform-origin: top;
             overflow: hidden;
             li {
                 color: white;
-                padding: 0.5rem;
+                padding: 0.5rem 0;
                 display: grid;
                 grid-template-columns: 1fr 4fr;
                 > span {
                     text-align: right;
+                    padding: 0 0.5rem;
                 }
-                    > div {
+                > div {
+                    padding: 0 0.5rem;
                     border-right: 1px solid var(--bgcolor);
+                    min-width: 40px;
                 }
                 &:not(.info) {
 
