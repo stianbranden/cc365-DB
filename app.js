@@ -193,6 +193,7 @@ server.listen(process.env.PORT, ()=>{
         //logStd('Checking for alerts');
         getAlerts().then(alerts=>{
             io.in('nordic').emit('new-alert', {alerts});
+            io.in('vue').emit('new-alert', {alerts});
         });
         ['Denmark', 'Finland', 'Norway', 'Sweden', 'Kitchen', 'Helpdesk'].forEach(department=>{
             getAlerts(department).then(alerts=>{
