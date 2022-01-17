@@ -54,13 +54,13 @@
                     </div>
                     <span>{{store.getters.getDark ? 'Light mode': 'Dark mode' }}</span>
                 </li>
-                <li v-if="user._id" :title="'Signed in as ' + user._id" @click="navigateExternal('/logout')">
+                <li v-if="user._id" :title="'Signed in as ' + user._id" @click="navigateExternal('/auth/logout')">
                     <div>
                         <font-awesome-icon icon="sign-out-alt" />
                     </div>
                     <span>Log out</span>
                 </li>
-                <li v-else>
+                <li v-else @click="navigateExternal('/auth/azure/login')">
                     <div>
                         <font-awesome-icon icon="sign-in-alt" />
                     </div>
