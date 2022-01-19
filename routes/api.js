@@ -11,7 +11,9 @@ const {getOsData} = require('../controllers/getOsData');
 const { logErr, logStd, logTab } = require('../controllers/logger.js');
 const { getPm2Data } = require('../controllers/getPm2.js');
 const {createAlert} = require('../controllers/createAlert')
+const {getAlerts, getPeopleAlerts} = require('../controllers/getAlerts')
 const User = require('../models/User')
+
 
 router.get('/admin', async (req, res)=>{
     try {
@@ -31,9 +33,20 @@ router.get('/user', async (req, res)=>{
         logStd('Dev request from vue, sending std user');
     }
     else {
-        res.send(req.user || {custom_access:[]});
+        res.send(req.user || {custom_access:[], alerts: []});
     }
 });
+
+router.get('/alerts', async (req, res)=>{
+    let alerts = []
+    alerts = [...await getAlerts(null, null, true)]
+    if ( req.user && req.user.alerts){
+        for ( let i = 0; i < req.user.alerts.length; i++)  {
+            alerts = [...alerts, ...await getPeopleAlerts(req.user.alerts[i])]
+        }
+    }
+    res.send(alerts);
+})
 
 router.post ('/alerts', async (req, res)=>{
     if ( !req.user ){

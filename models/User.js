@@ -35,7 +35,8 @@ const UserSchema = new mongoose.Schema({
         label: String,
         path: String,
         alter: String
-    }]
+    }],
+    alerts: [String]
 },{
     toJSON: { virtuals: true }, // So `res.json()` and other `JSON.stringify()` functions include virtuals
     toObject: { virtuals: true } // So `toObject()` output includes virtuals

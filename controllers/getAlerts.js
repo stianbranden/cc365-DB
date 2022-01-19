@@ -5,8 +5,28 @@ const moment = require('moment')
 const getAlerts = async (department = null, sort = -1, not_person_sensitive = false, filter_date = true, date = moment().format('YYYY-MM-DD'))=>{
     const query = {};
     if (not_person_sensitive){
-        query.personrelated = true;
+        query.personrelated = false;
     }
+    if (filter_date){
+        query.date = {$gte: date}
+//        new Date(date);
+    }
+    if ( department == 'Norway' ){
+        //likes: { $in: ['vaporizing', 'talking'] }
+        query.department =  { $in: ['Loyalty', 'Norway']};
+    }
+    else if ( department == 'Helpdesk' || department == 'Support') {
+        query.department =  { $in: ['Support', 'Helpdesk']};
+    }
+    else if (department){
+        query.department = department;
+    } 
+    //logStd(JSON.stringify(query));
+    return await Alert.find(query).sort({date: sort});
+}
+const getPeopleAlerts = async (department = null, sort = -1, filter_date = true, date = moment().format('YYYY-MM-DD'))=>{
+    const query = {personrelated: true};
+
     if (filter_date){
         query.date = {$gte: date}
 //        new Date(date);
@@ -55,4 +75,4 @@ const getAlertByTextAndDate = (text, date = moment().format('YYYY-MM-DD'))=>{
     })
 }
 
-module.exports = {getAlerts, getRelatedAlert, getAlertByTextAndDate}
+module.exports = {getPeopleAlerts, getAlerts, getRelatedAlert, getAlertByTextAndDate}

@@ -26,6 +26,7 @@ const genAccessLevel = (label='Alerts', alter='root', path)=>{
 const generateCustomAccess = async (role, title, upn)=>{
   const custom_access = [];
   const accesses = await Access.find();
+  const alerts = []
 
   accesses.forEach(access=>{
     let hasAccess = []
@@ -44,28 +45,14 @@ const generateCustomAccess = async (role, title, upn)=>{
       access.grant.forEach(ca=>{
         custom_access.push(genAccessLevel(ca.label, ca.alter, ca.path));
       });
+      if (access.alerts) alerts = [...alerts, ...access.alerts]
     }
   })
 
-  
-  
-  /*if (role === 'CCC STAFFING' || role === 'CCC MANAGER' || role === 'ECC1010' || upn === 'stianbra@elkjop.no'){
-    custom_access.push(genAccessLevel());
-    custom_access.push(genAccessLevel('Alerts', 'denmark'));
-    custom_access.push(genAccessLevel('Alerts', 'finland'));
-    custom_access.push(genAccessLevel('Alerts', 'norway'));
-    custom_access.push(genAccessLevel('Alerts', 'sweden'));
-    custom_access.push(genAccessLevel('Alerts', 'helpdesk'));
-    custom_access.push(genAccessLevel('Alerts', 'kitchen'));
-  }
-
-  if ( upn === 'stianbra@elkjop.no' ){
-    custom_access.push(genAccessLevel('Admin', 'new', '/admin'));
-  }*/
 
 
 
-  return custom_access;
+  return {alerts, custom_access};
 }
 
 module.exports = function (passport) {
@@ -101,7 +88,7 @@ module.exports = function (passport) {
               agentId = agent._id;
             }
 
-            const custom_access = await generateCustomAccess(state, jobTitle, profile.upn);
+            const {custom_access, alerts} = await generateCustomAccess(state, jobTitle, profile.upn);
             
             let user = await User.findById(profile.upn);
             if (user){
@@ -113,7 +100,8 @@ module.exports = function (passport) {
                 role: state,
                 title: jobTitle,
                 access_token: accessToken,
-                custom_access
+                custom_access,
+                alerts
               }, {new: true})
             }
             else {
@@ -127,7 +115,8 @@ module.exports = function (passport) {
                     given_name: profile.given_name,
                     family_name: profile.family_name,
                     access_token: accessToken,
-                    custom_access
+                    custom_access,
+                    alerts
                 });
             }
             if ( NODE_ENV != 'Production' ){

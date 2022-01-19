@@ -12,6 +12,7 @@ const AccessSchema = new mongoose.Schema({
             path: String
         }
     ],
+    alerts: [String],
     name: String
 });
 
