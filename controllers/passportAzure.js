@@ -26,7 +26,7 @@ const genAccessLevel = (label='Alerts', alter='root', path)=>{
 const generateCustomAccess = async (role, title, upn)=>{
   const custom_access = [];
   const accesses = await Access.find();
-  const alerts = []
+  let alerts = []
 
   accesses.forEach(access=>{
     let hasAccess = []
