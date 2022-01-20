@@ -1,14 +1,12 @@
 const AzureStrategy = require('passport-azure-ad-oauth2').Strategy
 const jwt = require('jsonwebtoken');
-const moment = require('moment');
 const User = require('../models/User')
 const request = require('request-promise');
 const Access = require('../models/Access');
-const {logStd, logTab, logErr} = require('./logger');
+const {logErr} = require('./logger');
 
 const {AZURE_CLIENTID, AZURE_CLIENTSECRET, NODE_ENV,HOST_URL} = process.env;
 const {getAgentWithEmail} = require('./getTeleoptiData');
-const {getUserById} = require('./getUserData');
 
 const { getProfileData} = require('./config');
 
