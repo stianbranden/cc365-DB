@@ -1,20 +1,17 @@
 <template>
-  <div :class="{showAlerts: store.state.showAlerts}">
-      <div class="home"  v-if="store.state.showAlerts" >
-        <Alerts :department="department" /> 
-      </div>
-      <div class="home" v-if="department !== 'thd'">
-          <QueueCard title="Phone" channel="PH" :department="department" />
-          <QueueCard title="Chat" channel="CH" :department="department" />
-          <QueueCard title="Email" channel="EM" :department="department" />
-          <QueueCard title="Action" channel="AC" :department="department" />
-      </div>
-      <div class="home" v-else>
-        <QueueCard title="DK THD Phone" channel="PH" country="DK" :department="department" />
-        <QueueCard title="FI THD Phone" channel="PH" country="FI" :department="department" />
-        <QueueCard title="NO THD Phone" channel="PH" country="NO" :department="department" />
-        <QueueCard title="SE THD Phone" channel="PH" country="SE" :department="department" /> 
-      </div>
+  <div class="home" :class="{showAlerts: store.state.showAlerts}" v-if="department !== 'thd'">
+      <Alerts v-if="store.state.showAlerts" :department="department" /> 
+      <QueueCard title="Phone" channel="PH" :department="department" />
+      <QueueCard title="Chat" channel="CH" :department="department" />
+      <QueueCard title="Email" channel="EM" :department="department" />
+      <QueueCard title="Action" channel="AC" :department="department" />
+  </div>
+  <div class="home" :class="{showAlerts: store.state.showAlerts}" v-else>
+    <Alerts v-if="store.state.showAlerts" :department="department" /> 
+    <QueueCard title="DK THD Phone" channel="PH" country="DK" :department="department" />
+    <QueueCard title="FI THD Phone" channel="PH" country="FI" :department="department" />
+    <QueueCard title="NO THD Phone" channel="PH" country="NO" :department="department" />
+    <QueueCard title="SE THD Phone" channel="PH" country="SE" :department="department" /> 
   </div>
 </template>
 
