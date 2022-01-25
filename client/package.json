@@ -8,9 +8,11 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
+    "@fortawesome/free-regular-svg-icons": "^5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/vue-fontawesome": "^3.0.0-5",
     "core-js": "^3.6.5",
+    "luxon": "^2.3.0",
     "moment": "^2.29.1",
     "socket.io-client": "^4.4.0",
     "vue": "^3.0.0",

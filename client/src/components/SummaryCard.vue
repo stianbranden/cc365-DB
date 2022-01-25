@@ -124,20 +124,8 @@ export default {
 
 <style lang="scss">
 .card.summarycard {
-    height: fit-content;
-    border-radius: 0.5rem;
-    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
-    background-color: var(--cardbgcolor);
-    width: 250px;
-    margin: 2rem;
     .card-header {
-        border-radius: 0.5rem 0.5rem 0 0;
-        position: relative;
-        background-color: var(--headercolor);
-        color: white;
-        padding: 0.5rem;
-        height: 2rem;
-        z-index: 2;
+        
         .icon {
             &:hover, &.active {
                 color: $secondary-brand-color;
@@ -152,15 +140,7 @@ export default {
         }
     }
     .card-menu {
-        background-color: var(--cardmenucolor);
-        height: 2rem;
-        border-radius: 0 0 0.5rem 0.5rem;
-        position: relative;
-        display: flex;
         justify-content: space-around;
-        align-items: center;
-        color: white;
-        z-index: 2;
         div {
             cursor: pointer;
             &:hover, &.active {

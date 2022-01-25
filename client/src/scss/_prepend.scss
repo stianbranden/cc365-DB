@@ -16,8 +16,35 @@ $color-hotpink: #C83586;
 $color-purple: #4F247E;
 $blackish: #222;
 
-$small-size: 700px;
+$small-size: 750px;
 $big-size: 1360px;
+
+//VUE BREAKPOINTS
+$xs: 480px; //Mobile
+$sm: 750px; //Tablet
+$md: 1024px; //Small screens
+$lg: 1200px; //Large screens
+$xl: 1450px; //TVs
+$jumbo: 1800px;
+
+@mixin tablet {
+    @media (min-width: $xs) { @content; }
+}
+@mixin small {
+    @media (min-width: $sm) { @content; }
+}
+@mixin medium {
+    @media (min-width: $md) { @content; }
+}
+@mixin large {
+    @media (min-width: $lg) { @content; }
+}
+@mixin tv {
+    @media (min-width: $xl) { @content; }
+}
+@mixin jumbo {
+    @media (min-width: $jumbo) { @content; }
+}
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 

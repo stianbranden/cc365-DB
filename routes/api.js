@@ -40,9 +40,10 @@ router.get('/user', async (req, res)=>{
 router.get('/alerts', async (req, res)=>{
     let alerts = []
     alerts = [...await getAlerts(null, null, true)]
+    if ( NODE_ENV !== 'production' && req.headers.origin === 'http://localhost:8080' ) req.user = await User.findById('stianbra@elkjop.no')
     if ( req.user && req.user.alerts){
         for ( let i = 0; i < req.user.alerts.length; i++)  {
-            alerts = [...alerts, ...await getPeopleAlerts(req.user.alerts[i])]
+            if ( !['Helpdesk', 'Loyalty'].includes(req.user.alerts[i]) ) alerts = [...alerts, ...await getPeopleAlerts(req.user.alerts[i])];
         }
     }
     res.send(alerts);
