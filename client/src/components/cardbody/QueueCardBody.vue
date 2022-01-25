@@ -4,8 +4,18 @@
             {{queue.summary.inQueue}}
         </span>
         <div class="bottom">
-            <span class="small-ban">{{queue.summary.timeWait}}</span>
-            <span class="label">max wait</span>
+            <div class="idle">
+                <span class="small-ban">{{queue.summary.idle.min}}/{{queue.summary.idle.max}}</span>
+                <span class="label">Idle agents</span>
+            </div>
+            <div class="ready">
+                <span class="small-ban">{{queue.summary.ready.min}}/{{queue.summary.ready.max}}</span>
+                <span class="label">ready agents</span>
+            </div>
+            <div class="wait">
+                <span class="small-ban">{{queue.summary.timeWait}}</span>
+                <span class="label">max wait</span>
+            </div>
         </div>
     </div>
 </template>
@@ -48,6 +58,11 @@ export default {
     .label {
         text-transform: uppercase;
         font-size: 0.6rem;
+    }
+    .bottom {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
     }
 }
 </style>

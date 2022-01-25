@@ -224,7 +224,15 @@ export default createStore({
         pages: [],
         summary: {
           inQueue: 0,
-          maxWait: 0
+          maxWait: 0,
+          ready: {
+            min: 1000,
+            max: 0
+          },
+          idle:{
+            min: 1000,
+            max: 0
+          }
         }
       }
       const result = {
@@ -349,15 +357,29 @@ function computeQueues(state, channel, department, country, area ){
     pages: [],
     summary: {
       inQueue: 0,
-      maxWait: 0
+      maxWait: 0,
+      ready: {
+        min: 1000,
+        max: 0
+      },
+      idle:{
+        min: 1000,
+        max: 0
+      }
     }
   }
   if (arr.length > 0){
     let page = []
     arr.forEach((q, index)=>{
+      const idle = q.agentsFree
+      const ready = q.agentsServing - q.agentsNotReady
       object.summary.inQueue += q.inQueueCurrent;
       if ( q.waitingDurationCurrentMax > object.summary.maxWait) object.summary.maxWait = q.waitingDurationCurrentMax;
-      //if ( index % state.queuesPerPage == 0 ) page = [];
+      if ( idle > object.summary.idle.max ) object.summary.idle.max = idle
+      if ( idle < object.summary.idle.min ) object.summary.idle.min = idle
+      if ( ready < object.summary.ready.min ) object.summary.ready.min = ready
+      if ( ready > object.summary.ready.max ) object.summary.ready.max = ready
+
       page.push(q);
       if ( index % state.queuesPerPage == state.queuesPerPage - 1) {
         object.pages.push(page)
