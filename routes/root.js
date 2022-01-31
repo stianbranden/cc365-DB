@@ -65,7 +65,7 @@ router.get('/admin', setBeta, async (req, res)=>{
 
 
 
-router.get('/vue', (req, res)=>{
+router.get('/vue/*', (req, res)=>{
     res.sendFile(require('path').join(__dirname,'../public/vue/index.html'));
 });
 
