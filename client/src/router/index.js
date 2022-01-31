@@ -54,10 +54,18 @@ router.afterEach(to=>{
     name = to.params.department
     pages.push({name: 'Nordic', routeName: 'Nordic', params: {}, link: true})
     pages.push({name: capitalize(name), routeName: 'Department', params: {department: name}, link: true})
-    pages.push({name: capitalize(to.params.channel), routeName: 'Channel', 
-      params: {department: name, channel: to.params.channel},
+    if (to.params.department === 'helpdesk'){
+      pages.push({name: capitalize(to.params.country), routeName: 'Channel', 
+      params: {department: name, country: to.params.country},
       link: false
     })
+    }
+    else {
+      pages.push({name: capitalize(to.params.channel), routeName: 'Channel', 
+        params: {department: name, channel: to.params.channel},
+        link: false
+      })
+    }
   }
   store.commit('setPageName', name)
   store.commit('setPages', pages)

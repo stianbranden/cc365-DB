@@ -4,6 +4,13 @@
             <div class="brand" @click="navigate('Nordic', {})">
                 <img alt="Logo" src="../assets/icon.png">
             </div>
+            <h3 class="pagename">{{store.state.pageName}}</h3>
+        </div>
+        <nav>
+            <div v-if="store.getters.getOpenAlerts().length" @click="store.commit('toggleWarnings')"  class="warning" :title="store.getters.getOpenAlerts(store.state.pageName).length + ' open alerts'">
+                <font-awesome-icon icon="exclamation-circle" />
+            </div>
+            <!-- v-if="store.getters.getOpenAlerts().length" -->
             <div class="pages">
                 <span
                     v-for="page in store.state.pages"
@@ -12,14 +19,7 @@
                     :class="{link: page.link}"
                 >{{page.name}}</span>
             </div>
-        </div>
-        <nav>
-            <div v-if="store.getters.getOpenAlerts().length" @click="store.commit('toggleWarnings')"  class="warning" :title="store.getters.getOpenAlerts(store.state.pageName).length + ' open alerts'">
-                <font-awesome-icon icon="exclamation-circle" />
-            </div>
-            <!-- v-if="store.getters.getOpenAlerts().length" -->
             
-            <h3>{{store.state.pageName}}</h3>
             <button @click="menuOpen = !menuOpen" :class="{active: menuOpen, red: !store.getters.connectionStatus}" :title="[store.getters.connectionStatus ? 'Click to open menu': 'Not connected to server']" >
                 <font-awesome-icon icon="bars" />
             </button>
@@ -60,19 +60,21 @@ header.navigation {
     justify-content: space-between;
     .left {
         display: flex;
-        align-items: flex-end;
-        .pages {
-            font-size: 0.7rem;
-            text-transform: lowercase;
-            span:not(:first-child)::before{
-                content: ' \\ '
-            }
-            .link {
-                cursor: pointer;
-                &:hover {
-                    text-decoration: underline;
-                    color: var(--activelinkcolor);
-                }
+        //align-items: flex-end;
+    }
+    .pages {
+        margin-right: 0.5rem;
+        align-self: flex-end;
+        font-size: 0.7rem;
+        text-transform: lowercase;
+        span:not(:first-child)::before{
+            content: ' \\ '
+        }
+        .link {
+            cursor: pointer;
+            &:hover {
+                text-decoration: underline;
+                color: var(--activelinkcolor);
             }
         }
     }
@@ -83,14 +85,15 @@ header.navigation {
             height: 2rem;
         }
     }
+    h3.pagename {
+        margin-right: 1rem;
+        color: var(--linkcolor);
+        text-transform: capitalize;
+        align-self: center;
+    }
     nav {
         margin: 0 1rem;
         display: flex;
-        h3 {
-            margin-right: 1rem;
-            color: var(--linkcolor);
-            text-transform: capitalize;
-        }
         a {
         font-weight: bold;
         color: var(--linkcolor);
