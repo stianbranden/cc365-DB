@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import Department from '../views/Department.vue'
 import store from '../store'
 
 const routes = [
@@ -25,7 +24,12 @@ const routes = [
   {
     path: '/:department',
     name: 'Department',
-    component: Department
+    component: () => import(/* webpackChunkName: "department" */ '../views/Department.vue')
+  },
+  {
+    path: '/:department/:channel/:country',
+    name: 'Channel',
+    component: () => import(/* webpackChunkName: "area" */ '../views/Channel.vue')
   }
 ]
 
@@ -36,8 +40,29 @@ const router = createRouter({
 
 router.afterEach(to=>{
   let name = to.name;
-  if ( name === 'Department' ) name = to.params.department
+  const pages = []
+  if (name === 'Nordic') pages.push({name, routeName: name, params: {}, link: false})
+  else if ( name === 'Department' ) {
+    name = to.params.department
+    pages.push({name: 'Nordic', routeName: 'Nordic', params: {}, link: true})
+    pages.push({name: capitalize(name), routeName: 'Department',
+       params: {department: name}, 
+       link: false
+    })
+  }
+  else if ( name === 'Channel' ) {
+    name = to.params.department
+    pages.push({name: 'Nordic', routeName: 'Nordic', params: {}, link: true})
+    pages.push({name: capitalize(name), routeName: 'Department', params: {department: name}, link: true})
+    pages.push({name: capitalize(to.params.channel), routeName: 'Channel', 
+      params: {department: name, channel: to.params.channel},
+      link: false
+    })
+  }
   store.commit('setPageName', name)
+  store.commit('setPages', pages)
 })
+
+const capitalize = word => word.charAt(0).toUpperCase() + word.slice(1);
 
 export default router

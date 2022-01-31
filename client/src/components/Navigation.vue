@@ -1,21 +1,31 @@
 <template>
-  <header class=navigation>
-    <div class="brand" @click="navigate('Nordic', {})">
-        <img alt="Logo" src="../assets/icon.png">
-    </div>
-    <nav>
-        <div v-if="store.getters.getOpenAlerts().length" @click="store.commit('toggleWarnings')"  class="warning" :title="store.getters.getOpenAlerts(store.state.pageName).length + ' open alerts'">
-            <font-awesome-icon icon="exclamation-circle" />
+    <header class=navigation>
+        <div class="left">
+            <div class="brand" @click="navigate('Nordic', {})">
+                <img alt="Logo" src="../assets/icon.png">
+            </div>
+            <div class="pages">
+                <span
+                    v-for="page in store.state.pages"
+                    :key="page.name"
+                    @click="navigate(page.routeName, page.params)"
+                    :class="{link: page.link}"
+                >{{page.name}}</span>
+            </div>
         </div>
-        <!-- v-if="store.getters.getOpenAlerts().length" -->
-        
-        <h3>{{store.state.pageName}}</h3>
-        <button @click="menuOpen = !menuOpen" :class="{active: menuOpen, red: !store.getters.connectionStatus}" :title="[store.getters.connectionStatus ? 'Click to open menu': 'Not connected to server']" >
-            <font-awesome-icon icon="bars" />
-        </button>
-        <Menu :menuOpen="menuOpen" @close-menu="menuOpen = false" />
-    </nav>
-  </header>
+        <nav>
+            <div v-if="store.getters.getOpenAlerts().length" @click="store.commit('toggleWarnings')"  class="warning" :title="store.getters.getOpenAlerts(store.state.pageName).length + ' open alerts'">
+                <font-awesome-icon icon="exclamation-circle" />
+            </div>
+            <!-- v-if="store.getters.getOpenAlerts().length" -->
+            
+            <h3>{{store.state.pageName}}</h3>
+            <button @click="menuOpen = !menuOpen" :class="{active: menuOpen, red: !store.getters.connectionStatus}" :title="[store.getters.connectionStatus ? 'Click to open menu': 'Not connected to server']" >
+                <font-awesome-icon icon="bars" />
+            </button>
+            <Menu :menuOpen="menuOpen" @close-menu="menuOpen = false" />
+        </nav>
+    </header>
 </template>
 
 <script>
@@ -48,6 +58,24 @@ header.navigation {
     padding: 0.5rem;
     align-items: center;
     justify-content: space-between;
+    .left {
+        display: flex;
+        align-items: flex-end;
+        .pages {
+            font-size: 0.7rem;
+            text-transform: lowercase;
+            span:not(:first-child)::before{
+                content: ' \\ '
+            }
+            .link {
+                cursor: pointer;
+                &:hover {
+                    text-decoration: underline;
+                    color: var(--activelinkcolor);
+                }
+            }
+        }
+    }
     .brand {
         cursor: pointer;
         margin: 0 1rem;

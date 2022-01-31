@@ -14,9 +14,11 @@
     "core-js": "^3.6.5",
     "luxon": "^2.3.0",
     "moment": "^2.29.1",
+    "motion": "^10.6.0",
     "socket.io-client": "^4.4.0",
     "vue": "^3.0.0",
     "vue-awesome": "^4.5.0",
+    "vue-resize-observer": "^2.0.15",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
   },

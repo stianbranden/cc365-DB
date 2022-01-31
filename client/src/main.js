@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import VueResizeObserver from "vue-resize-observer";
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { 
@@ -42,4 +43,9 @@ library.add(faLightbulb, faPhoneAlt, faComments, faEnvelope, faFolder, faCircleN
     faUsers,faPlusCircle, faBell, faBellSlash, faExclamationTriangle, faSort, faFilter,
     faClipboard )
 
-createApp(App).component('font-awesome-icon', FontAwesomeIcon).use(store).use(router).mount('#app')
+createApp(App)
+    .component('font-awesome-icon', FontAwesomeIcon)
+    .use(store)
+    .use(router)
+    .use(VueResizeObserver)
+    .mount('#app')

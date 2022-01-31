@@ -1,26 +1,26 @@
 <template>
-  <div class="card queuecard" v-if="queue.queues.length">
-    <div class="card-header">
-        <div class="flag">        
-            <font-awesome-icon :icon="icon" />
+    <div class="card queuecard" v-if="queue.queues.length">
+        <div class="card-header">
+            <div class="flag">        
+                <font-awesome-icon :icon="icon" />
+            </div>
+            <span class="title">{{title}}</span>
+            <span class="icon" @click="statClick" :class="{active: page==-2}">
+                <font-awesome-icon icon="chart-bar" />  
+            </span>
         </div>
-        <span>{{title}}</span>
-        <span class="icon" @click="statClick" :class="{active: page==-2}">
-            <font-awesome-icon icon="chart-bar" />  
-        </span>
-    </div>
-    <transition name="slide-fade" mode="out-in">
-        <queue-card-body :queue="queue" :department="department" :channel="channel" v-if="queue.queues.length && page==-1" />
-        <queue-card-stat-body :daily="daily" :channel="channel" :department="department" v-else-if="page == -2" />
-        <queue-card-page-body :pages="queue.pages" :page="page" v-else-if="page>=0" />
-        <div class="card-spinner" v-else>
-            <span>Loading...</span>
-        </div> 
-    </transition>
-    <div class="card-menu">
-        <div @click="newPage(-1)"><font-awesome-icon icon="angle-left" /></div>
-        <div @click="newPage(1)"><font-awesome-icon icon="angle-right" /></div>
-    </div>
+        <transition name="slide-fade" mode="out-in">
+            <queue-card-body :queue="queue" :department="department" :channel="channel" v-if="queue.queues.length && page==-1" />
+            <queue-card-stat-body :daily="daily" :channel="channel" :department="department" v-else-if="page == -2" />
+            <queue-card-page-body :pages="queue.pages" :page="page" v-else-if="page>=0" />
+            <div class="card-spinner" v-else>
+                <span>Loading...</span>
+            </div> 
+        </transition>
+        <div class="card-menu">
+            <div @click="newPage(-1)"><font-awesome-icon icon="angle-left" /></div>
+            <div @click="newPage(1)"><font-awesome-icon icon="angle-right" /></div>
+        </div>
     </div>
 </template>
 
@@ -41,6 +41,7 @@ export default {
     },
     setup(props) {
         const {channel, department, country, area} = toRefs(props);
+        //console.log({channel: channel.value, department: department.value, country: country.value, area: area.value});
         let icon = 'phone-alt';
         switch (channel.value) {
             case 'CH':
@@ -120,6 +121,9 @@ export default {
             position: absolute;
             left: 0.65rem;
             color: var(--iconcolor);
+        }
+        .title {
+            text-transform: capitalize;
         }
     }
     .card-menu {

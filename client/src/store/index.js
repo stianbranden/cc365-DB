@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
 import io from 'socket.io-client'
 import moment from 'moment'
+import { allLoadavg } from 'os-utils';
 const {VUE_APP_SOCKET_ADRESS, VUE_APP_API_ROOT} = process.env
 const {localStorage} = window;
 
@@ -30,6 +31,23 @@ export default createStore({
       {name: 'Department A-Z', value: 'department'},
       {name: 'Departmemt Z-A', value: 'department-desc'}
     ],
+    areas: [
+      {abbr: 'AS', name: 'After Sales'},
+      {abbr: 'BO', name: 'Back Office'},
+      {abbr: 'BU', name: 'B2B'},
+      {abbr: 'BUHOT', name: 'B2B Hotline'},
+      {abbr: 'CAS', name: 'Cashier'},
+      {abbr: 'HDF', name: 'Helpdesk Free'},
+      {abbr: 'HDP', name: 'Helpdesk Paid'},
+      {abbr: 'HOT', name: 'Hotline'},
+      {abbr: 'INT', name: 'Internal'},
+      {abbr: 'KI', name: 'Kitchen'},
+      {abbr: 'KIHOT', name: 'Kitchen Hotline'},
+      {abbr: 'PAY', name: 'Payment'},
+      {abbr: 'PS', name: 'Pre Sales'},
+      {abbr: 'STA', name: 'Status'}
+    ],
+    pages: [],
     showNotifications: false,
     notifications: []
   },
@@ -89,6 +107,9 @@ export default createStore({
     },
     setPageName(state, value) {
       state.pageName = value;
+    },
+    setPages(state, value){
+      state.pages = value;
     },
     toggleWarnings(state){
       state.showWarnings = !state.showWarnings
@@ -212,6 +233,9 @@ export default createStore({
     getQueueData: (state) => (channel, department, country, area)=>{
       const data = computeQueues(state, channel, department, country, area)
       return data;
+    },
+    hasQueueData: (state) => (channel, department, country, area)=>{
+      return hasQueues(state, channel, department, country, area)
     },
     getDailyData: (state) => (channel, department, country, area)=>{
       const data = computeDaily(state, channel, department, country, area )
@@ -343,6 +367,15 @@ function computeDaily(state, channel, department, country, area ){
   summary.timeAsa = msToTime(summary.asa)
   summary.timeAht = msToTime(summary.aht)
   return {queues: arr, summary}
+}
+
+function hasQueues(state, channel, department, country, area ){
+  let arr = [...state.queueData];
+  if ( channel ) arr = arr.filter(q=>q.channel === channel)
+  if ( department ) arr = arr.filter(q=>q.department === department)
+  if ( country ) arr = arr.filter(q=>q.country === country)
+  if ( area ) arr = arr.filter(q=>q.area === area)
+  return arr.length > 0
 }
 
 function computeQueues(state, channel, department, country, area ){
