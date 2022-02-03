@@ -67,6 +67,7 @@ header.navigation {
         align-self: flex-end;
         font-size: 0.7rem;
         text-transform: lowercase;
+        color: var(--linkcolor);
         span:not(:first-child)::before{
             content: ' \\ '
         }

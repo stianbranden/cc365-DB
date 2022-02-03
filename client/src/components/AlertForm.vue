@@ -42,7 +42,7 @@
             <div class="buttons">
                 <button class="cancel" type="cancel" @click.prevent="emit('close')">Cancel</button>
                 <button class="submit">Submit</button>
-
+                <button class="close" v-if="alertId !== 'new'">Close alert</button>
             </div>
         </form>
         <div class="errors" v-if="errors.length">
@@ -190,7 +190,7 @@ function wipeErrors(){
             > select {
                 margin-bottom: 0.5rem;
                 text-align: center;
-                background: black;
+                background: var(--alertcheckboxcolor);
                 color: white;
                 height: 1.5rem;
                 flex-basis: 55%;
@@ -221,7 +221,7 @@ function wipeErrors(){
                 display: inline-block;
                 box-sizing: border-box;
                 border: 1px solid black;
-                background: black;
+                background: var(--alertcheckboxcolor);
                 color: white;
                 padding: 0.5rem;
                 border-radius: 0.2rem;
@@ -260,6 +260,7 @@ function wipeErrors(){
                 }
                 &.cancel {
                     background-color: $color-grey;
+                    color: white;
                 }
                 &.submit {
                     background-color: $color-good;

@@ -1,7 +1,6 @@
 import { createStore } from 'vuex'
 import io from 'socket.io-client'
 import moment from 'moment'
-import { allLoadavg } from 'os-utils';
 const {VUE_APP_SOCKET_ADRESS, VUE_APP_API_ROOT} = process.env
 const {localStorage} = window;
 

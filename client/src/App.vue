@@ -57,6 +57,7 @@ body {
   --alertbordercolor: lightgrey;
   --activealertbgcolor: #{lighten($color-bad, 30%)};
   --recentalertcolor: #{lighten($color-yellow, 40%)};
+  --alertcheckboxcolor: #{$brand-color};
 
   &.dark {
     --bgcolor: #{$blackish};
@@ -72,6 +73,7 @@ body {
     --activealertbgcolor: #{darken($color-bad, 30%)};
     --iconcolor : #aaa;
     --recentalertcolor: #{darken($color-yellow, 40%)};
+    --alertcheckboxcolor: #{$blackish};
     //--alertbordercolor: #{$color-dark-grey};
   }
 
