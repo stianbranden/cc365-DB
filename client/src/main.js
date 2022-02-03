@@ -33,7 +33,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
-    faTimesCircle, faBell, faBellSlash
+    faTimesCircle, faBell, faBellSlash, faEdit
 } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
@@ -41,7 +41,7 @@ library.add(faLightbulb, faPhoneAlt, faComments, faEnvelope, faFolder, faCircleN
     faChartBar, faThLarge, faSink, faMicrochip, faAngleLeft, faAngleRight, faBars,
     faSignOutAlt, faSignInAlt, faThermometerHalf, faClock, faExclamationCircle, faTimesCircle, 
     faUsers,faPlusCircle, faBell, faBellSlash, faExclamationTriangle, faSort, faFilter,
-    faClipboard )
+    faClipboard, faEdit )
 
 createApp(App)
     .component('font-awesome-icon', FontAwesomeIcon)

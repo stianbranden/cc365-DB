@@ -5,25 +5,36 @@
                 Alerts (No: {{numAlerts}})
             </span>
         </div>
-        <transition-group tag="div" class="card-body" name="slow" mode="out-in">
-            <div
-                v-for="alert in store.state.alerts" :key="alert._id"
-                class="alert"
-                :class="{open: isOpen(alert._id), active: !alert.closed, recent: isRecent(alert.unix)}"
-                @click="toggleOpen(alert._id)"
-                v-show="showAlert(alert)"
-            >
-                <div class="icon"><font-awesome-icon :icon="alert.fontawesomeicon" /></div>
-                <div class="time">{{displayDt(alert.createdAt)}}</div>
+        <transition name="fade-left" mode="out-in">
+            <AlertForm :alert="state.alertId" v-if="state.showForm" @close="toggleAlertEditor" />
+            <transition-group tag="div" class="card-body" name="slow" mode="out-in" v-else>
+                <div
+                    v-for="alert in store.state.alerts" :key="alert._id"
+                    class="alert"
+                    :class="{open: isOpen(alert._id), active: !alert.closed, recent: isRecent(alert.unix)}"
+                    @click="toggleOpen(alert._id)"
+                    v-show="showAlert(alert)"
+                >
+                    <div class="icon" :class="{editable: alert.editable}">
+                        <font-awesome-icon class="base" :icon="alert.fontawesomeicon" />
+                        <font-awesome-icon 
+                            class="edit" 
+                            :icon="['far', 'edit']" 
+                            @click="toggleAlertEditor(alert._id)"
+                        />
 
-                <div class="title" v-if="!isOpen(alert._id)">{{alert.title}}</div>
-                <div class="text" v-if="isOpen(alert._id)">
-                    <p v-for="(text, index) in alert.texts" :key="index">{{text}}</p>                
+                    </div>
+                    <div class="time">{{displayDt(alert.createdAt)}}</div>
+
+                    <div class="title" v-if="!isOpen(alert._id)">{{alert.title}}</div>
+                    <div class="text" v-if="isOpen(alert._id)">
+                        <p v-for="(text, index) in alert.texts" :key="index">{{text}}</p>                
+                    </div>
+                    <div class="department" v-if="isOpen(alert._id)">{{alert.department}}</div>
                 </div>
-                <div class="department" v-if="isOpen(alert._id)">{{alert.department}}</div>
-            </div>
-            
-        </transition-group>
+                
+            </transition-group>
+        </transition>
         <!--<div class="card-body">
         </div>-->
         <div class="card-menu">
@@ -64,7 +75,7 @@
                 </select>
             </div>
             <div class="add-alert">
-                <div class="noci">
+                <div class="noci" @click="toggleAlertEditor('new')">
                     <font-awesome-icon icon="plus-circle" />
                 </div>
             </div>
@@ -79,8 +90,9 @@ import { useStore } from "vuex"
 import { DateTime } from "luxon"
 import { reactive, defineProps, toRefs, computed, ref } from "@vue/reactivity"
 import { onMounted, watch } from "vue"
+import AlertForm from './AlertForm';
 
-const state = reactive({opened: [], showUsers: true, showWarnings: true})
+const state = reactive({opened: [], showUsers: true, showWarnings: true, showForm: false, alertId: 'new'})
 const store = useStore()
 const props = defineProps({department: String})
 const {department} = toRefs(props);
@@ -127,7 +139,10 @@ function setUnixAndNotify(){
     }
 }
 
-
+function toggleAlertEditor(id = 'new'){
+    state.alertId = id
+    state.showForm = !state.showForm
+}
 
 
 const toggleOpen = id =>{
@@ -161,15 +176,18 @@ const showAlert = alert => {
 
 <style lang="scss" scoped>
 .alerts-card {
-
+    overflow-x: clip;
+    .fade-left-enter-from {
+        transform: translateX(100%);
+    }
+    .fade-left-leave-to {
+        transform: translateX(-100%);
+    }
+    .fade-left-enter-active, .fade-left-leave-active  {
+        transition: all 0.5s ease-in;
+    }
     .card-body {
         .alert {
-            &.recent {
-                background-color: var(--recentalertcolor);
-            }
-            &.active {
-                background-color: var(--activealertbgcolor);
-            }
             padding: 0 1rem;
             display: grid;
             grid-template-columns: 2rem 3fr 6rem;
@@ -178,9 +196,15 @@ const showAlert = alert => {
             min-height: 2rem;
             align-items: center;
             cursor: pointer;
-            transition: 0.5s height ease;
+            transition: 0.5s all ease;
             transform-origin: top;
 
+            &.recent {
+                background-color: var(--recentalertcolor);
+            }
+            &.active {
+                background-color: var(--activealertbgcolor);
+            }
             &.open {
                 grid-template-columns: 2rem 1fr 6rem;
                 grid-template-rows: 2rem auto;
@@ -195,6 +219,17 @@ const showAlert = alert => {
             }
             .icon {
                 grid-area: icon;
+                .edit {
+                    display: none;
+                }
+                &.editable:hover {
+                    .base{
+                        display: none
+                    }
+                    .edit {
+                        display: inline-block;
+                    }
+                }
             }
             .time {
                 grid-area: time;
@@ -213,7 +248,7 @@ const showAlert = alert => {
             }
         }
         .slow-move {
-            transition: 0.5s all ease;
+            transition: 0.3s all ease;
         }
         .slow-enter-from, .slow-leave-to {
             opacity: 0;

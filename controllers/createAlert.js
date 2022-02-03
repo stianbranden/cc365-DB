@@ -1,7 +1,7 @@
 const Alert = require('../models/Alert');
 const moment = require('moment');
 
-const createAlert = async (text = 'Undefined', department, personrelated = false, alerttype = 'Absence', closed = true, title = null, icon=null, author = 'ccc.elkjop.com', date = new Date())=>{
+const createAlert = async (text = 'Undefined', department, personrelated = false, alerttype = 'Absence', closed = true, title = null, icon=null, author = 'ccc.elkjop.com', date = new Date(), editable=false)=>{
     if (!title){
         title = `${alerttype} on ${department}`
     }
@@ -24,11 +24,16 @@ const createAlert = async (text = 'Undefined', department, personrelated = false
         personrelated,
         closed,
         status,
+        editable,
         shortdate: moment(date).format('MMM Do HH:mm')
     });
 }
 
-const updateAlert = async (_id, obj)=>{
+const updateAlert = async (_id, obj, appendText = false)=>{
+    if ( appendText ){
+        const alert = await Alert.findById(_id)
+        obj.text = alert.text + '<br>' + obj.text
+    }
     return await Alert.findByIdAndUpdate(_id, obj, {new: true});
 }
 

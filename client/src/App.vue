@@ -171,7 +171,7 @@ body {
         }
         .card-body {
           min-height: calc(2 * var(--cardbodyheight) + 4rem + 2rem + 2rem);//calc(2.55 * var(--cardbodyheight)) !important;
-          overflow-y: scroll;
+          overflow-y: auto;
         }
       }
   

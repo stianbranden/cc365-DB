@@ -51,6 +51,10 @@ const AlertSchema = new mongoose.Schema({
         type: String,
         default: 'Closed',
         default: true
+    },
+    editable: {
+        type: Boolean,
+        default: false
     }
 }, {timestamps: true});
 

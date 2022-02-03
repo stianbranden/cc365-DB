@@ -49,7 +49,8 @@ export default createStore({
     ],
     pages: [],
     showNotifications: false,
-    notifications: []
+    notifications: [],
+    showModal: false
   },
   mutations: {
     ioConnect(state){
@@ -156,6 +157,9 @@ export default createStore({
           body: data.text.replace('<br>', '\n')
         });
       }
+    },
+    toggleModal(state){
+      state.showModal = !state.showModal
     }
   },
   actions: {
@@ -190,6 +194,46 @@ export default createStore({
 
       let localNotifications = localStorage.getItem('notifications') == 'false' || !Boolean(localStorage.getItem('notifications')) ? false : true;
       commit('setNotifications', localNotifications)
+    },
+    createAlert: ({dispatch}, data) =>{
+      return new Promise(async (resolve, reject)=>{
+        //console.log(data);
+        const response = await fetch(VUE_APP_API_ROOT + 'alerts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        if (response.status > 299){
+          let text = `Could not create alert - ${response.statusText} - ${(await response.json()).msg}`
+          reject(text)
+        }
+        else {
+          dispatch('getAlerts')
+          resolve('OK')
+        }
+
+      })
+    }, 
+    updateAlert: ({dispatch}, {alertId, data})=>{
+      return new Promise(async (resolve, reject)=>{
+        const response = await fetch(`${VUE_APP_API_ROOT}alerts/${alertId}`,{
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        if (response.status > 299){
+          let text = `Could not update alert - ${response.statusText} - ${(await response.json()).msg}`
+          reject(text)
+        }
+        else {
+          dispatch('getAlerts')
+          resolve('OK)')
+        }
+      })
     }
   },
   modules: {
