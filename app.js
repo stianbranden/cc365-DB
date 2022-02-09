@@ -3,6 +3,7 @@ const {NODE_ENV, SESSION_SECRET, MONGODBURI, MONGODBNAME, TELEOPTI_UPDATE_FREQUE
 
 const {getQueues, getContacts, getSingleContact} = require('./controllers/queues');
 const {getTodaysTeleoptiData, runScheduleUpdate} = require('./controllers/fetchTeleoptiData');
+const {fetchDeliveryDeviations} = require('./controllers/getDeliveryDeviations')
 const express = require('express')
 const app = express();
 const server = require('http').Server(app);
@@ -178,9 +179,16 @@ server.listen(process.env.PORT, ()=>{
         startInterval('queueUpdate');
     });
 
+    fetchDeliveryDeviations().then(data=>{
+        dataToUsers.delDev.vue = data;
+        io.in('vue').emit('delDev', data)
+    })
+
     //Start up Teleopti data fetching
     getTodaysTeleoptiData({dropScheduleCollection: false}).then(_=>startInterval('scheduleUpdate'));
     
+
+
     cron.schedule('0 0 3 * * *', _=>{ //Getting data at 03:00 each night
         stopInterval('scheduleUpdate');
         logSys('Running daily read of Teleopti data');
@@ -222,6 +230,13 @@ server.listen(process.env.PORT, ()=>{
         logTab(pm2Data, "PM-DATA");
     })
 
+    cron.schedule('0 */10 * * * *', _=>{
+        fetchDeliveryDeviations().then(data=>{
+            dataToUsers.delDev.vue = data;
+            io.in('vue').emit('delDev', data)
+        })
+    })
+
 });
 
 //Socket.io stuff
@@ -254,6 +269,8 @@ io.on('connection', socket =>{
             socket.emit('updateStats', dataToUsers.dailyStats[room])
             
         }
+        if (dataToUsers.delDev[room]) socket.emit('delDev', dataToUsers.delDev[room])
+        
         socket.emit('reconnect-to-agents');
         
         socket.join(room);
@@ -285,6 +302,9 @@ let dataToUsers = {
         helpdesk: null,
         kitchen: null,
         nordic: null,
+        vue: null
+    },
+    delDev: {
         vue: null
     }
 }

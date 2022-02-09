@@ -1,6 +1,6 @@
 //require('dotenv').config();
 
-const {USEPROXY, PROXY, BASE64, KINDLY2107, KINDLY2347, KINDLY2348, KINDLY2398, XAPIKEY, USENEWAUTH, RAI_URL, AUTH_URL, BASE_URL, TABLEAU_SERVER, TABLEAU_SITE, TELEOPTI_ACCESS_TOKEN, TELEOPTI_URL} = process.env
+const {USEPROXY, DELDEVQUEUES, PROXY, BASE64, KINDLY2107, KINDLY2347, KINDLY2348, KINDLY2398, XAPIKEY, USENEWAUTH, RAI_URL, AUTH_URL, BASE_URL, TABLEAU_SERVER, TABLEAU_SITE, TELEOPTI_ACCESS_TOKEN, TELEOPTI_URL} = process.env
 const authUrl = AUTH_URL
 let baseurl = BASE_URL
 const raiUrl = RAI_URL
@@ -52,6 +52,14 @@ const queries =  {
     raiQuery: {
         method: "GET",
         url: raiUrl + '/rai/contactStatistic?startTime=${today}&channelType=EmailIn,CallIn,ChatIn&timeCategory=hour',
+        headers: {
+            authorization: 'Basic ' + BASE64,
+            'x-api-key': XAPIKEY
+        }
+    },
+    deliverDeviations: {
+        method: "GET",
+        url: raiUrl + '/rmi/contacts?showAllInProcess=1&limit=10000&queueId=' + DELDEVQUEUES,
         headers: {
             authorization: 'Basic ' + BASE64,
             'x-api-key': XAPIKEY
