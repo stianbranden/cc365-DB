@@ -20,6 +20,7 @@
     "vue-awesome": "^4.5.0",
     "vue-resize-observer": "^2.0.15",
     "vue-router": "^4.0.0-0",
+    "vue3-json-editor": "^1.1.4",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {

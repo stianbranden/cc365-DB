@@ -29,6 +29,10 @@
                     <logo department="thd" />
                     <span>Helpdesk</span>
                 </li>
+
+                
+
+
                 <li class="break info"></li>
                 <li class="info" :title="[store.getters.connectionStatus ? 'Connected to server': 'Not connected to server']">
                     <div 
@@ -63,6 +67,18 @@
                     </div>
                     <span>Log in</span>
                 </li>
+                <li class="break info"></li>
+                <!-- Added pages access -->
+                <li
+                    @click="navigateDynamic(page)"
+                    v-for="page in store.state.user.pages"
+                    :key="page._id"
+                >
+                    <div>
+                        <font-awesome-icon :icon="page.icon" />
+                    </div>
+                    <span>{{page.name}}</span>
+                </li>
             </ul>
         </transition>
 </template>
@@ -96,7 +112,12 @@ export default {
             window.location.href = path
         }
 
-        return {store, user, navigate, navigateExternal}
+        function navigateDynamic({routerName, params}){
+            router.push({name: routerName, params})
+            emit("closeMenu")
+        }
+
+        return {store, user, navigate, navigateExternal, navigateDynamic}
     }
 
 }
@@ -127,6 +148,7 @@ ul.nav-drop {
             padding: 0 0.5rem;
             border-right: 1px solid var(--bgcolor);
             min-width: 40px;
+            writing-mode: vertical-lr;
         }
         &:not(.info) {
 

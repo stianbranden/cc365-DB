@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const PageSchema = require('./PageSchema')
+
 const UserSchema = new mongoose.Schema({
     _id: {
         type: String,
@@ -36,7 +38,8 @@ const UserSchema = new mongoose.Schema({
         path: String,
         alter: String
     }],
-    alerts: [String]
+    alerts: [String],
+    pages: [PageSchema]
 },{
     toJSON: { virtuals: true }, // So `res.json()` and other `JSON.stringify()` functions include virtuals
     toObject: { virtuals: true } // So `toObject()` output includes virtuals

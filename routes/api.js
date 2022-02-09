@@ -9,7 +9,9 @@ const { logErr, logStd, logTab } = require('../controllers/logger.js');
 const { getPm2Data } = require('../controllers/getPm2.js');
 const {createAlert, updateAlert} = require('../controllers/createAlert')
 const {getAlerts, getPeopleAlerts} = require('../controllers/getAlerts')
+const {getUsersWithAccess, getAccessesWithUser, pushAccesses} = require('../controllers/userAccesses')
 const User = require('../models/User')
+const Access = require('../models/Access')
 const moment = require('moment')
 
 if (NODE_ENV !== 'production'){
@@ -44,7 +46,7 @@ router.get('/admin', async (req, res)=>{
 });
 
 router.get('/user', async (req, res)=>{
-    res.send(req.user || {custom_access:[], alerts: []})
+    res.send(req.user || {custom_access:[], alerts: [], pages: []})
 });
 
 router.get('/alerts', async (req, res)=>{
@@ -87,6 +89,32 @@ router.patch('/alerts/:id', protectRoute,  async (req, res)=>{
     } catch (error) {
         res.status(500).send({msg: 'Something went wrong'})
     }
+})
+
+router.get('/access', protectRoute, async (req, res)=>{
+    const accesses = await Access.find()
+    res.status(200).send(accesses)
+})
+router.get('/access/:access_id', protectRoute, async (req, res)=>{
+    const access = await Access.findById(req.params.access_id)
+    res.status(200).send(access)
+})
+
+router.patch('/access/:access_id', protectRoute, async (req, res)=>{
+    try {
+        const {body, params, user} = req
+        const {access_id} = params
+        await Access.findByIdAndUpdate(access_id, body);
+        res.status(200).send('OK')
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
+
+router.get('/access/:access_id/users', protectRoute, async (req, res)=>{
+    const {access_id} = req.params
+    const users = await getUsersWithAccess(access_id)
+    res.status(200).send(users)
 })
 
 

@@ -25,6 +25,7 @@ const generateCustomAccess = async (role, title, upn)=>{
   const custom_access = [];
   const accesses = await Access.find();
   let alerts = []
+  let pages = []
 
   accesses.forEach(access=>{
     let hasAccess = []
@@ -44,13 +45,14 @@ const generateCustomAccess = async (role, title, upn)=>{
         custom_access.push(genAccessLevel(ca.label, ca.alter, ca.path));
       });
       if (access.alerts) alerts = [...alerts, ...access.alerts]
+      if (access.pages) pages = [...pages, ...access.pages]
     }
   })
 
 
 
 
-  return {alerts, custom_access};
+  return {alerts, custom_access, pages};
 }
 
 module.exports = function (passport) {
@@ -86,7 +88,7 @@ module.exports = function (passport) {
               agentId = agent._id;
             }
 
-            const {custom_access, alerts} = await generateCustomAccess(state, jobTitle, profile.upn);
+            const {custom_access, alerts, pages} = await generateCustomAccess(state, jobTitle, profile.upn);
             
             let user = await User.findById(profile.upn);
             if (user){
@@ -99,7 +101,8 @@ module.exports = function (passport) {
                 title: jobTitle,
                 access_token: accessToken,
                 custom_access,
-                alerts
+                alerts,
+                pages
               }, {new: true})
             }
             else {
@@ -114,8 +117,9 @@ module.exports = function (passport) {
                     family_name: profile.family_name,
                     access_token: accessToken,
                     custom_access,
-                    alerts
-                });
+                    alerts,
+                    pages
+                  });
             }
             if ( NODE_ENV != 'Production' ){
               //getUserById(user._id).then(saved_user=>console.log(saved_user));

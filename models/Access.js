@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const PageSchema = require('./PageSchema')
+
 const AccessSchema = new mongoose.Schema({
     rule: {
         type: Map, 
@@ -13,6 +15,7 @@ const AccessSchema = new mongoose.Schema({
         }
     ],
     alerts: [String],
+    pages: [PageSchema], 
     name: String
 });
 
