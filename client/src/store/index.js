@@ -49,7 +49,9 @@ export default createStore({
     pages: [],
     showNotifications: false,
     notifications: [],
-    showModal: false
+    showModal: false, 
+    accesses: [],
+    delDev: []
   },
   mutations: {
     ioConnect(state){
@@ -82,6 +84,10 @@ export default createStore({
         state.alerts = alerts
         orderAlerts(state)
         //console.log('socket', state.alerts, state.alerts.length, state.latestAlertUpdate);
+      })
+      state.socket.on('delDev', data =>{
+        state.delDev = data
+        //console.log(state.delDev);
       })
 
 
@@ -170,7 +176,10 @@ export default createStore({
     getUser({state}){
       fetch(VUE_APP_API_ROOT + 'user')
         .then(response=>response.json())
-        .then(user=> state.user = user)
+        .then(user=> {
+          state.user = user
+          console.log(user);
+        })
     },
     getAlerts({state}){
       fetch(VUE_APP_API_ROOT + 'alerts')
@@ -233,6 +242,10 @@ export default createStore({
           resolve('OK)')
         }
       })
+    },
+    getAccesses: ({state})=>{
+      fetch(VUE_APP_API_ROOT + 'access').then(response=>response.json())
+        .then(accesses=>state.accesses = accesses)
     }
   },
   modules: {
