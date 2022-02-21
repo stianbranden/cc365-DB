@@ -26,7 +26,7 @@
                     </div>
                     <div class="time">{{displayDt(alert.createdAt)}}</div>
 
-                    <div class="title" v-if="!isOpen(alert._id)">{{alert.title}}</div>
+                    <div class="title" v-if="!isOpen(alert._id)" :title="alert.title" >{{alert.title}}</div>
                     <div class="text" v-if="isOpen(alert._id)">
                         <p v-for="(text, index) in alert.texts" :key="index">{{text}}</p>                
                     </div>
@@ -193,7 +193,7 @@ const showAlert = alert => {
             grid-template-columns: 2rem 3fr 6rem;
             grid-template-areas: "icon title time";
             border-bottom: 1px dashed var(--alertbordercolor) ;
-            min-height: 2rem;
+            min-height: 2.5rem;
             align-items: center;
             cursor: pointer;
             transition: 0.5s all ease;
@@ -206,6 +206,8 @@ const showAlert = alert => {
                 background-color: var(--activealertbgcolor);
             }
             &.open {
+                height: auto;
+                min-height: 2.5rem;
                 grid-template-columns: 2rem 1fr 6rem;
                 grid-template-rows: 2rem auto;
                 grid-template-areas: 
@@ -216,6 +218,9 @@ const showAlert = alert => {
                 text-align: left;
                 margin-left: 1rem;
                 grid-area: title;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
             .icon {
                 grid-area: icon;

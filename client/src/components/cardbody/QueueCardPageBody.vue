@@ -7,7 +7,7 @@
             <span class="time">Oldest</span>
         </div>
         <div class="card-row" v-for="queue in pages[page]" :key="queue.id" >
-            <span class="name" :title="queue.name">{{queue.name}}</span>
+            <span class="name" :title="queue.name">{{shortName(queue.name)}}</span>
             <span class="queue">{{queue.inQueueCurrent}}</span>
             <span class="oldest">{{queue.agentsFree}}/{{queue.agentsServing - queue.agentsNotReady}}</span>
             <span class="time">{{queue.timeWait}}</span>
@@ -22,7 +22,15 @@ export default {
         page: Number,
         pages: Object
     }, setup (){
+        const shortName = name =>{
+            let short = name
+            if (name.startsWith('@')) short = name.slice(2)
+            if (name.startsWith('Action')) short = name.slice(7)
 
+            if (short.startsWith('Kitchen')) short = short.slice(8)
+            return short
+        }
+        return {shortName}
     }
 }
 </script>

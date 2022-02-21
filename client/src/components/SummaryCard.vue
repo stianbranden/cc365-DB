@@ -13,6 +13,7 @@
             <QueueCardBody v-else-if="page=='chat'" :department="department" channel="CH" :queue="queue.data.ch" />
             <QueueCardBody v-else-if="page=='email'" :department="department" channel="EM" :queue="queue.data.em" />
             <QueueCardBody v-else-if="page=='action'" :department="department" channel="AC" :queue="queue.data.ac" />
+            <DeliveryDeviationCardBody v-else-if="page=='deldev'" :department="department" />
             <QueueCardBody v-else-if="page=='dk'" :department="department" channel="PH" :queue="queue.data.dk" />
             <QueueCardBody v-else-if="page=='fi'" :department="department" channel="PH" :queue="queue.data.fi" />
             <QueueCardBody v-else-if="page=='no'" :department="department" channel="PH" :queue="queue.data.no" />
@@ -36,6 +37,9 @@
             </div>
             <div @click="page='action'" :class="{active: page=='action'}"  v-if="queue.data.ac.queues.length > 0">
                 <font-awesome-icon icon='folder'/>
+            </div>
+            <div @click="page='deldev'" :class="{active: page=='deldev'}"  v-if="store.getters.getDeliveryDeviations(department).deliveryDeviations.length > 0">
+                <font-awesome-icon icon='truck'/>
             </div>
         </div>
         <div class="card-menu" v-else>
@@ -65,8 +69,9 @@ import Logo from './Logo';
 import QueueCardBody from './cardbody/QueueCardBody'
 import SummaryCardStatBody from './cardbody/SummaryCardStatBody'
 import SummaryCardBody from './cardbody/SummaryCardBody'
+import DeliveryDeviationCardBody from './cardbody/DeliveryDeviationCardBody'
 export default {
-    components: {Logo, QueueCardBody, SummaryCardStatBody, SummaryCardBody},
+    components: {Logo, QueueCardBody, SummaryCardStatBody, SummaryCardBody, DeliveryDeviationCardBody},
     props: {
         title: String, 
         channel: String,

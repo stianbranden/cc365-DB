@@ -5,6 +5,7 @@
       <QueueCard title="Chat" channel="CH" :department="department" @dblclick="navigate(departmentName, 'chat')" />
       <QueueCard title="Email" channel="EM" :department="department" @dblclick="navigate(departmentName, 'email')"  />
       <QueueCard title="Action" channel="AC" :department="department" @dblclick="navigate(departmentName, 'action')"  />
+      <DeliveryDeviationCard :department="department" >Delivery Deviations</DeliveryDeviationCard> 
   </div>
   <div class="home" :class="{showAlerts: store.state.showAlerts}" v-else>
     <Alerts v-if="store.state.showAlerts" :department="department" /> 
@@ -18,6 +19,7 @@
 <script>
 // @ is an alias to /src
 import QueueCard from '../components/QueueCard.vue'
+import DeliveryDeviationCard from '../components/DeliveryDeviationCard.vue'
 import Alerts from '../components/Alerts.vue'
 import {onBeforeRouteUpdate, useRoute, useRouter} from 'vue-router'
 import { computed, ref } from '@vue/reactivity'
@@ -26,7 +28,7 @@ import { useStore } from 'vuex'
 export default {
   name: 'Home',
   components: {
-    QueueCard, Alerts
+    QueueCard, Alerts, DeliveryDeviationCard
   },
   setup() {
     const route = useRoute();

@@ -87,7 +87,7 @@ export default createStore({
       })
       state.socket.on('delDev', data =>{
         state.delDev = data
-        //console.log(state.delDev);
+        console.log(state.delDev);
       })
 
 
@@ -381,6 +381,23 @@ export default createStore({
       if (department && department.toLowerCase() !== 'nordic') arr = arr.filter(a=>a.department.toLowerCase() === department)
       return arr;
       //return arr.slice(0,5)
+    },
+    getDeliveryDeviations: state => department =>{
+      let arr = [...state.delDev]
+      if ( department === 'ki' ) arr = arr.filter(a=>a.epoq && a.countryCode !== 'FI')
+      else if ( department === 'fi' ) arr = arr.filter(a=>a.countryCode === 'FI')
+      else arr = arr.filter(a=>!a.epoq && a.countryCode === department.toUpperCase())
+      const summary = {
+        total: 0,
+        open: 0,
+        breached: 0,
+        breachingToday: 0
+      }
+      arr.forEach(a=>{
+        summary.total ++
+        summary[a.slaStatus] ++
+      })
+      return {summary, deliveryDeviations: arr}
     }
 
   }
