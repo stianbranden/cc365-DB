@@ -22,6 +22,16 @@ const routes = [
     component: () => import(/* webpackChunkName: "alerts" */ '../views/Alerts.vue')
   },
   {
+    path: '/mycollections',
+    name: 'MyCollections',
+    component: () => import(/* webpackChunkName: "area" */ '../views/MyCollections.vue')
+  },
+  {
+    path: '/mycollections/settings',
+    name: 'MyCollectionsSettings',
+    component: () => import(/* webpackChunkName: "area" */ '../views/MyCollectionsSettings.vue')
+  },
+  {
     path: '/:department',
     name: 'Department',
     component: () => import(/* webpackChunkName: "department" */ '../views/Department.vue')
@@ -30,7 +40,7 @@ const routes = [
     path: '/:department/:channel/:country',
     name: 'Channel',
     component: () => import(/* webpackChunkName: "area" */ '../views/Channel.vue')
-  }
+  },
 ]
 
 const router = createRouter({

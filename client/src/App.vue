@@ -26,6 +26,7 @@ export default {
       store.dispatch('getUser')
       store.dispatch('getAlerts');
       store.dispatch('getSettingsFromLocal')
+      store.dispatch('getCollections')
     })
    
     return {store, warningsOpen}

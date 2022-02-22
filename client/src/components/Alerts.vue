@@ -88,7 +88,7 @@
 <script setup>
 import { useStore } from "vuex"
 import { DateTime } from "luxon"
-import { reactive, defineProps, toRefs, computed, ref } from "@vue/reactivity"
+import { reactive, toRefs, computed, ref } from "@vue/reactivity"
 import { onMounted, watch } from "vue"
 import AlertForm from './AlertForm';
 

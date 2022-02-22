@@ -12,10 +12,16 @@ const {getAlerts, getPeopleAlerts} = require('../controllers/getAlerts')
 const {getUsersWithAccess, getAccessesWithUser, pushAccesses} = require('../controllers/userAccesses')
 const User = require('../models/User')
 const Access = require('../models/Access')
+const Collection = require('../models/Collection')
 const moment = require('moment')
 
 if (NODE_ENV !== 'production'){
-    router.use(cors())
+    router.use(cors({
+        "origin": "*",
+        "methods": "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+        "preflightContinue": false,
+        "optionsSuccessStatus": 204
+      }))
     router.use(async (req, res, next)=>{
         if ( req.headers.origin === 'http://localhost:8080' ){
             req.user = await User.findById('stianbra@elkjop.no') 
@@ -115,6 +121,48 @@ router.get('/access/:access_id/users', protectRoute, async (req, res)=>{
     const {access_id} = req.params
     const users = await getUsersWithAccess(access_id)
     res.status(200).send(users)
+})
+
+router.get('/collections', protectRoute, async(req, res)=>{
+    try {
+        const collections = await Collection.find({user: req.user._id}).lean()
+        res.send(collections)
+    } catch (error) {
+        res.status(500).send('Something went wrong')
+    }
+})
+
+router.post('/collections', protectRoute, async(req, res)=>{
+    const {body}= req
+    body.user = req.user._id
+    try {
+        const collection = await Collection.create(body)
+        res.status(200).send(collection);
+    } catch (error) {
+        res.status(500).send('Something went wrong')
+    }
+})
+
+router.put('/collections/:id', protectRoute, async(req, res)=>{
+    const {body}= req
+    const {id} = req.params
+    try {
+        const collection = await Collection.findOneAndUpdate(id, body)
+        res.status(200).send(collection);
+    } catch (error) {
+        res.status(500).send('Something went wrong')
+    }
+})
+
+router.delete('/collections/:id', protectRoute, async(req, res)=>{
+    const {id} = req.params
+    try {
+        await Collection.findByIdAndDelete(id);
+        res.status(204).send('OK')
+    } catch (error) {
+        res.status(500).send('Something went wrong')
+        
+    }
 })
 
 

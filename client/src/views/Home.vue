@@ -7,16 +7,19 @@
     <SummaryCard key="se" title='CCC Sweden' department='se' @dblclick="navigate('sweden')" />
     <SummaryCard key="ki" title='CCC Kitchen' department='ki' @dblclick="navigate('kitchen')" />
     <SummaryCard key="thd" title='CCC Helpdesk' department='thd' @dblclick="navigate('helpdesk')" />
+    <CollectionQueueCard v-for="collection in collections" :key="collection._id" :collectionId="collection._id" />
   </div>
 </template>
 
 <script>
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import {ref, computed, watch} from 'vue'
 // @ is an alias to /src
 import QueueCard from '../components/QueueCard.vue'
 import SummaryCard from '../components/SummaryCard.vue'
 import Alerts from '../components/Alerts.vue'
-import { useStore } from 'vuex'
+import CollectionQueueCard from '../components/CollectionQueueCard.vue'
 
 
 export default {
@@ -24,15 +27,22 @@ export default {
   components: {
     QueueCard,
     SummaryCard,
-    Alerts
+    Alerts,
+    CollectionQueueCard
   },
   setup() {
     const router = useRouter();
     const store = useStore()
+
+    const collections = ref(store.getters.getVisibleCollections)
+    const ping = computed(_=>store.state.lastPing)
+
     function navigate(dep){
       router.push({name: 'Department', params: {department: dep}})
     }
-    return {navigate, store}
+    watch(ping, _=>collections.value = store.getters.getVisibleCollections)
+
+    return {navigate, store, collections}
   }
 }
 </script>

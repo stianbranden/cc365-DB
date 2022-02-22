@@ -51,7 +51,8 @@ export default createStore({
     notifications: [],
     showModal: false, 
     accesses: [],
-    delDev: []
+    delDev: [],
+    collections: []
   },
   mutations: {
     ioConnect(state){
@@ -87,7 +88,7 @@ export default createStore({
       })
       state.socket.on('delDev', data =>{
         state.delDev = data
-        console.log(state.delDev);
+       //console.log(state.delDev);
       })
 
 
@@ -246,6 +247,43 @@ export default createStore({
     getAccesses: ({state})=>{
       fetch(VUE_APP_API_ROOT + 'access').then(response=>response.json())
         .then(accesses=>state.accesses = accesses)
+    },
+    getCollections: ({state})=>{
+      fetch(VUE_APP_API_ROOT + 'collections')
+        .then(res =>res.json())
+        .then(collections=>state.collections = collections)
+    },
+    addOrUpdateCollection({state, dispatch}, {name, _id, visibleOnAll, queues}){
+      if ( _id === 'new' ){
+        fetch(VUE_APP_API_ROOT + 'collections', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({name, visibleOnAll, queues})
+        })
+          .then(response=>response.json())
+          .then(collection=>state.collections.push(collection))
+      }
+      else {
+        fetch(VUE_APP_API_ROOT + 'collections/' + _id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({name, visibleOnAll, queues})
+        })
+          .then(_=>dispatch('getCollections'))
+      }
+    },
+    removeCollection({dispatch}, id){
+      fetch(VUE_APP_API_ROOT + 'collections/' + id, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(_=>dispatch('getCollections'))
     }
   },
   modules: {
@@ -398,10 +436,131 @@ export default createStore({
         summary[a.slaStatus] ++
       })
       return {summary, deliveryDeviations: arr}
+    },
+    getQueueSelections: state =>{
+      const department= []
+      const country = []
+      const area = []
+      const channel = []
+      //console.log(state.queueData);
+      state.queueData.forEach(q=>{
+        if ( !department.includes(q.department) ) department.push(q.department)
+        if ( !country.includes(q.country) ) country.push(q.country)
+        if ( !area.includes(q.area) ) area.push(q.area)
+        if ( !channel.includes(q.channel) ) channel.push(q.channel)
+      })
+      department.sort((a,b)=> a > b ? 1: -1)
+      country.sort((a,b)=> a > b ? 1: -1)
+      area.sort((a,b)=> a > b ? 1: -1)
+      channel.sort((a,b)=> a > b ? 1: -1)
+      return {department, country, area, channel}
+    },
+    getQueuesFromQueueSelection: state => (department, country, area, channel)=>{
+      let arr = [...state.queueData]
+      if ( department && department !== 'all') arr = arr.filter(a=>a.department === department)
+      if ( country && country !== 'all') arr = arr.filter(a=>a.country === country)
+      if ( area && area !== 'all') arr = arr.filter(a=>a.area === area)
+      if ( channel && channel !== 'all') arr = arr.filter(a=>a.channel === channel)
+
+      return arr;
+    },
+    getVisibleCollections: state =>{
+      return [...state.collections].filter(a=>a.visibleOnAll)
+    },
+    getCollection: state => id =>{
+      let arr = [...state.collections].filter(a=> a._id === id)
+      if (arr.length > 0) return arr[0]
+      else return null
+    },
+    getCollectionQueueData: state => queues =>{
+      const data = computeCollectionQueues(state, queues)
+      return data;
+    },
+    getCollectionDailyData: state => queues =>{
+      const data = computeCollectionDaily(state, queues)
+      //console.log({data, queues});
+      return data
     }
 
   }
 })
+
+function computeCollectionQueues(state, queues){
+  let arr = [...state.queueData].filter(a=>queues.includes(a.id))
+  const object= {
+    queues: arr,
+    pages: [],
+    summary: {
+      inQueue: 0,
+      maxWait: 0,
+      ready: {
+        min: 1000,
+        max: 0
+      },
+      idle:{
+        min: 1000,
+        max: 0
+      }
+    }
+  }
+  if (arr.length > 0){
+    let page = []
+    arr.forEach((q, index)=>{
+      const idle = q.agentsFree
+      const ready = q.agentsServing - q.agentsNotReady
+      object.summary.inQueue += q.inQueueCurrent;
+      if ( q.waitingDurationCurrentMax > object.summary.maxWait) object.summary.maxWait = q.waitingDurationCurrentMax;
+      if ( idle > object.summary.idle.max ) object.summary.idle.max = idle
+      if ( idle < object.summary.idle.min ) object.summary.idle.min = idle
+      if ( ready < object.summary.ready.min ) object.summary.ready.min = ready
+      if ( ready > object.summary.ready.max ) object.summary.ready.max = ready
+
+      page.push(q);
+      if ( index % state.queuesPerPage == state.queuesPerPage - 1) {
+        object.pages.push(page)
+        page = []
+      }
+    })
+    if ( page.length > 0) object.pages.push(page)
+  }
+
+  object.summary.timeWait = msToTime(object.summary.maxWait)
+  return object;
+}
+
+function computeCollectionDaily(state, queues){
+  //console.log(state.dailyStats);
+  let arr = [...state.dailyStats].filter(a=> queues.includes(a.queueId))
+  const summary = {
+    inSla: 0,
+    answered: 0,
+    offered: 0,
+    speedOfAnswer: 0,
+    handling: 0
+  }
+  if (arr.length > 0){
+    arr.forEach(q=>{
+     summary.inSla += q.countOfAnsweredOnTimeContacts;
+     summary.answered += q.countOfHandledContacts;
+     summary.offered += q.countOfArrivedContacts;
+     summary.speedOfAnswer += q.waitingDurationForHandled;
+     summary.handling += q.handlingDuration;
+    })
+  }
+  if (summary.answered > 0){
+    summary.sla = Math.round(summary.inSla/summary.offered*100)
+    summary.asa = Math.round(summary.speedOfAnswer/summary.answered)
+    summary.aht = Math.round(summary.handling/summary.answered)
+  }
+  else {
+    summary.sla = 0
+    summary.asa = 0
+    summary.aht = 0
+  }
+  summary.timeAsa = msToTime(summary.asa)
+  summary.timeAht = msToTime(summary.aht)
+  return {queues: arr, summary}
+}
 
 function computeDaily(state, channel, department, country, area ){
   let arr = [...state.dailyStats];
