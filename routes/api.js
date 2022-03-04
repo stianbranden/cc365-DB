@@ -13,6 +13,7 @@ const {getUsersWithAccess, getAccessesWithUser, pushAccesses} = require('../cont
 const User = require('../models/User')
 const Access = require('../models/Access')
 const Collection = require('../models/Collection')
+const PersonAccount = require('../models/PersonAccount')
 const moment = require('moment')
 
 if (NODE_ENV !== 'production'){
@@ -162,6 +163,15 @@ router.delete('/collections/:id', protectRoute, async(req, res)=>{
     } catch (error) {
         res.status(500).send('Something went wrong')
         
+    }
+})
+
+router.get('/personaccounts', protectRoute, async(req, res)=>{
+    try {
+        const personAccounts = await PersonAccount.find().lean()
+        res.send(personAccounts)
+    } catch (error) {
+        res.status(500).send('Something went wrong')
     }
 })
 

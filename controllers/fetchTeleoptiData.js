@@ -14,6 +14,7 @@ const {logStd, logErr, logSys} = require('./logger')
 const {getAgentWithId, getAllBusinessUnits, getTeams, getAgents, getBusinessUnit, getSkillById, getContractById} = require('./getTeleoptiData');
 const {createAlert} = require('./createAlert');
 const {getAlertByTextAndDate} = require('./getAlerts')
+const {importPersonAccountData} = require('./getPersonAccounts')
 
 const {getBusinessUnits, getAllTeamsWithAgents, getPeopleByTeamId, getSchedulesByPersonIds, getScheduleByTeamId, getUpdatedSchedules, getPersonById, getTeamById, getSkillsByUnit, getAllContracts} = require('./config');
 
@@ -163,8 +164,8 @@ const getTodaysTeleoptiData = async (options = {
                     const skills = JSON.parse(await request(skillsQuery))["Result"];
                     const contractQuery = await updateGetAllContractsQuery(getAllContracts, businessUnit)
                     const contracts = JSON.parse(await request(contractQuery))["Result"];
-
-
+                    
+                    
                     skills.forEach(skill=>{
                         updateOrCreateSkill(skill)
                     })
@@ -197,6 +198,9 @@ const getTodaysTeleoptiData = async (options = {
             };
             Promise.allSettled(schedulePromises)
             .then(data=>{
+                importPersonAccountData(options.dropScheduleCollection)
+                    .then(_=>logSys('PersonAccounts imported'))
+                    .catch(err=>logErr('PersonAccounts import failed, ' + err))
                 resolve({status: 'completed'})
             })
             .catch(err=>{logErr(err)});
@@ -473,7 +477,8 @@ const updateOrCreateAgent = (person, team)=>{
                     teamId: team.teamId,
                     timeZone,
                     skills,
-                    contract
+                    contract,
+                    employmentNumber: person.EmploymentNumber
                 }, {new: true})
                 
             }
@@ -489,7 +494,8 @@ const updateOrCreateAgent = (person, team)=>{
                     teamId: team.teamId,
                     timeZone,
                     skills,
-                    contract
+                    contract,
+                    employmentNumber: person.EmploymentNumber
                 });
             }
             resolve(agent);

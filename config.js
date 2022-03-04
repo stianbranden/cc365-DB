@@ -37,6 +37,15 @@ const unitsStage = {
             'SE-KIHOT-PH,CB',
             'NC-KI-PH,EM,AC'
         ]
+    },
+    backoffice: {
+        abbr: 'bo',
+        groups: [
+            'DK-BO-PH,CB,CH,EM,AC',
+            'FI-BO-PH,CB,CH,EM,AC',
+            'NO-BO-PH,CB,CH,EM,AC',
+            'SE-BO-PH,CB,CH,EM,AC'
+        ]
     }
 }
 
