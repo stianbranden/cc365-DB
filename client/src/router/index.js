@@ -34,6 +34,13 @@ const routes = [
   {
     path: '/timeaccounts',
     name: 'TimeAccounts',
+    beforeEnter:[protectRoute],
+    component: () => import(/* webpackChunkName: "area" */ '../views/PersonAccounts.vue')
+  },
+  {
+    path: '/personaccounts',
+    name: 'PersonAccounts',
+    beforeEnter:[protectRoute],
     component: () => import(/* webpackChunkName: "area" */ '../views/PersonAccounts.vue')
   },
   {
@@ -85,6 +92,13 @@ router.afterEach(to=>{
   store.commit('setPageName', name)
   store.commit('setPages', pages)
 })
+
+function protectRoute(to, from, next){
+  const acceptedRoutes = store.getters.getUserPages
+  
+  if ( acceptedRoutes.includes(to.name) ) next()
+  else next({name: 'Nordic'})
+}
 
 const capitalize = word => word.charAt(0).toUpperCase() + word.slice(1);
 

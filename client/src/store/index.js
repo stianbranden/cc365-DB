@@ -293,6 +293,14 @@ export default createStore({
       if (state.user) return state.user
       return {}
     },
+    getUserPages(state){
+      if (state.user && state.user.pages){
+        const acceptedRoutes = []
+        state.user.pages.forEach(p=>acceptedRoutes.push(p.routerName))
+        return acceptedRoutes
+      } 
+      else return []
+    },
     connectionStatus(state){
       return state.socketConnected
     },

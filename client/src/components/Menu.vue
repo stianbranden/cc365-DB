@@ -43,13 +43,13 @@
                     </div>
                     <span>{{store.getters.connectionStatus ? 'Connected': 'Disconnected'}}</span>
                 </li>
-                <li title="Toggle dark mode" @click="store.commit('toggleDark')">
+                <li title="Toggle dark mode" @click="store.commit('toggleDark'); emit('closeMenu')">
                     <div>
                         <font-awesome-icon icon="lightbulb" />
                     </div>
                     <span>{{store.getters.getDark ? 'Light mode': 'Dark mode' }}</span>
                 </li>
-                <li title="Toggle alerts" @click="store.commit('toggleAlerts')">
+                <li title="Toggle alerts" @click="store.commit('toggleAlerts'); emit('closeMenu')">
                     <div>
                         <font-awesome-icon icon="exclamation-triangle" />
                     </div>
@@ -117,7 +117,7 @@ export default {
             emit("closeMenu")
         }
 
-        return {store, user, navigate, navigateExternal, navigateDynamic}
+        return {store, user, navigate, navigateExternal, navigateDynamic, emit}
     }
 
 }
@@ -130,7 +130,7 @@ ul.nav-drop {
     position: absolute;
     right: 0;
     top: 3.2rem;
-    z-index: 10;
+    z-index: 11;
     width: calc(1rem + var(--cardwidth)/1.5);
     transform-origin: top;
     overflow: hidden;

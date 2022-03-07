@@ -44,7 +44,9 @@ const unitsStage = {
             'DK-BO-PH,CB,CH,EM,AC',
             'FI-BO-PH,CB,CH,EM,AC',
             'NO-BO-PH,CB,CH,EM,AC',
-            'SE-BO-PH,CB,CH,EM,AC'
+            'SE-BO-PH,CB,CH,EM,AC',
+            'DK-KI-PH,CB,CH,EM,AC',
+            'DK-KIHOT-PH,CB,CH,EM,AC'
         ]
     }
 }
