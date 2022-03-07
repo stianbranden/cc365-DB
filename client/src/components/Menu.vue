@@ -131,7 +131,7 @@ ul.nav-drop {
     right: 0;
     top: 3.2rem;
     z-index: 10;
-    width: calc(1rem + var(--cardwidth)/1.7);
+    width: calc(1rem + var(--cardwidth)/1.5);
     transform-origin: top;
     overflow: hidden;
     padding-right: 1rem;

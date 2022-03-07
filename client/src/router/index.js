@@ -32,6 +32,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "area" */ '../views/MyCollectionsSettings.vue')
   },
   {
+    path: '/timeaccounts',
+    name: 'TimeAccounts',
+    component: () => import(/* webpackChunkName: "area" */ '../views/PersonAccounts.vue')
+  },
+  {
     path: '/:department',
     name: 'Department',
     component: () => import(/* webpackChunkName: "department" */ '../views/Department.vue')

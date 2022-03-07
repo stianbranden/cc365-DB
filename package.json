@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app",
-    "update": "git reset --hard && git pull && npm i"
+    "update": "git reset --hard && git pull && npm i && npm --prefix client install && npm run --prefix client build",
+    "build-client": "npm run --prefix client build",
+    "serve-client": "npm run --prefix client serve"
   },
   "author": "",
   "license": "ISC",

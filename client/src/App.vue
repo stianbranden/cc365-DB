@@ -88,6 +88,14 @@ body {
   background-color: var(--bgcolor);
   color: var(--textcolor);
 
+  button {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--buttoncolor);
+    border: none;
+    color: var(--fontcolor);
+    cursor: pointer;
+  }
 
   .home {
     display: flex;
