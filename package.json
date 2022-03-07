@@ -17,22 +17,22 @@
     "cors": "^2.8.5",
     "dotenv": "^8.6.0",
     "ejs": "^3.1.6",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.17.2",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.1",
-    "moment-timezone": "^0.5.33",
-    "mongoose": "^6.0.8",
+    "moment-timezone": "^0.5.34",
+    "mongoose": "^6.2.4",
     "node-cron": "^3.0.0",
     "nodejs-base64-encode": "^1.1.0",
     "os-utils": "0.0.14",
     "passport": "^0.4.1",
     "passport-azure-ad-oauth2": "0.0.4",
-    "pm2": "^5.1.2",
+    "pm2": "^5.2.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
-    "socket.io": "^4.4.0"
+    "socket.io": "^4.4.1"
   },
   "devDependencies": {
     "morgan": "^1.10.0"
