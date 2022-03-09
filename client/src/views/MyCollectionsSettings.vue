@@ -48,7 +48,7 @@ const create = ref(false)
 const router = useRouter()
 function navigate(name, params){
     router.push({name, params})
-    menuOpen.value = false;
+    // menuOpen.value = false;
 }
 
 function deleteCollection(id){
