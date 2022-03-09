@@ -179,7 +179,7 @@ export default createStore({
         .then(response=>response.json())
         .then(user=> {
           state.user = user
-          console.log(user);
+          //console.log(user);
         })
     },
     getAlerts({state}){
