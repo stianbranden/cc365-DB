@@ -148,7 +148,7 @@ router.put('/collections/:id', protectRoute, async(req, res)=>{
     const {body}= req
     const {id} = req.params
     try {
-        const collection = await Collection.findOneAndUpdate(id, body)
+        const collection = await Collection.findByIdAndUpdate(id, body)
         res.status(200).send(collection);
     } catch (error) {
         res.status(500).send('Something went wrong')
