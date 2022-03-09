@@ -64,7 +64,7 @@ function deleteCollection(id){
        padding: 0.5rem;
        background-color: var(--buttoncolor);
        border: none;
-       color: var(--fontcolor);
+       color: var(--textcolor);
        cursor: pointer;
    }
    .collections{
@@ -74,6 +74,7 @@ function deleteCollection(id){
        .collection{
             padding: 1rem;
             background-color: var(--headercolor);
+            color: var(--linkcolor);
             .collection-header{
                 display: flex;
                 justify-content: space-between;
@@ -98,7 +99,7 @@ function deleteCollection(id){
                     border-radius: 0.5rem;
                     background-color: var(--buttoncolor);
                     border: none;
-                    color: var(--fontcolor);
+                    color: var(--textcolor);
                     cursor: pointer;
                     &.delete{
                         background-color: var(--activealertbgcolor);

@@ -155,6 +155,7 @@ function submit(){
 
 <style lang="scss" scoped>
     form {
+        color: var(--textcolor);
         .form-header {
             text-align: center;
             display: block;
@@ -200,6 +201,7 @@ function submit(){
             }
             .active {
                 background-color: var(--headercolor);
+                color: var(--linkcolor);
             }
         }
         .quick {

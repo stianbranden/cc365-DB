@@ -92,8 +92,8 @@ body {
     padding: 0.5rem;
     border-radius: 0.5rem;
     background-color: var(--buttoncolor);
-    border: none;
-    color: var(--fontcolor);
+    border: 1px solid var(--textcolor);
+    color: var(--textcolor);
     cursor: pointer;
   }
 
