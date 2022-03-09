@@ -17,7 +17,7 @@ import CollectionQueueCard from '../components/CollectionQueueCard'
 const router = useRouter()
 function navigate(name, params){
     router.push({name, params})
-    menuOpen.value = false;
+    // menuOpen.value = false;
 }
 
 const store = useStore()
