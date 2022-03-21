@@ -9,7 +9,7 @@ const { logErr, logStd, logTab } = require('../controllers/logger.js');
 const { getPm2Data } = require('../controllers/getPm2.js');
 const {createAlert, updateAlert} = require('../controllers/createAlert')
 const {getAlerts, getPeopleAlerts} = require('../controllers/getAlerts')
-const {getUsersWithAccess, getAccessesWithUser, pushAccesses} = require('../controllers/userAccesses')
+const {getUsersWithAccess, getAccessesWithUser, pushSingleUserAccess} = require('../controllers/userAccesses')
 const User = require('../models/User')
 const Access = require('../models/Access')
 const Collection = require('../models/Collection')
@@ -107,12 +107,44 @@ router.get('/access/:access_id', protectRoute, async (req, res)=>{
     res.status(200).send(access)
 })
 
+router.post('/access', protectRoute, async (req, res)=>{
+    try {
+        const access = await Access.create({
+            rule: {
+                upn: 'nobody@elkjop.no'
+            },
+            grant: [],
+            alerts: [],
+            pages: [],
+            name: 'New access level'
+        });
+        res.send(access)
+    } catch (error) {
+        req.status(500).send(error.message)
+    }
+})
+
 router.patch('/access/:access_id', protectRoute, async (req, res)=>{
     try {
-        const {body, params, user} = req
+        const {body, params} = req
         const {access_id} = params
+        const affectedUsers = await getUsersWithAccess(access_id);
         await Access.findByIdAndUpdate(access_id, body);
+        [...affectedUsers, ...await getUsersWithAccess(access_id)]
+            .forEach(user=> pushSingleUserAccess(user))
         res.status(200).send('OK')
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
+
+router.delete('/access/:access_id', protectRoute, async (req, res)=>{
+    try {
+        const {access_id} = req.params
+        const affectedUsers = await getUsersWithAccess(access_id);
+        await Access.findByIdAndDelete(access_id);
+        affectedUsers.forEach(user=> pushSingleUserAccess(user))
+        res.status(204).send('OK')
     } catch (error) {
         res.status(500).send(error.message)
     }

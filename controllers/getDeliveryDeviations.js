@@ -5,18 +5,21 @@ const rundeldev = RUNDELDEV === 'true'
 const request = require('request-promise')
 const moment = require('moment')
 const {deliverDeviations} = require('./config')
+const { logStd, logErr } = require('./logger')
 
 const fetchDeliveryDeviations = _=>{
     return new Promise(async (resolve, reject)=>{
         if (!rundeldev) resolve([])
         else {
+            logStd('Running Delivery deviations')
             try {
                 const data = JSON.parse(await request(deliverDeviations))
                 const delDev = []
                 data.forEach(d=>{
                     const {id, contactGroupId, queueId, queueName, status, subject, arrivalQueueTime } = d
                     const subjectArray = subject.split(':')
-                    const subjectFormat = subjectArray.length < 6 ? 'old': 'new'
+                    let subjectFormat = subjectArray.length < 6 ? 'old': 'new'
+                    if (subjectFormat === 'old' && (subject.endsWith('B2C') || subject.endsWith('B2B'))) subjectFormat = 'newShort'
                     const regExp = /\(([^)]+)\)/
                     const countryCode = regExp.exec(queueName)[1]
     /*
@@ -37,8 +40,12 @@ const fetchDeliveryDeviations = _=>{
                         deadlineCode: null,
                         numTimesBlocked: null,
                         deadline: null,
-                        slaStatus: null
+                        slaStatus: null,
+                        ticket: null
                     }
+
+                    //"4512483 - 2022-04-21-0821:+D:EPOQ:2243189610:2B:B2C"
+                    //"4529980 - 2022-03-20-2000:9D:2243642988:4B:B2C"
                     if ( subjectFormat === 'old' ){
                         params.subtype = subjectArray[0].split(' - ')[1]
                         if ( subjectArray[1] === 'EPOQ' ) params.epoq = true
@@ -47,20 +54,33 @@ const fetchDeliveryDeviations = _=>{
                         else params.deliveryDate = subjectArray[2]
                         params.deadline = calculateDeadline(arrivalQueueTime, params.subtype)
                     }
-                    else {
-                        if ( subjectArray[2] === 'EPOQ') params.epoq = false
+                    else if (subjectFormat === 'new') {
+                        if ( subjectArray[2] === 'EPOQ') params.epoq = true
                         else params.epoq = false
                         params.segment = subjectArray[5]
-                        params.articleAvailabilityDate = subjectArray[0]
+                        params.articleAvailabilityDate = subjectArray[0].split(' - ')[1]
+                        params.ticket = subjectArray[0].split(' - ')[0]
                         params.deadlineCode = subjectArray[1]
                         params.numTimesBlocked = subjectArray[4]
-                        params.deadline = moment(articleAvailabilityDate).format()
+                        params.deadline = moment(params.articleAvailabilityDate, 'YYYY-MM-DD-hhmm').format()
                     }
-                    params.slaStatus = getSlaStatus(params.deadline)
+                    else {
+                        params.epoq = false
+                        params.segment = subjectArray[4]
+                        params.articleAvailabilityDate = subjectArray[0].split(' - ')[1]
+                        params.ticket = subjectArray[0].split(' - ')[0]
+                        params.deadlineCode = subjectArray[1]
+                        params.numTimesBlocked = subjectArray[3]
+                        params.deadline = moment(params.articleAvailabilityDate, 'YYYY-MM-DD-hhmm').format()
+
+                    }
+                    if ( params.deadline === 'Invalid date') console.log(subject)
+                    else params.slaStatus = getSlaStatus(params.deadline)
                     delDev.push({id, contactGroupId, queueId, queueName,countryCode, ...params, status, subject, subjectFormat, arrivalQueueTime })
                 })
                 resolve(delDev)
             } catch (error) {
+                logErr(error)
                 reject(error)
             }
         }
@@ -73,6 +93,7 @@ const fetchDeliveryDeviations = _=>{
     //.catch(err=>console.log(err.message))
 */
 function getSlaStatus(deadline){
+    // console.log(deadline);
     if (moment() > moment(deadline)) return 'breached'
     if (moment().add(24, 'hours') > moment(deadline)) return 'breachingToday'
     return 'open'

@@ -88,7 +88,7 @@ export default createStore({
       })
       state.socket.on('delDev', data =>{
         state.delDev = data
-       //console.log(state.delDev);
+        //console.log(state.delDev);
       })
 
 
@@ -246,8 +246,19 @@ export default createStore({
     },
     getAccesses: ({state})=>{
       fetch(VUE_APP_API_ROOT + 'access').then(response=>response.json())
-        .then(accesses=>state.accesses = accesses)
+      .then(accesses=>state.accesses = accesses)
     },
+    newAccess: ({state})=>{
+      fetch(VUE_APP_API_ROOT + 'access', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response=>response.json())
+        .then(newAccess=>state.accesses.push(newAccess));
+    },
+
     getCollections: ({state})=>{
       fetch(VUE_APP_API_ROOT + 'collections')
         .then(res =>res.json())

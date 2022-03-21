@@ -8,8 +8,15 @@
         <span class="alerts"><font-awesome-icon icon="exclamation-triangle" /> {{numAlerts}}</span>
         <span class="alerts"><font-awesome-icon icon="users" /> {{numUsers}}</span>
         <span class="options">
-            <font-awesome-icon class="edit" :icon="['far', 'edit']" @click="expand(true)"  /> 
-            <font-awesome-icon :icon="['far', 'trash-alt']" />
+            <font-awesome-icon
+              class="edit"
+              :icon="['far', 'edit']"
+              @click="expand(true)"
+            />
+            <font-awesome-icon
+              :icon="['far', 'trash-alt']"
+              @click="openDelete"
+            />
         </span>
         <div class="more" v-if="expanded && !editable">
             <h5>Applies to</h5>
@@ -44,17 +51,26 @@
             @json-save="changeAccess"
             :mode="'code'"
         />
+        <div
+          class="more"
+          v-else-if="del"
+        >
+            <span>Delete access?</span>
+            <button @click="openDelete">Cancel</button>
+            <button @click="deleteAccess">Delete</button>
+        </div>
     </div>
 </template>
 
 <script setup>
-import {onMounted, ref, computed, defineEmits, watch, onUpdated} from 'vue'
+import {onMounted, ref, computed, watch, onUpdated} from 'vue'
 import { Vue3JsonEditor } from 'vue3-json-editor'
 
 const props = defineProps({access_id: String})
 const access_id = props.access_id
 const emit = defineEmits(['access-update'])
 const access = ref()
+
 
 const prepAccess = _=>{
     const obj = {...access.value}
@@ -75,13 +91,32 @@ const numAlerts = ref(0)
 const name = ref(null)
 const expanded = ref(false)
 const editable = ref(false)
+const del = ref(false)
 
 
+function openDelete(){
+    if (!del.value){
+        expanded.value=false
+        editable.value=false
+    }
+    del.value = !del.value
+}
 
 
 onMounted(_=>{
     getAccess()
 })
+
+async function deleteAccess(){
+    const response = await fetch(`${process.env.VUE_APP_API_ROOT}access/${access_id}`, {
+        method: 'DELETE', 
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    if (response.ok) emit('access-update')
+    else console.log(response);
+}
 
 async function getAccess(){
     access.value = await fetch(`${process.env.VUE_APP_API_ROOT}access/${access_id}`).then(response=>response.json())
@@ -168,6 +203,9 @@ function removeId(obj){
     .more {
         grid-column: 1 / -1;
         padding: 1rem;
+        > span, > button {
+            margin-inline: 0.5rem;
+        }
         h5 {
             margin-bottom: 0.5rem;
             margin-top: 1rem;

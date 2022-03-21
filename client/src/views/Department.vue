@@ -5,7 +5,7 @@
       <QueueCard title="Chat" channel="CH" :department="department" @dblclick="navigate(departmentName, 'chat')" />
       <QueueCard title="Email" channel="EM" :department="department" @dblclick="navigate(departmentName, 'email')"  />
       <QueueCard title="Action" channel="AC" :department="department" @dblclick="navigate(departmentName, 'action')"  />
-      <DeliveryDeviationCard :department="department" v-show="delDev" >Delivery Deviations</DeliveryDeviationCard>
+      <DeliveryDeviationCard :department="department" >Delivery Deviations</DeliveryDeviationCard>
       <CollectionQueueCard v-for="collection in collections" :key="collection._id" :collectionId="collection._id" />
   </div>
   <div class="home" :class="{showAlerts: store.state.showAlerts}" v-else>

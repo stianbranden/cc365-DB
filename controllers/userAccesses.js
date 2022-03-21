@@ -27,7 +27,7 @@ const getAccessesWithUser = user_id =>{
             const accesses = []
             for (let i = 0; i < allAccesses.length; i++){
                 const users = await getUsersWithAccess(allAccesses[i]._id)
-                if ( users.map(a=>a._id).includes(user_id) ) accesses.push(allAccess[i])
+                if ( users.map(a=>a._id).includes(user_id) ) accesses.push(allAccesses[i])
             }
             resolve(accesses)
         } catch (error) {
@@ -48,7 +48,7 @@ const pushAccesses = _=>{
                     alerts: []
                 }
                 const accesses = await getAccessesWithUser(user._id)
-                for ( let j = 0; j > accesses.length; j++ ){
+                for ( let j = 0; j < accesses.length; j++ ){
                     const {grant, alerts, pages} = accesses[j]
                         if ( grant ){
                         grant.forEach(g=>{
@@ -56,7 +56,7 @@ const pushAccesses = _=>{
                         })
                     }
                     if (alerts) obj.alerts.push(...alerts)
-                    if (pages) obj.alerts.push(...pages)
+                    if (pages) obj.pages.push(...pages)
                 }
                 await User.findByIdAndUpdate(user._id, obj)
             }
@@ -64,9 +64,37 @@ const pushAccesses = _=>{
         } catch (error) {
             reject(error)
         }
-
     })
 }
+
+const pushSingleUserAccess = user =>{
+    return new Promise( async (resolve, reject)=>{
+        try {
+            const obj = {
+                pages: [],
+                custom_access: [],
+                alerts: []
+            }
+            const accesses = await getAccessesWithUser(user._id)
+            
+            for ( let j = 0; j < accesses.length; j++ ){
+                const {grant, alerts, pages} = accesses[j]
+                if ( grant ){
+                    grant.forEach(g=>{
+                        obj.custom_access.push(genAccessLevel(g.label, g.alert, g.path))
+                    })
+                }
+                if (alerts) obj.alerts.push(...alerts)
+                if (pages) obj.pages.push(...pages)
+            }
+            await User.findByIdAndUpdate(user._id, obj)
+            resolve('User ' + user.name + ' updated')
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 
 
 const genAccessLevel = (label='Alerts', alter='root', path)=>{
@@ -81,4 +109,4 @@ const genAccessLevel = (label='Alerts', alter='root', path)=>{
   }
 
 
-module.exports = {getUsersWithAccess, getAccessesWithUser, pushAccesses}
+module.exports = {getUsersWithAccess, getAccessesWithUser, pushAccesses, pushSingleUserAccess}

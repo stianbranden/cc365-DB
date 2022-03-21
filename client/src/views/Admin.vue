@@ -14,7 +14,17 @@
 
     </div>
     <div class="accesses">
-      <div class="header">Accesses</div>
+      <div class="header">
+        <span></span>
+        <span>
+          Accesses
+        </span>
+        <span>
+          <font-awesome-icon icon="plus-circle" @click="store.dispatch('newAccess')" />
+        </span>
+
+        
+      </div>
       <Access 
         class="row"
         v-for="access in store.state.accesses"
@@ -92,10 +102,23 @@ div.admin{
   overflow-x: hidden;
   padding-bottom: 1rem;
   .header {
-
+    display: flex;
+    justify-content: space-between;
     background-color: var(--headercolor);
     font-size: 1.5rem;
     padding: 0.5rem 0;
+    & :last-child {
+      margin-inline: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      &:hover {
+        color: var(--activelinkcolor);
+      }
+    }
+    & :first-child {
+      width: 1rem;
+      margin-inline: 0.5rem;
+    }
   }
 
 }
