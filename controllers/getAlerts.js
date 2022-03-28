@@ -24,6 +24,24 @@ const getAlerts = async (department = null, sort = -1, not_person_sensitive = fa
     //logStd(JSON.stringify(query));
     return await Alert.find(query).sort({date: sort});
 }
+
+const getAlertReportData = (departments = [], startDate, endDate)=>{
+    return new Promise( async (resolve, reject)=>{
+        const query = {
+            personrelated: false,
+            date: {$gte: moment(startDate).format('YYYY-MM-DD'), $lte: moment(endDate).format('YYYY-MM-DD')}
+        }
+        if (departments.length > 0) query.department = {$in: departments}
+        try {
+            const data = await Alert.find(query).sort({date: 1}).lean()
+            resolve(data)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+
 const getPeopleAlerts = async (department = null, sort = -1, filter_date = true, date = moment().format('YYYY-MM-DD'))=>{
     const query = {personrelated: true};
 
@@ -75,4 +93,4 @@ const getAlertByTextAndDate = (text, date = moment().format('YYYY-MM-DD'))=>{
     })
 }
 
-module.exports = {getPeopleAlerts, getAlerts, getRelatedAlert, getAlertByTextAndDate}
+module.exports = {getPeopleAlerts, getAlerts, getRelatedAlert, getAlertByTextAndDate, getAlertReportData}

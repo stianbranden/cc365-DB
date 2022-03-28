@@ -8,8 +8,8 @@ const {getOsData} = require('../controllers/getOsData');
 const { logErr, logStd, logTab } = require('../controllers/logger.js');
 const { getPm2Data } = require('../controllers/getPm2.js');
 const {createAlert, updateAlert} = require('../controllers/createAlert')
-const {getAlerts, getPeopleAlerts} = require('../controllers/getAlerts')
-const {getUsersWithAccess, getAccessesWithUser, pushSingleUserAccess} = require('../controllers/userAccesses')
+const {getAlerts, getPeopleAlerts, getAlertReportData} = require('../controllers/getAlerts')
+const {getUsersWithAccess, pushSingleUserAccess} = require('../controllers/userAccesses')
 const User = require('../models/User')
 const Access = require('../models/Access')
 const Collection = require('../models/Collection')
@@ -55,6 +55,16 @@ router.get('/admin', async (req, res)=>{
 router.get('/user', async (req, res)=>{
     res.send(req.user || {custom_access:[], alerts: [], pages: []})
 });
+
+router.post('alertsreport', protectRoute, async (req, res)=>{
+    const {startDate, endDate, departments} = req.body
+    try {
+        const alerts = await getAlertReportData(departments, startDate, endDate)
+        res.send(alerts)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
 
 router.get('/alerts', async (req, res)=>{
     let alerts = []
