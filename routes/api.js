@@ -56,7 +56,7 @@ router.get('/user', async (req, res)=>{
     res.send(req.user || {custom_access:[], alerts: [], pages: []})
 });
 
-router.post('alertsreport', protectRoute, async (req, res)=>{
+router.post('/alertsreport', protectRoute, async (req, res)=>{
     const {startDate, endDate, departments} = req.body
     try {
         const alerts = await getAlertReportData(departments, startDate, endDate)
