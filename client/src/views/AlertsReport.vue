@@ -86,7 +86,7 @@
                     <span
                         v-for="(text, index) in alert.texts"
                         :key="alert._id + index"
-                        v-show="index > 0"         
+                        v-show="(alert.author==='ccc.elkjop.com' && index > 0) || alert.author !== 'ccc.elkjop.com'"         
                     >
                         {{text}}
                     </span>
@@ -195,6 +195,7 @@ onBeforeMount(fetchData)
     margin: 2rem;
     padding: 1rem;
     background-color: var(--cardbgcolor);
+    display: block;
 }
 .row {
     display: grid;
