@@ -56,7 +56,7 @@
             </div>
             <button @click="fetchData">Search</button>
         </div>
-        <div class="report">
+        <div class="report" v-if="alertsToDisplay.length > 0">
             <div class="row header">
                 <span class="type">type</span>  
                 <span class="department">department</span>
@@ -138,7 +138,7 @@ const fetchData = _=>{
         })
         alerts.value = data
         filterList()
-        console.log(alerts.value[1]);
+        //console.log(alerts.value[1]);
     }).catch(err=>console.log(err))
 }
 
@@ -160,6 +160,9 @@ onBeforeMount(fetchData)
             text-align: center;
             margin-left: 0.5rem;
             padding: 0.5rem;
+            &::-webkit-calendar-picker-indicator {
+                color: var(--textcolor);
+            }
         }
         input[type="checkbox"] {
             display: none;
