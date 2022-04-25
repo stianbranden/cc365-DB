@@ -45,11 +45,12 @@ const pushAccesses = _=>{
                 const obj = {
                     pages: [],
                     custom_access: [],
-                    alerts: []
+                    alerts: [],
+                    vizes: []
                 }
                 const accesses = await getAccessesWithUser(user._id)
                 for ( let j = 0; j < accesses.length; j++ ){
-                    const {grant, alerts, pages} = accesses[j]
+                    const {grant, alerts, pages, vizes} = accesses[j]
                         if ( grant ){
                         grant.forEach(g=>{
                             obj.custom_access.push(genAccessLevel(g.label, g.alert, g.path))
@@ -57,6 +58,8 @@ const pushAccesses = _=>{
                     }
                     if (alerts) obj.alerts.push(...alerts)
                     if (pages) obj.pages.push(...pages)
+                    if (vizes) obj.vizes.push(...vizes)
+
                 }
                 await User.findByIdAndUpdate(user._id, obj)
             }
@@ -73,12 +76,13 @@ const pushSingleUserAccess = user =>{
             const obj = {
                 pages: [],
                 custom_access: [],
-                alerts: []
+                alerts: [],
+                vizes: []
             }
             const accesses = await getAccessesWithUser(user._id)
             
             for ( let j = 0; j < accesses.length; j++ ){
-                const {grant, alerts, pages} = accesses[j]
+                const {grant, alerts, pages, vizes} = accesses[j]
                 if ( grant ){
                     grant.forEach(g=>{
                         obj.custom_access.push(genAccessLevel(g.label, g.alert, g.path))
@@ -86,6 +90,7 @@ const pushSingleUserAccess = user =>{
                 }
                 if (alerts) obj.alerts.push(...alerts)
                 if (pages) obj.pages.push(...pages)
+                if (vizes) obj.vizes.push(...vizes)
             }
             await User.findByIdAndUpdate(user._id, obj)
             resolve('User ' + user.name + ' updated')
