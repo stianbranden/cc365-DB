@@ -8,11 +8,22 @@
     <SummaryCard key="ki" title='CCC Kitchen' department='ki' @dblclick="navigate('kitchen')" />
     <SummaryCard key="thd" title='CCC Helpdesk' department='thd' @dblclick="navigate('helpdesk')" />
     <CollectionQueueCard v-for="collection in collections" :key="collection._id" :collectionId="collection._id" />
+    <EmbedCard
+      v-for="viz in vizes"   
+      :key="viz._id" 
+      :lightSrc="viz.lightSrc"
+      :darkSrc="viz.darkSrc"
+      :height="viz.height"
+      :width="viz.width"
+      :id="viz._id"
+    >
+      Nordic {{viz.name}}
+    </EmbedCard>
   </div>
 </template>
 
 <script>
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import {ref, computed, watch} from 'vue'
 // @ is an alias to /src
@@ -20,6 +31,7 @@ import QueueCard from '../components/QueueCard.vue'
 import SummaryCard from '../components/SummaryCard.vue'
 import Alerts from '../components/Alerts.vue'
 import CollectionQueueCard from '../components/CollectionQueueCard.vue'
+import EmbedCard from '../components/EmbedCard.vue'
 
 
 export default {
@@ -28,11 +40,15 @@ export default {
     QueueCard,
     SummaryCard,
     Alerts,
-    CollectionQueueCard
+    CollectionQueueCard,
+    EmbedCard
   },
   setup() {
-    const router = useRouter();
+    const router = useRouter()
+    const route = useRoute()
     const store = useStore()
+
+    const vizes = ref(store.state.user?.vizes.filter(a=>a.visibleOnRouters.includes(route.name)))
 
     const collections = ref(store.getters.getVisibleCollections)
     const ping = computed(_=>store.state.lastPing)
@@ -40,9 +56,12 @@ export default {
     function navigate(dep){
       router.push({name: 'Department', params: {department: dep}})
     }
-    watch(ping, _=>collections.value = store.getters.getVisibleCollections)
+    watch(ping, _=> {
+      collections.value = store.getters.getVisibleCollections
+      vizes.value = store.state.user?.vizes.filter(a=>a.visibleOnRouters.includes(route.name))
+    })
 
-    return {navigate, store, collections}
+    return {navigate, store, collections, vizes}
   }
 }
 </script>

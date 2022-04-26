@@ -7,6 +7,18 @@
       <QueueCard title="Action" channel="AC" :department="department" @dblclick="navigate(departmentName, 'action')"  />
       <DeliveryDeviationCard :department="department" >Delivery Deviations</DeliveryDeviationCard>
       <CollectionQueueCard v-for="collection in collections" :key="collection._id" :collectionId="collection._id" />
+      <EmbedCard
+        v-for="viz in vizes"   
+        :key="viz._id" 
+        :lightSrc="viz.lightSrc"
+        :darkSrc="viz.darkSrc"
+        :height="viz.height"
+        :width="viz.width"
+        :id="viz._id"
+        :filters="vizFilters"
+      >
+        {{departmentName.replace(/^\w/, (c) => c.toUpperCase())}} {{viz.name}}
+      </EmbedCard> 
   </div>
   <div class="home" :class="{showAlerts: store.state.showAlerts}" v-else>
     <Alerts v-if="store.state.showAlerts" :department="department" /> 
@@ -14,7 +26,20 @@
     <QueueCard title="FI THD Phone" channel="PH" country="FI" :department="department" @dblclick="navigate(departmentName, 'phone', 'finland')" />
     <QueueCard title="NO THD Phone" channel="PH" country="NO" :department="department" @dblclick="navigate(departmentName, 'phone', 'norway')" />
     <QueueCard title="SE THD Phone" channel="PH" country="SE" :department="department" @dblclick="navigate(departmentName, 'phone', 'sweden')" />
-    <CollectionQueueCard v-for="collection in collections" :key="collection._id" :collectionId="collection._id" /> 
+    <CollectionQueueCard v-for="collection in collections" :key="collection._id" :collectionId="collection._id" />
+    <EmbedCard
+        v-for="viz in vizes"   
+        :key="viz._id" 
+        :depName="departmentName"
+        :lightSrc="viz.lightSrc"
+        :darkSrc="viz.darkSrc"
+        :height="viz.height"
+        :width="viz.width"
+        :id="viz._id"
+        :filters="vizFilters"
+      >
+        {{departmentName.replace(/^\w/, (c) => c.toUpperCase())}} {{viz.name}}
+      </EmbedCard> 
   </div>
 </template>
 
@@ -27,11 +52,12 @@ import QueueCard from '../components/QueueCard.vue'
 import DeliveryDeviationCard from '../components/DeliveryDeviationCard.vue'
 import Alerts from '../components/Alerts.vue'
 import CollectionQueueCard from '../components/CollectionQueueCard.vue'
+import EmbedCard from '../components/EmbedCard.vue'
 
 export default {
   name: 'Home',
   components: {
-    QueueCard, Alerts, DeliveryDeviationCard, CollectionQueueCard
+    QueueCard, Alerts, DeliveryDeviationCard, CollectionQueueCard, EmbedCard
   },
   setup() {
     const route = useRoute();
@@ -40,28 +66,51 @@ export default {
     const ping = computed(_=>store.state.lastPing)
     const collections = ref(store.getters.getVisibleCollections)
     const delDev = ref(store.state.delDev.length > 0)
-
+    const vizes = ref(store.state.user?.vizes.filter(a=>a.visibleOnRouters.includes(route.name)))
+    
     watch(ping, _=>{
       collections.value = store.getters.getVisibleCollections
       delDev.value = store.state.delDev.length > 0
+      vizes.value = store.state.user?.vizes.filter(a=>a.visibleOnRouters.includes(route.name))
     })
 
     const departmentName = ref(route.params.department)
     let department = computed(_=> getAbbr(departmentName) )
 
+    const vizFilters = ref([setVizFilter()])
+
+    
     onBeforeRouteUpdate((to, from)=>{
       if ( to.params.department !== from.params.department){
         departmentName.value= to.params.department
         department = computed(_=> getAbbr(departmentName) )
+        console.log('Running obru');
+        vizFilters.value = [setVizFilter()]
       }
     })
+
+    function setVizFilter(){
+      let filter = {
+        field: 'COUNTRY',
+        value: departmentName.value.replace(/^\w/, (c) => c.toUpperCase())
+      }
+      if (departmentName.value === 'helpdesk' ) {
+        filter.field = "GROUPID"
+        filter.value = "Technical Helpdesk"
+      }
+      if ( departmentName.value === 'kitchen' ){
+        filter.field = "GROUPID"
+        filter.value = "Kitchen&Interior"
+      }
+      return filter
+    }
 
     function navigate(department, channel, country){
       if (!country) router.push({name: 'Channel', params: {department, channel, country: 'all'}})
       else router.push({name: 'Channel', params: {department, channel, country}})
     }
 
-    return {department, departmentName, store, navigate, collections}
+    return {department, departmentName, store, navigate, collections, route, vizes, vizFilters}
   }
 }
 
