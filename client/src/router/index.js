@@ -28,6 +28,12 @@ const routes = [
 
   },
   {
+    path: '/myPage',
+    name: 'MyPage',
+    component: () => import(/* webpackChunkName: "alerts" */ '../views/MyPage.vue')
+
+  },
+  {
     path: '/mycollections',
     name: 'MyCollections',
     component: () => import(/* webpackChunkName: "area" */ '../views/MyCollections.vue')

@@ -52,7 +52,9 @@ export default createStore({
     showModal: false, 
     accesses: [],
     delDev: [],
-    collections: []
+    collections: [],
+    mySchedule: {},
+    agent: {}
   },
   mutations: {
     ioConnect(state){
@@ -89,6 +91,11 @@ export default createStore({
       state.socket.on('delDev', data =>{
         state.delDev = data
         //console.log(state.delDev);
+      })
+      state.socket.on('updatedSchedule', data =>{
+        state.mySchedule = data
+        state.lastPing = moment().toISOString()
+        //console.log({event:'New Schedule', data});
       })
 
 
@@ -179,6 +186,15 @@ export default createStore({
         .then(response=>response.json())
         .then(user=> {
           state.user = user
+          let agentId = user.agentId
+          if (user._id === 'stianbra@elkjop.no') agentId = '2d14b83b-5307-4422-af7c-abc700e05a4b';
+          fetch(VUE_APP_API_ROOT + 'user/schedule/' + agentId)
+            .then(response=>response.json())
+            .then(schedule=>{
+              state.mySchedule = schedule
+              state.agent = schedule.agent
+              if (state.socket) state.socket.emit('connect-to', agentId);
+            })
           //console.log(user);
         })
     },
