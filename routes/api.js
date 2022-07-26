@@ -10,6 +10,7 @@ const { getPm2Data } = require('../controllers/getPm2.js');
 const {createAlert, updateAlert} = require('../controllers/createAlert')
 const {getAlerts, getPeopleAlerts, getAlertReportData} = require('../controllers/getAlerts')
 const {getUsersWithAccess, pushSingleUserAccess} = require('../controllers/userAccesses')
+const {getSchedulesForAgent} = require('../controllers/getTeleoptiData')
 const User = require('../models/User')
 const Access = require('../models/Access')
 const Collection = require('../models/Collection')
@@ -55,6 +56,12 @@ router.get('/admin', async (req, res)=>{
 router.get('/user', async (req, res)=>{
     res.send(req.user || {custom_access:[], alerts: [], pages: []})
 });
+
+router.get('/user/schedule/:agentId', async (req, res)=>{
+    const {agentId} = req.params
+    const schedule = await getSchedulesForAgent(agentId);
+    res.send(schedule)
+})
 
 router.post('/alertsreport', protectRoute, async (req, res)=>{
     const {startDate, endDate, departments} = req.body

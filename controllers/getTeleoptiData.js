@@ -33,6 +33,15 @@ const getContractById = id =>{
     })
 }
 
+const getSchedulesForAgent = (agentId, date = moment().format('YYYY-MM-DD')) => {
+    return new Promise( async (resolve, reject)=>{
+        resolve( await Schedule.findOne({
+            agentId,
+            date
+        }))
+    });
+}
+
 const getSchedulesForTeam = (teamId, date = moment().format('YYYY-MM-DD'), includeEmpty = false)=>{
     return new Promise( async (resolve, reject)=>{
         let query = {
@@ -169,6 +178,7 @@ module.exports = {
     getBusinessUnit,
     getTeams,
     getAgents,
+    getSchedulesForAgent,
     getSchedulesForTeam,
     getSchedulesForDepartment,
     getTeam,
