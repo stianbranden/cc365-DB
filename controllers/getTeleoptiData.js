@@ -108,7 +108,7 @@ const getAgentWithEmail = email =>{
 const getAgentWithEmploymentNumber = employmentNumber =>{
     return new Promise(async(resolve, reject)=>{
         try {
-            let agent = await Agent.findOne({employementNumber});
+            let agent = await Agent.findOne({employmentNumber});
             resolve(agent);
         } catch (error) {
             reject(error)
