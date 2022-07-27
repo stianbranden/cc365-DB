@@ -3,10 +3,10 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User')
 const request = require('request-promise');
 const Access = require('../models/Access');
-const {logErr} = require('./logger');
+const {logStd, logErr} = require('./logger');
 
 const {AZURE_CLIENTID, AZURE_CLIENTSECRET, NODE_ENV,HOST_URL} = process.env;
-const {getAgentWithEmail} = require('./getTeleoptiData');
+const {getAgentWithEmail, getAgentWithEmploymentNumber} = require('./getTeleoptiData');
 
 const { getProfileData} = require('./config');
 
@@ -72,6 +72,7 @@ module.exports = function (passport) {
             });
         }
         try {
+            
             /*const photoQuery = {...getPhoto};
             photoQuery.headers["Authorization"] = 'Bearer ' + accessToken;
             const photo = Buffer.from(await request(photoQuery)).toString('base64');
@@ -79,9 +80,11 @@ module.exports = function (passport) {
             const profileQuery = {...getProfileData}
             profileQuery.headers["Authorization"] = 'Bearer ' + accessToken;
             const graphProfile = JSON.parse(await request(profileQuery));
-            const {state, jobTitle} = graphProfile;
+            logStd(JSON.stringify(graphProfile));
+            const {state, jobTitle, employeeId} = graphProfile;
             //console.log({graphProfile});
             let agent = await getAgentWithEmail(profile.upn);
+            if ( !agent ) agent = await getAgentWithEmploymentNumber(employeeId);
             //console.log(agent);
             let agentId = null;
             if (agent){
@@ -100,6 +103,7 @@ module.exports = function (passport) {
                 role: state,
                 title: jobTitle,
                 access_token: accessToken,
+                employmentNumber: employeeId,
                 custom_access,
                 alerts,
                 pages
@@ -116,6 +120,7 @@ module.exports = function (passport) {
                     given_name: profile.given_name,
                     family_name: profile.family_name,
                     access_token: accessToken,
+                    employmentNumber: employeeId,
                     custom_access,
                     alerts,
                     pages

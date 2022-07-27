@@ -105,6 +105,17 @@ const getAgentWithEmail = email =>{
     })
 }
 
+const getAgentWithEmploymentNumber = employmentNumber =>{
+    return new Promise(async(resolve, reject)=>{
+        try {
+            let agent = await Agent.findOne({employementNumber});
+            resolve(agent);
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 const getAgents = (options = {businessUnitId: null, teamId: null}) =>{
     return new Promise(async (resolve, reject)=>{
         let query = {};
@@ -174,6 +185,7 @@ const getTeams = (businessUnitId=null)=>{
 module.exports = {
     getAgentWithId,
     getAgentWithEmail,
+    getAgentWithEmploymentNumber,
     getAllBusinessUnits,
     getBusinessUnit,
     getTeams,
