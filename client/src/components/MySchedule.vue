@@ -10,7 +10,8 @@
                 :title="genTooltip(shift)"
             >
                 <div class="name">
-                    {{shift.name}}
+                    {{shift.name}}<br>{{shift.startTime.substring(11,16)}} - {{shift.endTime.substring(11,16)}}
+
                 </div>
             </div>
         </div>
