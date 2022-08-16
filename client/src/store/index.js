@@ -187,7 +187,6 @@ export default createStore({
         .then(user=> {
           state.user = user
           let agentId = user.agentId
-          if (user._id === 'stianbra@elkjop.no') agentId = '2d14b83b-5307-4422-af7c-abc700e05a4b';
           fetch(VUE_APP_API_ROOT + 'user/schedule/' + agentId)
             .then(response=>response.json())
             .then(schedule=>{
