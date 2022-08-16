@@ -95,19 +95,28 @@ module.exports = function (passport) {
             
             let user = await User.findById(profile.upn);
             if (user){
+              if (!user.doNotUpdate){
                 //Update user
-              user = await User.findByIdAndUpdate(profile.upn, {
-                last_login: Date.now(),
-                agentId,
-                //photo,
-                role: state,
-                title: jobTitle,
-                access_token: accessToken,
-                employmentNumber: employeeId,
-                custom_access,
-                alerts,
-                pages
-              }, {new: true})
+                user = await User.findByIdAndUpdate(profile.upn, {
+                  last_login: Date.now(),
+                  agentId,
+                  //photo,
+                  role: state,
+                  title: jobTitle,
+                  access_token: accessToken,
+                  employmentNumber: employeeId,
+                  custom_access,
+                  alerts,
+                  pages
+                }, {new: true})
+
+              }
+              else {
+                user = await User.findByIdAndUpdate(profile.upn, {
+                  last_login: Date.now(),
+                  access_token: accessToken
+                }, {new: true})
+              }
             }
             else {
                 user = await  User.create({
