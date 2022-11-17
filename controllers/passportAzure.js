@@ -4,6 +4,7 @@ const User = require('../models/User')
 const request = require('request-promise');
 const Access = require('../models/Access');
 const {logStd, logErr} = require('./logger');
+const {pushSingleUserAccess} = require('./userAccesses');
 
 const {AZURE_CLIENTID, AZURE_CLIENTSECRET, NODE_ENV,HOST_URL} = process.env;
 const {getAgentWithEmail, getAgentWithEmploymentNumber} = require('./getTeleoptiData');
@@ -135,6 +136,7 @@ module.exports = function (passport) {
                     pages
                   });
             }
+            pushSingleUserAccess(user);
             if ( NODE_ENV != 'Production' ){
               //getUserById(user._id).then(saved_user=>console.log(saved_user));
             }
