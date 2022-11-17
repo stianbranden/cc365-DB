@@ -645,7 +645,12 @@ function hasQueues(state, channel, department, country, area ){
 }
 
 function computeQueues(state, channel, department, country, area ){
-  let arr = [...state.queueData];
+  let arr = [...state.queueData].sort((a,b)=>{
+    if ((a.area === 'AS' || a.area === 'PS') && (b.area !== 'AS' || b.area !== 'PS') ) return -1
+    if (a.area > b.area) return 1
+    if (a.area === b.area && a.name > b.name) return 1
+    return -1;
+  });
   if ( channel ) arr = arr.filter(q=>q.channel === channel)
   if ( department ) arr = arr.filter(q=>q.department === department)
   if ( country ) arr = arr.filter(q=>q.country === country)
