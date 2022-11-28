@@ -56,6 +56,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "area" */ '../views/PersonAccounts.vue')
   },
   {
+    path: '/chat/:bot/:chat',
+    name: 'ChatTranscript',
+    component: () => import(/* webpackChunkName: "chat" */ '../views/ChatTranscript.vue')
+  },
+  {
     path: '/:department',
     name: 'Department',
     component: () => import(/* webpackChunkName: "department" */ '../views/Department.vue')

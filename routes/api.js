@@ -11,6 +11,7 @@ const {createAlert, updateAlert} = require('../controllers/createAlert')
 const {getAlerts, getPeopleAlerts, getAlertReportData} = require('../controllers/getAlerts')
 const {getUsersWithAccess, pushSingleUserAccess} = require('../controllers/userAccesses')
 const {getSchedulesForAgent} = require('../controllers/getTeleoptiData')
+const {getTranscript} = require('../controllers/chatTranscripts.js');
 const User = require('../models/User')
 const Access = require('../models/Access')
 const Collection = require('../models/Collection')
@@ -39,6 +40,16 @@ const protectRoute = (req, res, next)=>{
     }
     else next();
 }
+
+router.get('/chattranscript/:botId/:chatId', async (req, res)=>{
+    const {botId, chatId} = req.params
+    try {
+        const transcript = await getTranscript(botId, chatId);
+        res.send(transcript)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
 
 
 router.get('/admin', async (req, res)=>{
