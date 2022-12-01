@@ -11,6 +11,8 @@
 
     const createBot = () => {
         selectedBot = store.getters.getSelectedBot
+
+        console.log(selectedBot)
         if (selectedBot.key) {
             if (botCreated) removeBot()
             botCreated = true;
@@ -60,8 +62,8 @@
         <font-awesome-icon icon="angle-left" />
         <div>
             <label for="hotbot-selector">Select your hotbot</label>
-            <select id="hotbot-selector" v-model="selectedBot.name" @change="changeBot($event)">
-                <option v-for="bot in store.getters.getBotSelections" :key="bot.name" :value="bot.name">{{bot.name}}</option>
+            <select id="hotbot-selector" @change="changeBot($event)">
+                <option v-for="bot in store.getters.getBotSelections" :selected="bot.name === selectedBot.name" :key="bot.name" :value="bot.name">{{bot.name}}</option>
             </select>
         </div>
     </div>
