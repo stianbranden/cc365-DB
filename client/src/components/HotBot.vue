@@ -59,7 +59,6 @@
 <template>
 <div>
     <div class="selector">
-        <font-awesome-icon icon="angle-left" />
         <div>
             <label for="hotbot-selector">Select your hotbot</label>
             <select id="hotbot-selector" @change="changeBot($event)">
@@ -75,34 +74,22 @@
     .selector {
         position: fixed;
         bottom: 40px;
-        right: -10px;
+        right: -190px;
         height: 100px;
-        width: 20px;
+        width: 200px;
         border: 1px solid white;
         border-radius: 1rem;
         margin: auto;
-        svg {
+        z-index: 1000;
+        > div {
             height: 100%;
-        }
-        select, label {
-            display: none;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
         }
         &:hover, &:focus {
-            height: 100px;
-            width: 200px;
-            z-index: 1000;
-            > div {
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                padding: 1.5rem;
-            }
-            svg {
-                display: none;
-            }
-            select, label {
-                display: initial;
-            }
+            right: -10px;
         }
+        transition: right 500ms ease-in;
     }
 </style>
