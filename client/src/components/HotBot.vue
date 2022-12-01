@@ -78,7 +78,7 @@
         height: 100px;
         width: 200px;
         border: 1px solid white;
-        border-radius: 1rem;
+        border-radius: 0.5rem;
         margin: auto;
         z-index: 1000;
         > div {
