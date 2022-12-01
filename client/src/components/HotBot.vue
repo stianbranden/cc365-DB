@@ -11,8 +11,6 @@
 
     const createBot = () => {
         selectedBot = store.getters.getSelectedBot
-
-        console.log(selectedBot)
         if (selectedBot.key) {
             if (botCreated) removeBot()
             botCreated = true;
