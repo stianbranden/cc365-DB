@@ -54,7 +54,15 @@ export default createStore({
     delDev: [],
     collections: [],
     mySchedule: {},
-    agent: {}
+    agent: {},
+    hotbots: [
+      {name: 'None', key: null},
+      {name: 'Danish', key: "d067a39f-c160-4824-8f7a-0863e9f9ef67"},
+      {name: 'Norwegian - Lørenskog', key: "72a50932-2f24-4454-8d78-95f714e95d8c"},
+      {name: 'Norwegian - Copenhagen', key: "49359f26-44ed-4703-b301-b169a224955c"},
+      {name: 'Swedish', key: "c8f2f820-e41d-470b-9b69-a003ec24d2c1"}
+    ],
+    selectedBot: 'None'
   },
   mutations: {
     ioConnect(state){
@@ -173,6 +181,10 @@ export default createStore({
     },
     toggleModal(state){
       state.showModal = !state.showModal
+    },
+    setSelectedBot(state, localBot){
+      state.selectedBot = localBot
+      localStorage.setItem('hotbot', localBot)
     }
   },
   actions: {
@@ -218,6 +230,9 @@ export default createStore({
 
       let localNotifications = localStorage.getItem('notifications') == 'false' || !Boolean(localStorage.getItem('notifications')) ? false : true;
       commit('setNotifications', localNotifications)
+
+      let localBot = localStorage.getItem('hotbot') == null ? 'None' : localStorage.getItem('hotbot')
+      commit('setSelectedBot', localBot)
     },
     createAlert: ({dispatch}, data) =>{
       return new Promise(async (resolve, reject)=>{
@@ -514,7 +529,12 @@ export default createStore({
       const data = computeCollectionDaily(state, queues)
       //console.log({data, queues});
       return data
-    }
+    },
+    getSelectedBot: state => {
+      const selectedBot = state.hotbots.filter(a=>a.name === state.selectedBot)[0]
+      return selectedBot
+    },
+    getBotSelections: state => state.hotbots
 
   }
 })

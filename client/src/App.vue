@@ -3,6 +3,7 @@
     <Navigation />
     <Warnings />
     <router-view/>  
+    <HotBot />
   </div>
 </template>
 
@@ -12,10 +13,12 @@ import {useStore} from 'vuex'
 import { onBeforeMount, ref } from '@vue/runtime-core';
 import Navigation from './components/Navigation.vue'
 import Warnings from './components/Warnings.vue'
+import HotBot from './components/HotBot.vue'
+
 
 export default {
   components: {
-    Navigation, Warnings
+    Navigation, Warnings, HotBot
   },
   setup() {
     const store = useStore();
