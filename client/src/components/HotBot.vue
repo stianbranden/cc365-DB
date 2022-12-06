@@ -25,7 +25,7 @@
             window.kindlyOptions = {
                 position: {
                     right: '40px',
-                    bubbleAvatar: '/images/hotbot.webp'
+                    bubbleAvatar: '../assets/hotbot.webp'
                 }
             }
             // console.log(window.kindlyChat);
