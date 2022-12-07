@@ -28,7 +28,7 @@ const teamRoute = require('./routes/team');
 const departmentRoute = require('./routes/department');
 const alertsRoute = require('./routes/alerts');
 const apiRoute = require('./routes/api')
-const mongoose = require('mongoose');
+//const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const connectDB = require('./controllers/connectDB');
@@ -45,7 +45,8 @@ const {getOsData} = require('./controllers/getOsData');
 const { checkChatStatus } = require('./controllers/checkChat');
 const {setGlobalLocalsVariables} = require('./middleware/setLocals');
 const { getPm2Data } = require('./controllers/getPm2');
-/*Setup EJS*/
+const logToMongo = require('./middleware/logToMongo')
+ /*Setup EJS*/
 app.set('view engine', 'ejs');
 app.use(ejsLayouts);
 
@@ -85,6 +86,7 @@ app.use(express.json())
 if (NODE_ENV !== 'production'){
     app.use(morgan('common'));
 }
+app.use(logToMongo)
 
 
 //Routes
