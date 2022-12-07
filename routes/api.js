@@ -184,27 +184,28 @@ router.get('/access/:access_id/users', protectRoute, async (req, res)=>{
     res.status(200).send(users)
 })
 
-router.get('/collections', protectRoute, async(req, res)=>{
-    try {
-        const collections = await Collection.find({user: req.user._id}).lean()
-        res.send(collections)
-    } catch (error) {
-        res.status(500).send('Something went wrong')
-    }
-})
-
-router.post('/collections', async(req, res)=>{
-    const {body}= req
-    if (!req.user) res.status(200).send([])
+router.get('/collections', async(req, res)=>{
+    if (req.user) res.status(200).send([])
     else {
-        body.user = req.user._id
         try {
-            const collection = await Collection.create(body)
-            res.status(200).send(collection);
+            const collections = await Collection.find({user: req.user._id}).lean()
+            res.send(collections)
         } catch (error) {
             res.status(500).send('Something went wrong')
         }
     }
+})
+
+router.post('/collections', protectRoute, async(req, res)=>{
+    const {body}= req
+    body.user = req.user._id
+    try {
+        const collection = await Collection.create(body)
+        res.status(200).send(collection);
+    } catch (error) {
+        res.status(500).send('Something went wrong')
+    }
+
 })
 
 router.put('/collections/:id', protectRoute, async(req, res)=>{
