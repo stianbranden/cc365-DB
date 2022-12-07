@@ -193,14 +193,17 @@ router.get('/collections', protectRoute, async(req, res)=>{
     }
 })
 
-router.post('/collections', protectRoute, async(req, res)=>{
+router.post('/collections', async(req, res)=>{
     const {body}= req
-    body.user = req.user._id
-    try {
-        const collection = await Collection.create(body)
-        res.status(200).send(collection);
-    } catch (error) {
-        res.status(500).send('Something went wrong')
+    if (!req.user) res.status(200).send([])
+    else {
+        body.user = req.user._id
+        try {
+            const collection = await Collection.create(body)
+            res.status(200).send(collection);
+        } catch (error) {
+            res.status(500).send('Something went wrong')
+        }
     }
 })
 
