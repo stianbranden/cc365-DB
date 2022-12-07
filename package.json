@@ -24,7 +24,6 @@
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.39",
     "mongoose": "^6.7.5",
-    "mongoose-morgan": "^1.0.17",
     "node-cron": "^3.0.2",
     "nodejs-base64-encode": "^1.1.0",
     "os-utils": "0.0.14",
