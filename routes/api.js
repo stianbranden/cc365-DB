@@ -185,7 +185,7 @@ router.get('/access/:access_id/users', protectRoute, async (req, res)=>{
 })
 
 router.get('/collections', async(req, res)=>{
-    if (req.user) res.status(200).send([])
+    if (!req.user) res.status(200).send([])
     else {
         try {
             const collections = await Collection.find({user: req.user._id}).lean()
