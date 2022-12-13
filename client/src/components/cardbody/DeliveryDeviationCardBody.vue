@@ -39,7 +39,7 @@ function update(){
 }
 update()
 
-console.log({department, delDev});
+// console.log({department, delDev});
 
 </script>
 
