@@ -66,12 +66,12 @@ export default {
     const ping = computed(_=>store.state.lastPing)
     const collections = ref(store.getters.getVisibleCollections)
     const delDev = ref(store.state.delDev.length > 0)
-    const vizes = ref(store.state.user?.vizes.filter(a=>a.visibleOnRouters.includes(route.name)))
+    const vizes = ref(store.state.user?.vizes?.filter(a=>a.visibleOnRouters.includes(route.name)))
     
     watch(ping, _=>{
       collections.value = store.getters.getVisibleCollections
       delDev.value = store.state.delDev.length > 0
-      vizes.value = store.state.user?.vizes.filter(a=>a.visibleOnRouters.includes(route.name))
+      vizes.value = store.state.user?.vizes?.filter(a=>a.visibleOnRouters.includes(route.name))
     })
 
     const departmentName = ref(route.params.department)

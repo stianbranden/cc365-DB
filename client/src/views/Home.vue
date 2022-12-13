@@ -48,7 +48,7 @@ export default {
     const route = useRoute()
     const store = useStore()
 
-    const vizes = ref(store.state.user?.vizes.filter(a=>a.visibleOnRouters.includes(route.name)))
+    const vizes = ref(store.state.user?.vizes?.filter(a=>a.visibleOnRouters.includes(route.name)))
 
     const collections = ref(store.getters.getVisibleCollections)
     const ping = computed(_=>store.state.lastPing)
@@ -58,7 +58,7 @@ export default {
     }
     watch(ping, _=> {
       collections.value = store.getters.getVisibleCollections
-      vizes.value = store.state.user?.vizes.filter(a=>a.visibleOnRouters.includes(route.name))
+      vizes.value = store.state.user?.vizes?.filter(a=>a.visibleOnRouters.includes(route.name))
     })
 
     return {navigate, store, collections, vizes}
