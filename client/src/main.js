@@ -37,7 +37,8 @@ import {
     faUserCog,
     faCalendar,
     faUndoAlt,
-    faUser
+    faUser,
+    faCodeBranch
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
@@ -50,7 +51,7 @@ library.add(faLightbulb, faPhoneAlt, faComments, faEnvelope, faFolder, faCircleN
     faSignOutAlt, faSignInAlt, faThermometerHalf, faClock, faExclamationCircle, faTimesCircle, 
     faUsers,faPlusCircle, faBell, faBellSlash, faExclamationTriangle, faSort, faFilter,
     faClipboard, faEdit, faCog, faFile, faTrashAlt, faAngleDown, faAngleUp, faTruck, faUserCog,
-    faCalendar, faUndoAlt, faUser )
+    faCalendar, faUndoAlt, faUser, faCodeBranch )
 
 createApp(App)
     .component('font-awesome-icon', FontAwesomeIcon)

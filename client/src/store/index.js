@@ -4,8 +4,11 @@ import moment from 'moment'
 const {VUE_APP_SOCKET_ADRESS, VUE_APP_API_ROOT} = process.env
 const {localStorage} = window;
 
+import {version} from '../../package.json'
+
 export default createStore({
   state: {
+    version: version,
     socket: null,
     socketConnected: false,
     counter: 0,

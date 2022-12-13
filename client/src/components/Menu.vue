@@ -67,6 +67,12 @@
                     </div>
                     <span>Log in</span>
                 </li>
+                <li class="info" title="Version number">
+                    <div>
+                        <font-awesome-icon icon="code-branch" />
+                    </div>
+                    <span>v{{store.state.version}}</span>
+                </li>
                 <li class="break info"></li>
                 <!-- Added pages access -->
                 <li
