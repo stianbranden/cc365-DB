@@ -18,6 +18,13 @@ const Collection = require('../models/Collection')
 const PersonAccount = require('../models/PersonAccount')
 const moment = require('moment')
 
+const genError = (statusCode, error)=>{
+    return {
+        statusCode,
+        error
+    }
+}
+
 if (NODE_ENV !== 'production'){
     router.use(cors({
         "origin": "*",
@@ -36,7 +43,7 @@ if (NODE_ENV !== 'production'){
 
 const protectRoute = (req, res, next)=>{
     if ( !req.user ){
-        res.status(401).send({msg: 'Not logged in'})
+        res.status(401).send(genError(401, 'User not logged in'))
     }
     else next();
 }
@@ -47,7 +54,7 @@ router.get('/chattranscript/:botId/:chatId', async (req, res)=>{
         const transcript = await getTranscript(botId, chatId);
         res.send(transcript)
     } catch (error) {
-        res.status(500).send(error)
+        res.status(500).send(genError(500, error.message))
     }
 })
 
@@ -58,9 +65,7 @@ router.get('/admin', async (req, res)=>{
         const pm2Data = await getPm2Data();
         res.send({osData, pm2Data});
     } catch (error) {
-        res.send({});
-        logErr(error.message);
-        
+        res.status(500).send(genError(500, error.message))
     }
 });
 
@@ -80,7 +85,7 @@ router.post('/alertsreport', protectRoute, async (req, res)=>{
         const alerts = await getAlertReportData(departments, startDate, endDate)
         res.send(alerts)
     } catch (error) {
-        res.status(500).send(error)
+        res.status(500).send(genError(500, error.message))
     }
 })
 
@@ -122,7 +127,7 @@ router.patch('/alerts/:id', protectRoute,  async (req, res)=>{
         const newAlert = await updateAlert(id, body, true)
         res.status(200).send({msg: 'Alert updated', newAlerts: [newAlert]})
     } catch (error) {
-        res.status(500).send({msg: 'Something went wrong'})
+        res.status(500).send(genError(500, error.message))
     }
 })
 
@@ -148,7 +153,7 @@ router.post('/access', protectRoute, async (req, res)=>{
         });
         res.send(access)
     } catch (error) {
-        req.status(500).send(error.message)
+        res.status(500).send(genError(500, error.message))
     }
 })
 
@@ -162,7 +167,7 @@ router.patch('/access/:access_id', protectRoute, async (req, res)=>{
             .forEach(user=> pushSingleUserAccess(user))
         res.status(200).send('OK')
     } catch (error) {
-        res.status(500).send(error.message)
+        res.status(500).send(genError(500, error.message))
     }
 })
 
@@ -174,7 +179,7 @@ router.delete('/access/:access_id', protectRoute, async (req, res)=>{
         affectedUsers.forEach(user=> pushSingleUserAccess(user))
         res.status(204).send('OK')
     } catch (error) {
-        res.status(500).send(error.message)
+        res.status(500).send(genError(500, error.message))
     }
 })
 
@@ -185,13 +190,14 @@ router.get('/access/:access_id/users', protectRoute, async (req, res)=>{
 })
 
 router.get('/collections', async(req, res)=>{
+    logStd(JSON.stringify(req.user))
     if (!req.user) res.status(200).send([])
     else {
         try {
             const collections = await Collection.find({user: req.user._id}).lean()
             res.send(collections)
         } catch (error) {
-            res.status(500).send('Something went wrong')
+            res.status(500).send(genError(500, error.message))
         }
     }
 })
@@ -203,7 +209,7 @@ router.post('/collections', protectRoute, async(req, res)=>{
         const collection = await Collection.create(body)
         res.status(200).send(collection);
     } catch (error) {
-        res.status(500).send('Something went wrong')
+        res.status(500).send(genError(500, error.message))
     }
 
 })
@@ -215,7 +221,7 @@ router.put('/collections/:id', protectRoute, async(req, res)=>{
         const collection = await Collection.findByIdAndUpdate(id, body)
         res.status(200).send(collection);
     } catch (error) {
-        res.status(500).send('Something went wrong')
+        res.status(500).send(genError(500, error.message))
     }
 })
 
@@ -225,7 +231,7 @@ router.delete('/collections/:id', protectRoute, async(req, res)=>{
         await Collection.findByIdAndDelete(id);
         res.status(204).send('OK')
     } catch (error) {
-        res.status(500).send('Something went wrong')
+        res.status(500).send(genError(500, error.message))
         
     }
 })
@@ -235,7 +241,7 @@ router.get('/personaccounts', protectRoute, async(req, res)=>{
         const personAccounts = await PersonAccount.find().lean()
         res.send(personAccounts)
     } catch (error) {
-        res.status(500).send('Something went wrong')
+        res.status(500).send(genError(500, error.message))
     }
 })
 
