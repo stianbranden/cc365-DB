@@ -199,13 +199,15 @@ export default createStore({
         .then(user=> {
           state.user = user
           let agentId = user.agentId
-          fetch(VUE_APP_API_ROOT + 'user/schedule/' + agentId)
-            .then(response=>response.json())
-            .then(schedule=>{
-              state.mySchedule = schedule
-              state.agent = schedule.agent
-              if (state.socket) state.socket.emit('connect-to', agentId);
-            })
+          if (agentId){
+            fetch(VUE_APP_API_ROOT + 'user/schedule/' + agentId)
+              .then(response=>response.json())
+              .then(schedule=>{
+                state.mySchedule = schedule
+                state.agent = schedule.agent
+                if (state.socket) state.socket.emit('connect-to', agentId);
+              })
+          }
           //console.log(user);
         })
     },
