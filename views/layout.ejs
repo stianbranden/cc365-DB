@@ -5,18 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" 
       type="image/png" 
-      href="/images/icon.png">
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
+      href="/old/images/icon.png">
+    <link rel="stylesheet" type="text/css" href="/old/css/style.css">
     <script defer src="/socket.io/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.24/moment-timezone.min.js" integrity="sha512-hdV4N1wG9IDt6okHk1YvomNfa1KeBuNa4bEyGiEO0FIBA+8OJAuY8yT0p/Il7zWe7E0wuKYEyKIBnAnEKYtoAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script defer type='text/javascript' src='https://analytics.elkjop.com/javascripts/api/viz_v1.js'></script>
-    <script defer src="/js/script.js"></script>
+    <script defer src="/old/js/script.js"></script>
     <title>DASHBOARD</title>
 </head>
 <body>
     <header>
-        <div class="brand"><h3><%= pageTitle %></h3><img src="/images/icon.png" alt="logo"> 
+        <div class="brand"><h3><%= pageTitle %></h3><img src="/old/images/icon.png" alt="logo"> 
         <% if (locals.beta){ %>
             <h5 class="beta" title="This page contains beta-features">BETA</h5>
         <% } %>
@@ -37,13 +37,13 @@
             <% } %>
                 <ul>
                     <li class="wide" data-alter="root"><a href="/">Nordic</a></li>
-                    <li data-alter="denmark"><a href="/denmark">Denmark</a></li>
-                    <li data-alter="finland"><a href="/finland">Finland</a></li>
-                    <li data-alter="norway"><a href="/norway">Norway</a></li>
-                    <li data-alter="sweden"><a href="/sweden">Sweden</a></li>
-                    <li data-alter="helpdesk"><a href="/helpdesk">Helpdesk</a></li>
-                    <li data-alter="kitchen"><a href="/kitchen">Kitchen</a></li>
-                    <li data-alter="vue"><a href="/vue">New dashboard</a></li>
+                    <li data-alter="denmark"><a href="/old/denmark">Denmark</a></li>
+                    <li data-alter="finland"><a href="/old/finland">Finland</a></li>
+                    <li data-alter="norway"><a href="/old/norway">Norway</a></li>
+                    <li data-alter="sweden"><a href="/old/sweden">Sweden</a></li>
+                    <li data-alter="helpdesk"><a href="/old/helpdesk">Helpdesk</a></li>
+                    <li data-alter="kitchen"><a href="/old/kitchen">Kitchen</a></li>
+                    <li data-alter="vue"><a href="/">New dashboard</a></li>
                     <% if (locals.user) {%>
                     <li><a href="/auth/logout">Log out</a></li>
                     <% } else { %>
@@ -74,8 +74,8 @@
     </footer>
     <% } %>
     
-    <script src="/js/card.js"></script>
-    <script src="/js/alert.js"></script>
+    <script src="/old/js/card.js"></script>
+    <script src="/old/js/alert.js"></script>
     <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
 </body>
 </html>
