@@ -1,8 +1,8 @@
 // vue.config.js
 
  module.exports = {
-    publicPath: '/vue/',
-    outputDir: '../public/vue/' ,
+    publicPath: '/',
+    outputDir: '../public/' ,
     css: {
       loaderOptions: {
         sass: {

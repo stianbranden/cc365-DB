@@ -28,6 +28,7 @@ const teamRoute = require('./routes/team');
 const departmentRoute = require('./routes/department');
 const alertsRoute = require('./routes/alerts');
 const apiRoute = require('./routes/api')
+const oldRootRoute = require('./routes/oldroot')
 //const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
@@ -90,17 +91,18 @@ app.use(logToMongo)
 
 
 //Routes
-app.use('/contact', contactRoute);
-app.use('/tableau', tableauRoute);
-app.use('/chat', chatBotTranscriptRoute);
-app.use('/mngrs', reportRoute);
-app.use('/myStats', myStatsRoute);
+app.use('/old/contact', contactRoute);
+app.use('/old/tableau', tableauRoute);
+app.use('/old/chat', chatBotTranscriptRoute);
+app.use('/old/mngrs', reportRoute);
+app.use('/old/myStats', myStatsRoute);
+app.use('/old/team', teamRoute);
+app.use('/old/department', departmentRoute);
+app.use('/old/alerts', alertsRoute);
+app.use('/old', oldRootRoute)
+//New routes
 app.use('/auth', authRoute);
-app.use('/team', teamRoute);
-app.use('/department', departmentRoute);
-app.use('/alerts', alertsRoute);
 app.use('/api', apiRoute)
-
 app.use('/', rootRoute);
 
 const intervals = {
