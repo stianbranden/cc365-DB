@@ -1,0 +1,334 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import 'variables', 'reset', 'header', 'msg';
+
+
+
+
+footer {
+    position: fixed;
+    display: flex;
+    bottom: 0;
+    left: 0;
+    height: 2.5rem;
+    width: 0.7rem;
+    z-index: 2;
+    transition: all 500ms ease-in-out;
+    overflow: hidden;
+    justify-content: space-evenly;
+    align-items: center;
+    color: $pop-brand-color;
+
+    &:hover {
+        width: 100%;
+        div {
+            color: $bar-font-color;
+            display: block;
+        }
+    } 
+
+    &.clicked { 
+        width: 100%;
+        div {
+            display: block;
+            color: $bar-font-color;
+        } 
+    }
+    
+    &.loggedin {
+        background-color: $pop-brand-color;
+    }
+    div {
+        display: none;
+        text-align: left;
+        vertical-align: middle;
+        font-size: 0.8rem;
+        margin: 0.7rem;
+        ion-icon {
+            font-size: 1rem;
+        }
+        a {
+            color: $bar-font-color;
+        }
+    }
+}
+
+.splitcontainer {
+
+    display: flex;
+    flex-direction: column;
+    
+
+    .tableauPlaceholder {
+        margin: 2rem;
+        border-radius: 0.5rem;
+        box-shadow: 0.3rem 0.3rem 1rem rgba(0, 0, 0, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 500ms ease-in-out;
+
+        &:hover {
+            transform: scale(1.05);
+        }
+    }
+}
+
+.scaledown {
+    transform: scale(1);
+}
+
+.container {
+    margin: 1rem;
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+    align-items: center;
+}
+
+#site-nav{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    position: fixed;
+    right: 1.5rem;
+    width: 3rem;
+    height: 3rem;
+    background-color: #78be20;
+    border-radius: 50%;
+    bottom: 1.5rem;
+    transition: all ease-in-out 1s;
+    .circle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 1000;
+        right: 1.5rem;
+        width: 3rem;
+        height: 3rem;
+        background-color: #78be20;
+        border-radius: 50%;
+    }
+
+    .menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    cursor: pointer;
+    z-index: 900;
+    position: fixed;
+    right: 3.15rem;
+    width: 0.1rem;
+    height: 3rem;
+    background-color: #78be20;
+    border-radius: 5%;
+    bottom: 1.5rem;
+    transition: all ease-in-out 1s;
+        button {
+            display: none;
+            transition: display ease-in-out 0.5s 0.5s;
+            width: 50%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            &:hover {
+                color: $bar-font-color;
+                font-weight: bold;
+            }
+        }
+    }
+
+    #site-picker {
+        position: relative;
+        transition: transform ease-in-out 1s;
+        text-align: center;
+        width: 100%;
+        z-index: 1001;
+        color: $bar-font-color;
+
+        &:hover {
+            color: $brand-color;
+        }
+    }
+
+    &.open  {
+        .menu {
+            width: 12rem;
+            padding-right: 1rem;
+            button {
+                display: block;
+            }
+        }
+
+        #site-picker {
+            transform: rotateZ(180deg);
+        }
+    }
+
+}
+
+.schedule-container {
+    width: 100%;
+    min-height: 4rem;
+    margin: 0.5rem;
+    margin-bottom: 0;
+    display: flex;
+    justify-content: flex-start;
+    border-bottom: 1px dashed grey;
+    padding: 1rem;
+    &:first-child {
+        padding-bottom: 0;
+    }
+
+    .padding {
+        width: 2rem;
+    }
+    ion-icon {
+        width: 1rem;
+        visibility: hidden;
+        margin: auto 1rem auto 0;
+        &.active {
+            visibility: visible;
+            color: $brand-color;
+            path {
+                fill: $secondary-brand-color;
+            }
+        }
+    }
+    &:hover ion-icon {
+        visibility: visible;
+    }
+
+    .name {
+        width: 150px;
+        margin: auto;
+        display: flex;
+
+    }
+
+    .shift {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(1020, 1fr);
+
+        .time-label {
+            font-size: 0.7rem;
+            margin-top: auto;
+            border-left: 1px solid grey;
+            padding-left: 0.1rem
+        }
+        .block {
+            padding: 0.5rem;
+            text-align: center;
+            max-height: 4rem;
+            position: relative;
+            display: grid;
+
+            &.active {
+                border: 3px solid cyan !important;
+                span {
+                    font-size: 1rem;
+                }
+            }
+
+            &:first-child {
+                border-bottom-left-radius: 0.2rem;
+                border-top-left-radius: 0.2rem;
+            }
+            &:last-child {
+                border-bottom-right-radius: 0.2rem;
+                border-top-right-radius: 0.2rem;
+            }
+            
+            span {
+                font-size: 0.8rem;
+                overflow: clip;
+                white-space: nowrap;
+                &.activity-name {
+                    font-weight: bold;
+                }
+            }
+            > span {
+                visibility: hidden;
+            }
+  
+            /* Tooltip text */
+            .tooltiptext {
+                visibility: hidden;
+                width: 120px;
+                background-color: black;
+                color: #fff;
+                text-align: center;
+                padding: 5px 0;
+                border-radius: 6px;
+                bottom: 100%;
+                left: 50%;
+                margin-left: -60px;
+                /* Position the tooltip text - see examples below! */
+                position: absolute;
+                z-index: 1;
+                span {
+                    white-space: unset;
+                }
+            }
+            
+            /* Show the tooltip text when you mouse over the tooltip container */
+            &:hover .tooltiptext {
+                visibility: visible;
+            }
+        }
+    }
+}
+
+
+@media only screen and (min-width: $small-size) {
+    .splitcontainer {
+        display: grid;
+        grid-template-columns: 3fr 2fr;
+    }
+    .container {
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        &.ChatTranscript {
+            flex-direction: column;
+        }
+
+        &.schedule-overview {
+            flex-direction: column;
+            margin-bottom: 2rem;
+        }
+    }
+    queue-card {
+        flex-basis: 34%;
+    }
+    footer {
+        width: 100%;
+        div {
+            display: block;
+            color: $bar-font-color;
+        }
+    }
+    .schedule-container .shift .block {
+        > span {
+            visibility: visible;
+        }
+        &.extra-small > span {
+            visibility: hidden;
+        }
+
+    }
+
+    
+}
+
+@media only screen and (min-width: $big-size) {
+    queue-card {
+        flex-basis: 25%;
+    }
+    .splitcontainer summary-card {
+        flex-basis: 33%;
+    }
+}

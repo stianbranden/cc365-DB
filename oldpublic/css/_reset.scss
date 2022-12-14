@@ -1,0 +1,22 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    
+}
+
+*[hidden] {
+    display: none !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: lightgrey;
+    overflow-x: hidden;
+    min-width: 350px;
+}

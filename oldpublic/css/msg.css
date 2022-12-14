@@ -1,0 +1,10 @@
+.ChatTranscripts .msg {
+  width: 75%;
+  margin-top: 3rem;
+}
+
+.ChatTranscripts .msg-card {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: .25rem;
+}
+/*# sourceMappingURL=msg.css.map */

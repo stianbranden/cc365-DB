@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAGI,gBAHY,CAGZ,IAAI,CAAC;EACD,KAAK,EAAE,GAAG;EACV,UAAU,EAAE,IAAI;CACnB;;AANL,AAQI,gBARY,CAQZ,SAAS,CAAC;EACN,MAAM,EAAE,GAAG,CAAC,KAAK,CAAC,oBAAgB;EAClC,aAAa,EAAE,MAAM;CACxB",
+    "sources": [
+        "msg.scss"
+    ],
+    "names": [],
+    "file": "msg.css"
+}
