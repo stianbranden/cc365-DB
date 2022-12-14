@@ -29,7 +29,12 @@
                     <logo department="thd" />
                     <span>Helpdesk</span>
                 </li>
-
+                <li @click="navigateExternal('/old')">
+                    <div>
+                        <font-awesome-icon icon="folder" />
+                    </div>
+                    <span>Old UI</span>
+                </li>
                 
 
 
