@@ -12,7 +12,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/vue-fontawesome": "^3.0.0-5",
     "core-js": "^3.21.1",
-    "luxon": "^2.3.1",
+    "luxon": "^2.5.2",
     "moment": "^2.29.1",
     "motion": "^10.6.2",
     "socket.io-client": "^4.4.0",
