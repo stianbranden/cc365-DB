@@ -78,6 +78,7 @@
                     </div>
                     <span>v{{store.state.version}}</span>
                 </li>
+                <ReleaseNotes />
                 <li class="break info"></li>
                 <!-- Added pages access -->
                 <li
@@ -99,10 +100,11 @@ import { computed, ref } from '@vue/reactivity'
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
 import Logo from './Logo'
+import ReleaseNotes from './ReleaseNotes'
 import { watch } from '@vue/runtime-core'
 export default {
     emits: ["closeMenu"],
-    components: {Logo},
+    components: {Logo, ReleaseNotes},
     props: {
         menuOpen: Boolean
     },
@@ -134,7 +136,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 ul.nav-drop {
     list-style: none;
     background-color: var(--headercolor);

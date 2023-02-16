@@ -12,6 +12,7 @@ const {getAlerts, getPeopleAlerts, getAlertReportData} = require('../controllers
 const {getUsersWithAccess, pushSingleUserAccess} = require('../controllers/userAccesses')
 const {getSchedulesForAgent} = require('../controllers/getTeleoptiData')
 const {getTranscript} = require('../controllers/chatTranscripts.js');
+const {getReleaseNotes} = require('../controllers/releaseNote')
 const User = require('../models/User')
 const Access = require('../models/Access')
 const Collection = require('../models/Collection')
@@ -242,6 +243,15 @@ router.get('/personaccounts', protectRoute, async(req, res)=>{
         res.send(personAccounts)
     } catch (error) {
         res.status(500).send(genError(500, error.message))
+    }
+})
+
+router.get('/releasenotes', async(req, res)=>{
+    try {
+        const releaseNotes = await getReleaseNotes()
+        res.send(releaseNotes)
+    } catch (error) {
+        res.status(500).send(genError(500,error.message))
     }
 })
 
