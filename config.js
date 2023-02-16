@@ -13,7 +13,7 @@ const unitsStage = {
     },
     finland: {
         abbr: 'fi',
-        groups: ['FI-AS-EM,AC,CH,PH,CB', 'FI-BU-EM,AC,PH,CB', 'FI-BUHOT-PH,CB', 'FI-CAS-EM', 'FI-PS-PH,CB', 'FI-STA-EM,PH,CB', 'FI-HOT-PH,CB', 'FI-KI-EM,PH,AC', 'FI-KIHOT-EM,PH,AC']
+        groups: ['FI-AS-EM,AC,CH,PH,CB', 'FI-BU-EM,AC,PH,CB', 'FI-BUHOT-PH,CB', 'FI-CAS-EM', 'FI-INT-EM', 'FI-PS-PH,CB', 'FI-STA-EM,PH,CB', 'FI-HOT-PH,CB', 'FI-KI-EM,PH,AC', 'FI-KIHOT-EM,PH,AC']
     },
     helpdesk: {
         abbr: 'thd',
