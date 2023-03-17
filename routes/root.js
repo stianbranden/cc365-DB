@@ -12,7 +12,8 @@ router.get("/favicon.ico", function(req, res) {
 
 
 router.get('/*', (req, res)=>{
-    res.sendFile(require('path').join(__dirname,'../public/vue/index.html'));
+    console.log('ping');
+    res.sendFile(require('path').join(__dirname,'../public/index.html'));
 });
 
 
