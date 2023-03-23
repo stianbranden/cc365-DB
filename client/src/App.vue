@@ -26,6 +26,7 @@ export default {
     onBeforeMount(_=>{
       store.commit('ioConnect')
       store.dispatch('getAdminData');
+      store.dispatch('getReleaseNotes')
       store.dispatch('getUser')
       store.dispatch('getAlerts');
       store.dispatch('getSettingsFromLocal')

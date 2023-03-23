@@ -9,6 +9,7 @@ import {version} from '../../package.json'
 export default createStore({
   state: {
     version: version,
+    releaseNotes: [],
     socket: null,
     socketConnected: false,
     counter: 0,
@@ -194,8 +195,13 @@ export default createStore({
     getAdminData({state}){
       fetch(VUE_APP_API_ROOT + 'admin')
         .then(response=>response.json())
-        .then(data=>state.adminData = data);
+        .then(data=>state.adminData = data)
     } ,
+    getReleaseNotes({state}){
+      fetch(VUE_APP_API_ROOT + 'releasenotes')
+        .then(response=>response.json())
+        .then(data=>state.releaseNotes = data)
+    },
     getUser({state}){
       fetch(VUE_APP_API_ROOT + 'user')
         .then(response=>response.json())

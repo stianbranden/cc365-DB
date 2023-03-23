@@ -524,7 +524,7 @@ else if (key === 'sweden' ){
 function showBot(botKey){
 
     window.kindlyOptions = {
-        bubbleAvatar: '/images/hotbot.webp',
+        bubbleAvatar: '/old/images/hotbot.webp',
         name: 'HotBot',
         context: {
             country: key

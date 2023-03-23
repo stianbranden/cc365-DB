@@ -80,30 +80,30 @@ if (USENEWAUTH === 'true'){
 const kindly =  {
     "2107": {
         "method": "GET",
-        "url": "https://api.kindly.ai/api/v1/bot/2107/conversations/chat/${chatid}/",
+        "url": "https://bot.kindly.ai/api/v1/chats/${chatid}/",
         "headers": {
-            "authorization": KINDLY2107
+            "Authorization": 'Bearer ' + KINDLY2107
         }
     },
     "2348": {
         "method": "GET",
-        "url": "https://api.kindly.ai/api/v1/bot/2348/conversations/chat/${chatid}/",
+        "url": "https://bot.kindly.ai/api/v1/chats/${chatid}/",
         "headers": {
-            "authorization": KINDLY2348
+            "authorization": 'Bearer ' + KINDLY2348
         }
     },
     "2347": {
         "method": "GET",
-        "url": "https://api.kindly.ai/api/v1/bot/2347/conversations/chat/${chatid}/",
+        "url": "https://bot.kindly.ai/api/v1/chats/${chatid}/",
         "headers": {
-            "authorization": KINDLY2347
+            "authorization": 'Bearer ' + KINDLY2347
         }
     },
     "2398": {
         "method": "GET",
-        "url": "https://api.kindly.ai/api/v1/bot/2398/conversations/chat/${chatid}/",
+        "url": "https://bot.kindly.ai/api/v1/chats/${chatid}/",
         "headers": {
-            "authorization": KINDLY2398
+            "authorization": 'Bearer ' + KINDLY2398
         }
     }
 }

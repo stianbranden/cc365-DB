@@ -9,7 +9,7 @@ router.get('/redirect', passport.authenticate('azure_ad_oauth2'),
 function (req, res) {
   // Successful authentication, redirect home.
   if ( req.user.ui === 'new') {
-    res.redirect('/vue')
+    res.redirect('/')
   }
   else {
     res.redirect('/')

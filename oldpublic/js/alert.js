@@ -2,7 +2,7 @@
 
 const alertsTemplate = document.createElement('template');
 alertsTemplate.innerHTML = `
-<link rel="stylesheet" type="text/css" href="/css/alerts.css" />
+<link rel="stylesheet" type="text/css" href="/old/css/alerts.css" />
 <div class="alerts">
     <div class="alerts-header">
         <ion-icon name="notifications-off-sharp"></ion-icon>

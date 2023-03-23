@@ -41,7 +41,7 @@ function getTranscript(){
     fetch(`${VUE_APP_API_ROOT}chattranscript/${bot.value}/${chat.value}`)
         .then(data=>data.json())
         .then(data=>{
-            transcript.value = data.messages
+            transcript.value = data.chat.messages
             meta.value = data.chat
             meta.value.language = getLang()
             meta.value.botname = 'Elbot'
