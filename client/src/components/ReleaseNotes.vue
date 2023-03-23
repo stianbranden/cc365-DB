@@ -66,7 +66,8 @@ const open = ref(false)
                 margin-block: 2rem;
             }
             .release-note {
-                padding: 1rem;
+                padding: 2rem;
+                width: 100%;
                 
                 .note-header{
                     font-size: 1.5rem;
