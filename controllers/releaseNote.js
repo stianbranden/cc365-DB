@@ -3,7 +3,7 @@ const ReleaseNote = require('../models/ReleaseNote')
 const getReleaseNotes = ()=>{
     return new Promise(async (resolve, reject)=>{
         try {
-            const notes = await ReleaseNote.find()
+            const notes = await ReleaseNote.find().sort({created: 'desc'})
             resolve(notes)
         } catch (error) {
             reject(error)
