@@ -7,7 +7,11 @@
             width="1100"
             id="agent_dashboard"
             class="desktop"
-        />
+        > 
+            <div class="refresh-button">
+                <button @click="updateData"><font-awesome-icon icon='sync'/></button>
+            </div>
+        </EmbedCard>
         <EmbedCard
             lightSrc="https://analytics.elkjop.com/t/CCC/views/AgentDB/Mobile"
             darkSrc="https://analytics.elkjop.com/t/CCC/views/AgentDB/Mobile"
@@ -26,6 +30,9 @@ import EmbedCard from '../components/EmbedCard.vue'
 import MySchedule from '../components/MySchedule.vue'
 import QueueBox from '../components/QueueBox.vue'
 
+function updateData(){
+    document.getElementById("agent_dashboard").refreshDataAsync()
+}
 
 </script>
 
@@ -56,4 +63,17 @@ import QueueBox from '../components/QueueBox.vue'
     
 }
 
+</style>
+
+<style lang="scss">
+.myPage .card-header{
+    position: relative;
+    .refresh-button {
+        position: absolute;
+        right: 0;
+        z-index: 2;
+        margin: 0.5rem;
+    }
+
+}
 </style>
