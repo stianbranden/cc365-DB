@@ -180,18 +180,21 @@ const getTodaysTeleoptiData = async (options = {
                     for (let l = 0; l < teams.length; l++){
                         let t = teams[l];
                         const team = await updateOrCreateTeam(t, businessUnit);
-                        const peopleQuery = updateGetPeopleQuery(getPeopleByTeamId, team);
-                        const people = JSON.parse(await request(peopleQuery))["Result"];
-                        for ( let j = 0; j < people.length; j++){
-                            let person = people[j]
-                            /*if (j === 0){
-                                console.log(person);
-                            }*/
-                            const agent = await updateOrCreateAgent(person, team);
-                        };
-                        const scheduleQuery = updateGetScheduleByTeamId(getScheduleByTeamId, team);
-                        const rawSchedules = JSON.parse(await request(scheduleQuery))["Result"];
-                        schedulePromises = [...schedulePromises, ...rawSchedules.map(personDay=>updateOrCreateSchedule(personDay))];
+                        if (team.departmentName !== 'Default EDI'){
+
+                            const peopleQuery = updateGetPeopleQuery(getPeopleByTeamId, team);
+                            const people = JSON.parse(await request(peopleQuery))["Result"];
+                            for ( let j = 0; j < people.length; j++){
+                                let person = people[j]
+                                /*if (j === 0){
+                                    console.log(person);
+                                }*/
+                                const agent = await updateOrCreateAgent(person, team);
+                            };
+                            const scheduleQuery = updateGetScheduleByTeamId(getScheduleByTeamId, team);
+                            const rawSchedules = JSON.parse(await request(scheduleQuery))["Result"];
+                            schedulePromises = [...schedulePromises, ...rawSchedules.map(personDay=>updateOrCreateSchedule(personDay))];
+                        }
                     };
                     
                 }
@@ -442,17 +445,6 @@ const updateOrCreateAgent = (person, team)=>{
         try {
             let agent = await Agent.findById(person.Id);
 
-            let countryAbbr = 'NO';
-
-            switch(team.businessUnitName) {
-                case 'Denmark': 
-                    countryAbbr = 'DK'
-                    break;
-                case 'Finland': 
-                    countryAbbr =  'FI' 
-                    break;
-            } 
-            const timeZone = moment.tz.zonesForCountry(countryAbbr||'NO')[0];
             const skills = []
             for ( let i = 0; i < person.PersonSkills.length; i++){
                 let id = person.PersonSkills[i].SkillId;
@@ -463,8 +455,30 @@ const updateOrCreateAgent = (person, team)=>{
                     skills.push('n/a')
                 }
             }
-
+            
             const contract = (await getContractById(person.ContractId)).name
+            
+            let countryAbbr = 'NO';
+            const contractCountry = contract.substring(contract.indexOf('[')+1, contract.indexOf(']'))
+            //console.log(contract, contractCountry)
+
+            switch(contractCountry) {
+                case 'Denmark': 
+                    countryAbbr = 'DK'
+                    break;
+                case 'Finland': 
+                    countryAbbr =  'FI' 
+                    break;
+            } 
+            switch(team.businessUnitName) {
+                case 'Denmark': 
+                    countryAbbr = 'DK'
+                    break;
+                case 'Finland': 
+                    countryAbbr =  'FI' 
+                    break;
+            } 
+            const timeZone = moment.tz.zonesForCountry(countryAbbr||'NO')[0];
            
             if (agent){
                 agent = await Agent.findByIdAndUpdate(person.Id, {
@@ -478,7 +492,7 @@ const updateOrCreateAgent = (person, team)=>{
                     timeZone,
                     skills,
                     contract,
-                    employmentNumber: person.EmploymentNumber
+                    employmentNumber: person.EmploymentNumber.substring(person.EmploymentNumber.length- 6)
                 }, {new: true})
                 
             }
@@ -566,7 +580,7 @@ const updateOrCreateTeam = async (teleoptiTeam, businessUnit)=>{
             departmentName: depname,
             businessUnitName: businessUnit.name,
             businessUnitId: businessUnit.businessUnitId
-        });
+        })
     }
     return team;
 }
