@@ -34,7 +34,7 @@ if (NODE_ENV !== 'production'){
         "optionsSuccessStatus": 204
       }))
     router.use(async (req, res, next)=>{
-        if ( req.headers.origin === 'http://localhost:8080' ){
+        if ( req.headers.origin === 'http://localhost:8080' || req.headers.origin === 'http://localhost:5173' ){
             req.user = await User.findById('stianbra@elkjop.no') 
             logStd('Dev request from vue');
         }
