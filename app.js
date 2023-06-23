@@ -196,7 +196,7 @@ server.listen(process.env.PORT, ()=>{
     cron.schedule('0 0 3 * * *', _=>{ //Getting data at 03:00 each night
         stopInterval('scheduleUpdate');
         logSys('Running daily read of Teleopti data');
-        getTodaysTeleoptiData({dropScheduleCollection: true}).then(_=>{
+        getTodaysTeleoptiData({dropScheduleCollection: true, dropAgentCollection: true}).then(_=>{
             startInterval('scheduleUpdate')
         }).catch(err=>logErr(err));
     })

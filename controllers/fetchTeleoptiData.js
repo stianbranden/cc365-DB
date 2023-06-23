@@ -133,15 +133,21 @@ const updateGetUpdatedSchedulesQuery = (query, unit, page = 1, pageSize = 10, no
 }
 
 const getTodaysTeleoptiData = async (options = {
-        dropScheduleCollection: false
+        dropScheduleCollection: false,
+        dropAgentCollection: false
     })=>{
     return new Promise(async (resolve, reject)=>{
         try { //Dropping what needs to be dropped
             if (options.dropScheduleCollection){
                 await mongoose.connection.dropCollection('schedules')
                 logStd('Schedule collection dropped');
+                
                 await Alert.remove({personrelated: true});
                 logStd('People alerts dropped');
+            }
+            if (options.dropAgentCollection){
+                await mongoose.connection.dropCollection('agents')
+                logStd('Agent collection dropped');
             }
         } catch (error) {
             if (error.codeName === 'NamespaceNotFound'){
