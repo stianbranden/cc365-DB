@@ -3,7 +3,7 @@
 import {ref, watch} from 'vue'
 import {useRoute} from 'vue-router'
 import {DateTime} from 'luxon'
-const {VUE_APP_API_ROOT} = process.env
+const {VITE_API_ROOT} = import.meta.env
 
 const route = useRoute()
 const bot = ref(route.params.bot)
@@ -38,7 +38,7 @@ function getTranscript(){
         //console.log('first');
         interval = setInterval(getTranscript, 10000)
     }
-    fetch(`${VUE_APP_API_ROOT}chattranscript/${bot.value}/${chat.value}`)
+    fetch(`${VITE_API_ROOT}chattranscript/${bot.value}/${chat.value}`)
         .then(data=>data.json())
         .then(data=>{
             transcript.value = data.chat.messages
