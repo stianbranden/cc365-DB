@@ -452,11 +452,13 @@ const updateOrCreateAgent = (person, team)=>{
             let agent = await Agent.findById(person.Id);
 
             const skills = []
+            let program = 'n/a'
             for ( let i = 0; i < person.PersonSkills.length; i++){
                 let id = person.PersonSkills[i].SkillId;
                 try {
                     let skill = await getSkillById(id);
                     skills.push(skill.name)
+                    if ( skill.name.startsWith('[') && skill.name.endsWith(']') ) program = skill.name
                 } catch (error) {
                     skills.push('n/a')
                 }
@@ -497,6 +499,7 @@ const updateOrCreateAgent = (person, team)=>{
                     teamId: team.teamId,
                     timeZone,
                     skills,
+                    program,
                     contract,
                     employmentNumber: person.EmploymentNumber.substring(person.EmploymentNumber.length- 6)
                 }, {new: true})
@@ -514,6 +517,7 @@ const updateOrCreateAgent = (person, team)=>{
                     teamId: team.teamId,
                     timeZone,
                     skills,
+                    program,
                     contract,
                     employmentNumber: person.EmploymentNumber
                 });

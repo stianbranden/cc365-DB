@@ -50,6 +50,10 @@ const AgentSchema = new mongoose.Schema({
     employmentNumber: {
       type: String,
       default: 'n/a'
+    },
+    program: {
+      type: String,
+      default: 'n/a'
     }
 });
 
