@@ -88,13 +88,24 @@ const runScheduleUpdate = _ =>{
                         logStd(`${agent} has no shift`)
                     }
                     
+                    function countryFromProgram(program){
+                        const country = {
+                            "[GS DK]": "Denmark",
+                            "[GS FI]": "Finland",
+                            "[GS NO]": "Norway",
+                            "[GS SE]": "Sweden",
+                            "[PS THD]": "Helpdesk",
+                            "[PS K&I]": "Kitchen",
+                        }
+                        return country[program]
+                    }
 
                     if (alert){
                         //Check if alert already has been created
                         getAlertByTextAndDate(text)
                             .then(a=>{
                                 if (!a){
-                                    createAlert(text,s.agent.departmentName, true, 'Absence', true, title, icon);
+                                    createAlert(text,countryFromProgram(s.agent.program), true, 'Absence', true, title, icon);
                                 }
                             });
 
