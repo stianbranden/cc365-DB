@@ -25,7 +25,7 @@ const store = useStore()
 const ping = computed(_=>store.state.lastPing)
 
 function updateData() {
-    if (store.state.agent.departmentName) queue.value = store.getters.getSummaryData(getDepartment(store.state.agent.departmentName)).data;
+    if (store.state.agent.program != 'n/a') queue.value = store.getters.getSummaryData(getDepartmentFromProgram(store.state.agent.program)).data;
 }
 function getChannelName(abv){
     const channels = {
@@ -37,6 +37,18 @@ function getChannelName(abv){
     return channels[abv]
 }
 
+function getDepartmentFromProgram(program){
+    const dep = {
+        "[GS NO]": 'no',
+        "[GS DK]": 'dk',
+        "[GS FI]": 'fi',
+        "[GS SE]": 'se',
+        "[PS THD]": 'thd',
+        "[PS K&I]": 'ki'
+    }
+    return dep[program]
+}
+
 function getDepartment(department) {
     const dep = {
         norway: 'no',
@@ -46,7 +58,7 @@ function getDepartment(department) {
     }
     return dep[department.toLowerCase()]
 }
-
+updateData()
 watch(ping, updateData)
 </script>
 
