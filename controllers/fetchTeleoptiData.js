@@ -164,7 +164,7 @@ const getTodaysTeleoptiData = async (options = {
             let schedulePromises = [];
             for ( let m = 0; m < units.length; m++){
                 let unit = units[m]
-                if (unit.Name != 'Default'){
+                if (unit.Name === 'Nordic'){
                     const businessUnit = await updateOrCreateBusinessUnit(unit);
                     const skillsQuery = await updateGetSkillsQuery(getSkillsByUnit, businessUnit);
                     const skills = JSON.parse(await request(skillsQuery))["Result"];
