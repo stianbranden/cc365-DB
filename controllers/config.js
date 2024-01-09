@@ -234,6 +234,24 @@ const graphApi = {
     }
 }
 
+const {C1USERNAME, C1PASSWORD, C1BASEURL} = process.env
+// console.log({C1USERNAME, C1PASSWORD, C1BASEURL});
+const c1apis = {
+    c1authenticate: {
+        method: 'post',
+        url: C1BASEURL + 'authorize',
+        data: {
+            "userId": C1USERNAME,
+            "password": C1PASSWORD,
+            "language": "en"
+        }     
+    },
+    c1evalForms: {
+        method: 'get',
+        url: C1BASEURL + 'recording/evalform/'
+    }
+}
+
 if (USEPROXY==="true"){
     Object.keys(queries).forEach(key=>{
         queries[key].proxy = PROXY;
@@ -258,6 +276,9 @@ Object.keys(teleoptiRequests).forEach(key=>{
 });
 Object.keys(graphApi).forEach(key=>{
     queries[key] = graphApi[key];
+});
+Object.keys(c1apis).forEach(key=>{
+    queries[key] = c1apis[key];
 });
 
 module.exports = queries

@@ -18,6 +18,8 @@ const Access = require('../models/Access')
 const Collection = require('../models/Collection')
 const PersonAccount = require('../models/PersonAccount')
 const moment = require('moment')
+const {getSegments, getSegmentbyId, updateSegment} = require('../controllers/Calabrio/Segment.js');
+const { getForms } = require('../controllers/Calabrio/Form.js');
 
 const genError = (statusCode, error)=>{
     return {
@@ -250,6 +252,88 @@ router.get('/releasenotes', async(req, res)=>{
     try {
         const releaseNotes = await getReleaseNotes()
         res.send(releaseNotes)
+    } catch (error) {
+        res.status(500).send(genError(500,error.message))
+    }
+})
+
+router.get('/quality/segments', async(req, res)=>{
+    try {
+        const segments = await getSegments()
+        res.send(segments)
+    } catch (error) {
+        res.status(500).send(genError(500,error.message))
+    }
+})
+
+router.get('/quality/forms', async(req, res)=>{
+    try {
+        const forms = await getForms()
+        res.send(forms)
+    } catch (error) {
+        res.status(500).send(genError(500,error.message))
+    }
+})
+router.post('/quality/toggleSegment/:id', async(req, res)=>{
+    try {
+        const {id} = req.params
+        const {isActive} = (await getSegmentbyId(id))
+        updateSegment(id, {
+            isActive: !isActive
+        }).then(_=>res.status(200).send({msg: "OK"}))
+    } catch (error) {
+        res.status(500).send(genError(500,error.message))
+    }
+})
+
+router.post('/quality/toggleUser/:segmentId/:userId', async(req, res)=>{
+    try {
+        const {segmentId, userId} = req.params
+        const {users} = (await getSegmentbyId(segmentId))
+        for (let i = 0; i < users.length; i++){
+    
+            if (users[i]._id.toString() === userId){
+                // console.log(users[i]);
+                if (users[i].assignment === 0) users[i].assignment = 1
+                else users[i].assignment = 0
+            }
+
+        }
+        updateSegment(segmentId, {users})
+        .then(_=>res.status(200).send({msg: "OK"}))
+
+    } catch (error) {
+        res.status(500).send(genError(500,error.message))
+    }
+})
+
+router.post('/quality/bumpUser/:segmentId/:userId', async(req, res)=>{
+    try {
+        const {segmentId, userId} = req.params
+        const {users} = (await getSegmentbyId(segmentId))
+        for (let i = 0; i < users.length; i++){
+    
+            if (users[i]._id.toString() === userId) users[i].assignment ++
+
+        }
+        updateSegment(segmentId, {users})
+        .then(_=>res.status(200).send({msg: "OK"}))
+
+    } catch (error) {
+        res.status(500).send(genError(500,error.message))
+    }
+})
+
+router.post('/quality/toggleForm/:segmentId/:formId', async(req, res)=>{
+    try {
+        const {segmentId, formId} = req.params
+        const {users} = (await getSegmentbyId(segmentId))
+        for (let i=0; i<users.length; i++){
+            users[i].evalFormId = formId
+        }
+        updateSegment(segmentId, {users})
+        .then(_=>res.status(200).send({msg: "OK"}))
+
     } catch (error) {
         res.status(500).send(genError(500,error.message))
     }

@@ -31,7 +31,11 @@ const routes = [
     path: '/myPage',
     name: 'MyPage',
     component: () => import(/* webpackChunkName: "alerts" */ '../views/MyPage.vue')
-
+  },
+  {
+    path: '/quality',
+    name: 'QualityAdmin',
+    component: () => import(/* webpackChunkName: "alerts" */ '../views/QualityAssurance.vue')
   },
   {
     path: '/mycollections',

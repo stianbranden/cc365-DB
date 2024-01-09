@@ -67,7 +67,9 @@ export default createStore({
       {name: 'Norwegian - Copenhagen', key: "49359f26-44ed-4703-b301-b169a224955c"},
       {name: 'Swedish', key: "c8f2f820-e41d-470b-9b69-a003ec24d2c1"}
     ],
-    selectedBot: 'None'
+    selectedBot: 'None',
+    qualitySegments: [],
+    qualityForms: []
   },
   mutations: {
     ioConnect(state){
@@ -193,6 +195,47 @@ export default createStore({
     }
   },
   actions: {
+    getSegments({state}){
+      fetch(VITE_API_ROOT + 'quality/segments')
+      .then(response=>response.json())
+      .then(data=>state.qualitySegments = data)
+      .finally(_=>{
+        fetch(VITE_API_ROOT + 'quality/forms')
+        .then(data=>data.json())
+        .then(data=>state.qualityForms = data)
+      })
+    },
+    toggleSegment({dispatch}, id){
+      fetch(VITE_API_ROOT + 'quality/toggleSegment/' + id, {method: 'POST'})
+      .then(response=>response.json())
+      // .then(data=>console.log(data))
+      .finally(dispatch('getSegments'))
+    },
+    toggleUser({dispatch}, {segmentId, userId}){
+      fetch(VITE_API_ROOT + 'quality/toggleUser/' + segmentId + '/' + userId, {method: 'POST'})
+      .then(response=>response.json())
+      // .then(data=>console.log(data))
+      .finally(dispatch('getSegments'))
+    },
+    bumpUser({dispatch}, {segmentId, userId}){
+      fetch(VITE_API_ROOT + 'quality/bumpUser/' + segmentId + '/' + userId, {method: 'POST'})
+      .then(response=>response.json())
+      // .then(data=>console.log(data))
+      .finally(dispatch('getSegments'))
+    },
+    toggleForm({state, dispatch}, {segmentId, formId}){
+      const forms = [...state.qualityForms].filter(a=>a.status === 1)
+      let newFormId = -1
+      for (let i = 0; i < forms.length; i++){
+        if (forms[i].id === formId && (i+1) < forms.length) newFormId = forms[i+1].id 
+      }
+      if (newFormId < 0 ) newFormId = forms[0].id
+
+      fetch(VITE_API_ROOT + 'quality/toggleForm/' + segmentId + '/' + newFormId, {method: 'POST'})
+      .then(response=>response.json())
+      // .then(data=>console.log(data))
+      .finally(dispatch('getSegments'))
+    },
     getAdminData({state}){
       fetch(VITE_API_ROOT + 'admin')
         .then(response=>response.json())
