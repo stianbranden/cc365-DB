@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const UserSchema = require(('./jointSchemas/UserSchema'))
+const UserSchema = require(('./C1UserSchema'))
 
 const SegmentSchema = new mongoose.Schema({
     name: {

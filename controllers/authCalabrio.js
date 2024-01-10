@@ -1,5 +1,5 @@
 const axios = require('axios')
-const {c1authenticate} = require('../config')
+const {c1authenticate} = require('./config')
 
 function authCalabrio(){
     return new Promise(async (resolve, reject)=>{

@@ -1,65 +1,56 @@
-const Segment = require('../../models/calabrio/C1Segment')
+const User = require('../models/C1User')
 
-function getSegments(){
+function getUsers(){
     return new Promise(async (resolve, reject)=>{
         try {
-            const segment = await Segment.find().lean()
-            resolve(segment)
+            const users = await User.find().lean()
+            resolve(users)
         } catch (error) {
             reject(error)
         }
     })
 }
-function getSegment(name){
+function getUser(agentId){
     return new Promise(async (resolve, reject)=>{
         try {
-            const segment = await Segment.findOne({name}).lean()
-            resolve(segment)
-        } catch (error) {
-            reject(error)
-        }
-    })
-}
-function getSegmentbyId(id){
-    return new Promise(async (resolve, reject)=>{
-        try {
-            const segment = await Segment.findById(id).lean()
-            resolve(segment)
+            const user = await User.findOne({agentId}).lean()
+            resolve(user)
         } catch (error) {
             reject(error)
         }
     })
 }
 
-function createSegment(data){
+function createUser(data){
     return new Promise(async (resolve, reject)=>{
         try {
-            if (await getUser(data.name)) reject('Segment name must be unique')
-            const segment = await new Segment(data).save()
-            resolve(segment)
+            if (await getUser(data.agentId)) reject('AgentId must be unique')
+            const user = await new User(data).save()
+            resolve(user)
         } catch (error) {
             reject(error)
         }
     })
 }
-function updateSegment(id, data){
+function updateUser(data){
     return new Promise(async (resolve, reject)=>{
         try {
-            const segment = await Segment.findByIdAndUpdate(id, data, {new: true})
-            if (!segment) reject('Segment "' + id + '" not found, cannot update')
-            resolve(segment)
+            const {agentId} = data
+            const user = await User.findOneAndUpdate({agentId}, data, {new: true})
+            if (!user) reject('AgentId ' + agentId + ' not found, cannot update')
+            resolve(user)
         } catch (error) {
             reject(error)
         }
     })
 }
-function deleteSegment(name){
+function deleteUser(agentId){
     return new Promise(async (resolve, reject)=>{
         try {
             // const {agentId} = data
-            const segment = await Segment.findOneAndDelete({name})
-            if (!segment) reject('Segment "' + name + '" not found, cannot delete')
-            resolve(segment)
+            const user = await User.findOneAndDelete({agentId})
+            if (!user) reject('AgentId ' + agentId + ' not found, cannot delete')
+            resolve(user)
         } catch (error) {
             reject(error)
         }
@@ -67,12 +58,11 @@ function deleteSegment(name){
 }
 
 module.exports = {
-    getSegments,
-    getSegment,
-    getSegmentbyId,
-    createSegment,
-    updateSegment,
-    deleteSegment
+    getUsers,
+    getUser,
+    createUser,
+    updateUser,
+    deleteUser
 }
 
 // //Testing

@@ -1,6 +1,6 @@
 const axios = require('axios');
 const authCalabrio = require('./authCalabrio')
-const {c1evalForms} = require('../config')
+const {c1evalForms} = require('./config')
 function getForms(){
     return new Promise(async (resolve, reject)=>{
         try {
