@@ -1,6 +1,7 @@
 const axios = require('axios');
 const authCalabrio = require('./authCalabrio')
-const {c1evalForms} = require('./config')
+const {c1evalForms} = require('./config');
+const { logErr } = require('./logger');
 function getForms(){
     return new Promise(async (resolve, reject)=>{
         try {
@@ -13,6 +14,7 @@ function getForms(){
             })).data
             resolve(forms)
         } catch (error) {
+            logErr(error)
             reject(error)
         }
     })
