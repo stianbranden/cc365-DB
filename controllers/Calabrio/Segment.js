@@ -1,5 +1,4 @@
 const Segment = require('../../models/calabrio/C1Segment')
-// const { logErr } = require('../logger')
 
 function getSegments(){
     return new Promise(async (resolve, reject)=>{

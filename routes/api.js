@@ -18,8 +18,8 @@ const Access = require('../models/Access')
 const Collection = require('../models/Collection')
 const PersonAccount = require('../models/PersonAccount')
 const moment = require('moment')
-const {getSegments, getSegmentbyId, updateSegment} = require('../controllers/calabrio/Segment.js');
-const { getForms } = require('../controllers/calabrio/Form.js');
+const {getSegments, getSegmentbyId, updateSegment} = require('../controllers/calabrio/segment.js');
+const { getForms } = require('../controllers/calabrio/form.js');
 
 const genError = (statusCode, error)=>{
     return {
