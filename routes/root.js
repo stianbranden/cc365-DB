@@ -12,7 +12,7 @@ router.get("/favicon.ico", function(req, res) {
 
 
 router.get('/*', (req, res)=>{
-    console.log('ping');
+    //console.log('ping');
     res.sendFile(require('path').join(__dirname,'../public/index.html'));
 });
 
