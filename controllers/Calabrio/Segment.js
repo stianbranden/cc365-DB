@@ -1,4 +1,4 @@
-const Segment = require('../../models/Calabrio/C1Segment')
+const Segment = require('../../models/calabrio/C1Segment')
 // const { logErr } = require('../logger')
 
 function getSegments(){

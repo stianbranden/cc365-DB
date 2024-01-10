@@ -1,4 +1,4 @@
-const User = require('../../models/Calabrio/User')
+const User = require('../../models/calabrio/User')
 // const { logErr } = require('../logger')
 
 function getUsers(){
