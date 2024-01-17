@@ -20,7 +20,7 @@ const { width, height } = useElementSize(container)
 const ping = computed(_=>store.state.lastPing)
 const schedule = ref(store.state.mySchedule.shift)
 setHexWitOpacity()
-const totalShiftLength = ref(schedule.value.reduce((a, c)=>a+c.lengthOfShift, 0) || 0)
+const totalShiftLength = Array.isArray(schedule.value) ? ref(schedule.value.reduce((a, c)=>a+c.lengthOfShift, 0) || 0): ref(0)
 
 
 function setHexWitOpacity(){
@@ -47,7 +47,8 @@ function setHexWitOpacity(){
 const updateSchedule = _=>{
     schedule.value = store.state.mySchedule.shift
     setHexWitOpacity()
-    totalShiftLength.value = schedule.value.reduce((a, c)=>a+c.lengthOfShift, 0 || 0)
+// Array.isArray(schedule.value) ? ref(schedule.value.reduce((a, c)=>a+c.lengthOfShift, 0) || 0): ref(0)
+    totalShiftLength.value = Array.isArray(schedule.value) ? schedule.value.reduce((a, c)=>a+c.lengthOfShift, 0 || 0): 0
 }
 
 
