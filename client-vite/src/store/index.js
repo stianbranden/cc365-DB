@@ -2,7 +2,7 @@ import { createStore } from 'vuex'
 import io from 'socket.io-client'
 import moment from 'moment'
 console.log({env: import.meta.env})
-const {VITE_SOCKET_ADRESS, VITE_API_ROOT} = import.meta.env
+const {VITE_SOCKET_ADRESS, VITE_API_ROOT, VITE_PBI_MYPAGE_L_SRC, VITE_PBI_MYPAGE_D_SRC} = import.meta.env
 const {localStorage} = window;
 
 import {version} from '../../package.json'
@@ -69,7 +69,11 @@ export default createStore({
     ],
     selectedBot: 'None',
     qualitySegments: [],
-    qualityForms: []
+    qualityForms: [],
+    myPagePowerBISrc: {
+      lightSrc: VITE_PBI_MYPAGE_L_SRC,
+      darkSrc: VITE_PBI_MYPAGE_D_SRC
+    }
   },
   mutations: {
     ioConnect(state){

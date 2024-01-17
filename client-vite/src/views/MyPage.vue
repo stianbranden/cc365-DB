@@ -5,8 +5,8 @@
             <PowerBIViz 
                 :width= "getPBIWidth()"
                 :height= "getPBIHeight()"
-                lightSrc="https://app.powerbi.com/reportEmbed?reportId=64264877-874d-4dde-bc79-4a5a3846e503&appId=3852c8b7-7545-4131-a1f7-68cc875610d2&autoAuth=true&ctid=661f8f5f-1e7d-4d4d-a886-1d2661c4ddf8&navContentPaneEnabled=false&filterPaneEnabled=false&pageName=ReportSection"
-                darkSrc ="https://app.powerbi.com/reportEmbed?reportId=64264877-874d-4dde-bc79-4a5a3846e503&appId=3852c8b7-7545-4131-a1f7-68cc875610d2&autoAuth=true&ctid=661f8f5f-1e7d-4d4d-a886-1d2661c4ddf8&navContentPaneEnabled=false&filterPaneEnabled=false&pageName=ReportSection0ec235f1079f2f9d5a84"
+                :lightSrc="store.myPagePowerBISrc.lightSrc"
+                :darkSrc ="store.myPagePowerBISrc.darkSrc"
                 class="stats"
             />
             <QueueBox class="queues" :height="getQueueBoxHeight()" />
@@ -23,7 +23,9 @@ import MySchedule2 from '../components/MySchedule2.vue'
 import QueueBox from '../components/QueueBox.vue'
 import PowerBIViz from '../components/PowerBIViz.vue'
 import { useWindowSize } from '@vueuse/core'
+import {useStore} from 'vuex'
 
+const store = useStore()
 const { width, height } = useWindowSize()
 
 function getPBIWidth(){
