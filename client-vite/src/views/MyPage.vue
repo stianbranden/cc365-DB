@@ -5,8 +5,8 @@
             <PowerBIViz 
                 :width= "getPBIWidth()"
                 :height= "getPBIHeight()"
-                :lightSrc="store.myPagePowerBISrc.lightSrc"
-                :darkSrc ="store.myPagePowerBISrc.darkSrc"
+                :lightSrc="store.state.myPagePowerBISrc.lightSrc"
+                :darkSrc ="store.state.myPagePowerBISrc.darkSrc"
                 class="stats"
             />
             <QueueBox class="queues" :height="getQueueBoxHeight()" />
@@ -26,6 +26,7 @@ import { useWindowSize } from '@vueuse/core'
 import {useStore} from 'vuex'
 
 const store = useStore()
+
 const { width, height } = useWindowSize()
 
 function getPBIWidth(){
