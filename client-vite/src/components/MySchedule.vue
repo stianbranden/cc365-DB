@@ -1,5 +1,5 @@
 <template>
-    <div class="schedule">
+    <div class="schedule1">
         <div class="schedule-header">Todays schedule</div>
         <div class="schedule-body">
             <div
@@ -56,8 +56,8 @@ function genTooltip(shift){
 </script>
 
 <style lang="scss" scoped>
-.schedule {
-    min-width: 80%;
+.schedule1 {
+    width: 100%;
     margin: 1rem;
     height: 875px;
     @include tablet {
@@ -66,10 +66,10 @@ function genTooltip(shift){
     @include large {
         min-width: 1100px;
     }
-    @include tv {
-        height: 875px;
-        min-width: 10%;
-    }
+    // @include tv {
+    //     height: 875px;
+    //     min-width: 10%;
+    // }
 
 
     .schedule-header {
@@ -84,9 +84,9 @@ function genTooltip(shift){
         justify-content: center;
         font-weight: bold;
         text-transform: uppercase;
-        @include tv {
-            height: 50px;
-        }
+        // @include tv {
+        //     height: 50px;
+        // }
     }
     .schedule-body {
         display: flex;
@@ -101,10 +101,10 @@ function genTooltip(shift){
             flex-direction: row;
             font-size: 1.3rem;
         }
-        @include tv {
-            flex-direction: column;
-            font-size: 1rem;
-        }
+        // @include tv {
+        //     flex-direction: column;
+        //     font-size: 1rem;
+        // }
         .shift-item {
             
             display: flex;
@@ -113,9 +113,9 @@ function genTooltip(shift){
             @include tablet {
                 height: 80%;
             }
-            @include tv {
-                height: unset;
-            }
+            // @include tv {
+            //     height: unset;
+            // }
             .name {
                 font-size: 0.8rem;
                 @include tablet {

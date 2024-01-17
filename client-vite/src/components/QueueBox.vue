@@ -1,17 +1,12 @@
 <template>
-    <div class="queue-box">
-        <div class="queue-header">
-            QUEUES
-        </div>
-        <div class="channels">
-            <div
-                class="queue"
-                v-for="(q, key, index) in queue"
-                :key="key"
-            >
-                <h1>{{q.summary.inQueue}}</h1>
-                <h5>{{getChannelName(key).toUpperCase()}}</h5>
-            </div>
+    <div class="queue-box" :style="getStyle()">
+        <div
+            class="queue"
+            v-for="(q, key, index) in queue"
+            :key="key"
+        >
+            <h1>{{q.summary.inQueue}}</h1>
+            <h5>{{getChannelName(key).toUpperCase()}}</h5>
         </div>
     </div>
 </template>
@@ -19,6 +14,10 @@
 <script setup>
 import {useStore} from 'vuex';
 import {ref, computed, watch} from 'vue'
+const props = defineProps({
+    height: Number
+})
+
 const queue = ref(null)
 
 const store = useStore()
@@ -27,6 +26,11 @@ const ping = computed(_=>store.state.lastPing)
 function updateData() {
     if (store.state.agent.program != 'n/a') queue.value = store.getters.getSummaryData(getDepartmentFromProgram(store.state.agent.program)).data;
 }
+
+function getStyle(){
+    return "height: " + props.height + "px;"
+}
+
 function getChannelName(abv){
     const channels = {
         ac: 'Action',
@@ -80,59 +84,46 @@ watch(ping, updateData)
 // }
 
 .queue-box {
-    height: 875px;
-    min-width: 80%;
-    @include tablet {
-        height: 200px;
+    height: 175px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    @include medium {
+        height: auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        // height: 875px;
+        // min-width: 80%;
     }
-    @include large {
-        min-width: 1100px;
-    }
-    @include tv {
-        height: 875px;
-        min-width: 10%;
-    }
-    .queue-header {
-        position: relative;
-        background-color: var(--headercolor);
-        color: var(--linkcolor);
-        padding: 0.5rem;
-        height: 30px;
-        z-index: 2;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        @include tv {
-            height: 50px;
+
+    .queue {
+        margin-inline: auto;
+        border: 1px var(--textcolor) solid;
+        width: 100px;
+        height: 100px;
+        @include small {
+            width: 150px;
+            height: 150px;
         }
-    }
-    .channels {
+        @include large {
+            width: 175px;
+            height: 175px;
+        }
+        @include tv {
+            width: 250px;
+            height: 250px;
+        }
+        border-radius: 100%;
         display: flex;
         flex-direction: column;
-        justify-content: space-evenly;
-        align-items: center;
-        height: 80%;
-        @include tablet {
-            flex-direction: row;
-        }
-        @include tv {
-            flex-direction: column;
-            height: 95%;
-        }
-
-        .queue {
-            margin-inline: auto;
-            border: 1px var(--textcolor) solid;
-            width: 120px;
-            height: 120px;
-            border-radius: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            
-            h1 {
-                font-size: 3rem;
+        justify-content: center;
+        
+        h1 {
+            font-size: 2.5rem;
+            @include large {
+                font-size: 3.5rem;
             }
         }
     }

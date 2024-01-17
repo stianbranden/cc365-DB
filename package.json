@@ -7,7 +7,7 @@
     "start": "node app",
     "update": "git reset --hard && git pull && npm i && npm --prefix client-vite install && npm run --prefix client-vite build",
     "build-client": "npm run --prefix client-vite build && cp -a oldpublic/. public/old/",
-    "build-vite": "npm run --prefix client-vite build"
+    "dev-client": "npm run --prefix client-vite dev"
   },
   "author": "",
   "license": "ISC",
