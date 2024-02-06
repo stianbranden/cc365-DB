@@ -44,6 +44,19 @@ const fetchDeliveryDeviations = _=>{
                         ticket: null
                     }
 
+                    function getArticleAvailabilityDateAndTicket(subject){
+                        const arr = subject.split('-')
+                        const ticket = arr[0]
+                        const year = arr[1]
+                        const month = arr[2]
+                        const day = arr[3]
+                        const time = arr[4]
+                        return {
+                            ticket, 
+                            articleAvailabilityDate: `${year}-${month}-${day}-${time}`
+                        }
+                    }
+
                     //"4512483 - 2022-04-21-0821:+D:EPOQ:2243189610:2B:B2C"
                     //"4529980 - 2022-03-20-2000:9D:2243642988:4B:B2C"
                     if ( subjectFormat === 'old' ){
@@ -58,8 +71,9 @@ const fetchDeliveryDeviations = _=>{
                         if ( subjectArray[2] === 'EPOQ') params.epoq = true
                         else params.epoq = false
                         params.segment = subjectArray[5]
-                        params.articleAvailabilityDate = subjectArray[0].split(' - ')[1]
-                        params.ticket = subjectArray[0].split(' - ')[0]
+                        const {ticket, articleAvailabilityDate} = getArticleAvailabilityDateAndTicket(subjectArray[0])
+                        params.articleAvailabilityDate = articleAvailabilityDate
+                        params.ticket = ticket
                         params.deadlineCode = subjectArray[1]
                         params.numTimesBlocked = subjectArray[4]
                         params.deadline = moment(params.articleAvailabilityDate, 'YYYY-MM-DD-hhmm').format()
@@ -67,14 +81,15 @@ const fetchDeliveryDeviations = _=>{
                     else {
                         params.epoq = false
                         params.segment = subjectArray[4]
-                        params.articleAvailabilityDate = subjectArray[0].split(' - ')[1]
-                        params.ticket = subjectArray[0].split(' - ')[0]
+                        const {ticket, articleAvailabilityDate} = getArticleAvailabilityDateAndTicket(subjectArray[0])
+                        params.articleAvailabilityDate = articleAvailabilityDate
+                        params.ticket = ticket
                         params.deadlineCode = subjectArray[1]
                         params.numTimesBlocked = subjectArray[3]
                         params.deadline = moment(params.articleAvailabilityDate, 'YYYY-MM-DD-hhmm').format()
 
                     }
-                    if ( params.deadline === 'Invalid date') console.log(subject)
+                    if ( params.deadline === 'Invalid date') logErr(`${params.articleAvailabilityDate} cannot be parsed into date (Ticket: ${params.ticket})`)
                     else params.slaStatus = getSlaStatus(params.deadline)
                     delDev.push({id, contactGroupId, queueId, queueName,countryCode, ...params, status, subject, subjectFormat, arrivalQueueTime })
                 })
