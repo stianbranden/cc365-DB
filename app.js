@@ -1,7 +1,7 @@
 require('dotenv').config();
 const {NODE_ENV, SESSION_SECRET, MONGODBURI, MONGODBNAME, TELEOPTI_UPDATE_FREQUENCY, OSUPDATEFREQ} = process.env;
 
-const {getQueues, getContacts, getSingleContact} = require('./controllers/queues');
+const {getQueues} = require('./controllers/queues');
 const {getTodaysTeleoptiData, runScheduleUpdate} = require('./controllers/fetchTeleoptiData');
 const {fetchDeliveryDeviations} = require('./controllers/getDeliveryDeviations')
 const express = require('express')
@@ -16,7 +16,7 @@ if (NODE_ENV !== 'production') {
     }
 }
 const io = require('socket.io')(server, ioCors);
-const moment = require('moment')
+// const moment = require('moment')
 const rootRoute = require('./routes/root');
 const contactRoute = require('./routes/contact');
 const tableauRoute = require('./routes/tableau');
@@ -26,7 +26,7 @@ const myStatsRoute = require('./routes/myStats');
 const authRoute = require('./routes/auth');
 const teamRoute = require('./routes/team');
 const departmentRoute = require('./routes/department');
-const alertsRoute = require('./routes/alerts');
+const alertsRoute = require('./routes/alerts')
 const apiRoute = require('./routes/api')
 const oldRootRoute = require('./routes/oldroot')
 //const mongoose = require('mongoose');
