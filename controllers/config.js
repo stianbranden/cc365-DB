@@ -57,6 +57,14 @@ const queries =  {
             'x-api-key': XAPIKEY
         }
     },
+    intervalQuery: {
+        method: "GET",
+        url: raiUrl + '/rai/contactStatistic?startTime=${today}&channelType=ChatIn,CallIn&timeCategory=quarterHour',
+        headers: {
+            authorization: 'Basic ' + BASE64,
+            'x-api-key': XAPIKEY
+        }
+    },
     deliverDeviations: {
         method: "GET",
         url: raiUrl + '/rmi/contacts?showAllInProcess=1&limit=10000&queueId=' + DELDEVQUEUES,

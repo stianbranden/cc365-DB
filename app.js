@@ -46,7 +46,8 @@ const {getOsData} = require('./controllers/getOsData');
 const { checkChatStatus } = require('./controllers/checkChat');
 const {setGlobalLocalsVariables} = require('./middleware/setLocals');
 const { getPm2Data } = require('./controllers/getPm2');
-const logToMongo = require('./middleware/logToMongo')
+const logToMongo = require('./middleware/logToMongo');
+const getIntervalData = require('./controllers/getIntervalData');
  /*Setup EJS*/
 app.set('view engine', 'ejs');
 app.use(ejsLayouts);
@@ -188,6 +189,12 @@ server.listen(process.env.PORT, ()=>{
         io.in('vue').emit('delDev', data)
     })
 
+    getIntervalData().then(data=>{
+        // logTab(data)
+        dataToUsers.intervalData.vue = data
+        io.in('vue').emit('intervalData', data)
+    })
+
     //Start up Teleopti data fetching
     getTodaysTeleoptiData({dropScheduleCollection: false}).then(_=>startInterval('scheduleUpdate'));
     
@@ -238,6 +245,10 @@ server.listen(process.env.PORT, ()=>{
         fetchDeliveryDeviations().then(data=>{
             dataToUsers.delDev.vue = data;
             io.in('vue').emit('delDev', data)
+        })
+        getIntervalData().then(data=>{
+            dataToUsers.intervalData.vue = data
+            io.in('vue').emit('intervalData', data)
         })
     })
 
