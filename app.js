@@ -322,6 +322,9 @@ let dataToUsers = {
     },
     delDev: {
         vue: null
+    },
+    intervalData: {
+        vue: null
     }
 }
 
