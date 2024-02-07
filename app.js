@@ -285,6 +285,7 @@ io.on('connection', socket =>{
             
         }
         if (dataToUsers.delDev[room]) socket.emit('delDev', dataToUsers.delDev[room])
+        if (dataToUsers.intervalData[room]) socket.emit('intervalData', dataToUsers.intervalData[room] )
         
         socket.emit('reconnect-to-agents');
         
