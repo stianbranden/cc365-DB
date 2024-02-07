@@ -73,7 +73,8 @@ export default createStore({
     myPagePowerBISrc: {
       lightSrc: VITE_PBI_MYPAGE_L_SRC,
       darkSrc: VITE_PBI_MYPAGE_D_SRC
-    }
+    },
+    intervalData: []
   },
   mutations: {
     ioConnect(state){
@@ -115,6 +116,10 @@ export default createStore({
         state.mySchedule = data
         state.lastPing = moment().toISOString()
         //console.log({event:'New Schedule', data});
+      })
+      state.socket.on('intervalData', data=>{
+        state.intervalData = data
+        state.lastPing = moment().toISOString()
       })
 
 
