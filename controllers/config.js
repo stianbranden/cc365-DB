@@ -59,7 +59,7 @@ const queries =  {
     },
     intervalQuery: {
         method: "GET",
-        url: raiUrl + '/rai/contactStatistic?startTime=${today}&channelType=ChatIn,CallIn&timeCategory=quarterHour',
+        url: raiUrl + '/rai/contactStatistic?startTime=${today}&channelType=ChatIn,CallIn&timeCategory=quarterHour&timeZone=Europe/Copenhagen',
         headers: {
             authorization: 'Basic ' + BASE64,
             'x-api-key': XAPIKEY
