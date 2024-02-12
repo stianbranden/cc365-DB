@@ -6,9 +6,9 @@ import {useStore} from 'vuex'
 const store = useStore()
 const ping = computed(_=>store.state.lastPing)
 
-watch(ping, _=>{
-    console.log(store.getters.getIntervalDataByDepartment);
-})
+// watch(ping, _=>{
+//     console.log(store.getters.getIntervalDataByDepartment);
+// })
 
 const intervals = [
 //    '06:00','06:15', '06:30', '06:45',
@@ -71,7 +71,7 @@ function getChannelName(abbr){
 }
 
 function calculateServiceLevel(department, channel, interval, re = 'number' ){
-    console.log({department, channel, interval, re});
+    // console.log({department, channel, interval, re});
     const {key, target} = department
     const data = store.getters.getIntervalDataByDepartment[department.key][channel][interval]
     if (data){
@@ -80,7 +80,7 @@ function calculateServiceLevel(department, channel, interval, re = 'number' ){
 
         if (re === 'number' && countOfCompletedContacts) return Math.floor(serviceLevel) + '%'
         if (re === 'color' && countOfCompletedContacts ) {
-            console.log({target, serviceLevel, data});
+            // console.log({target, serviceLevel, data});
             if (serviceLevel > target+10) return 'blue'
             if (serviceLevel > target-10) return 'green'
             if (serviceLevel > target-20) return 'yellow'
