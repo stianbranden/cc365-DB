@@ -598,10 +598,86 @@ export default createStore({
       const selectedBot = state.hotbots.filter(a=>a.name === state.selectedBot)[0]
       return selectedBot
     },
-    getBotSelections: state => state.hotbots
+    getBotSelections: state => state.hotbots, 
+    getIntervalDataByDepartment: state =>{
+      return returnDepartmentIntervalData(state.intervalData)
+    }
 
   }
 })
+
+function returnDepartmentIntervalData(intervalData){
+  const returnData = {}
+  // console.log(intervalData);
+  for (let i = 0; i < intervalData.length; i++){
+    const row = intervalData[i]
+    if (row.department === 'bo' || row.department ==='N/A') continue
+    if (returnData[row.department]){
+      const dep = returnData[row.department]
+      if (dep[row.channel]){
+        const cha = dep[row.channel]
+        if (cha[row.interval]){
+          const int = cha[row.interval]
+          //Add data
+          int.countOfAbandonedContacts +=  row.countOfAbandonedContacts
+          int.countOfAnsweredOnTimeContacts +=  row.countOfAnsweredOnTimeContacts
+          int.countOfArrivedContacts +=  row.countOfArrivedContacts
+          int.countOfCompletedContacts +=  row.countOfCompletedContacts
+          int.countOfHandledContacts +=  row.countOfHandledContacts
+
+        }
+        else { //Create interval
+          cha[row.interval] = {
+            date: row.date,
+            countOfAbandonedContacts: row.countOfAbandonedContacts,
+            countOfAnsweredOnTimeContacts: row.countOfAnsweredOnTimeContacts,
+            countOfArrivedContacts: row.countOfArrivedContacts,
+            countOfCompletedContacts: row.countOfCompletedContacts,
+            countOfHandledContacts: row.countOfHandledContacts
+          }
+        }
+      }
+      else { //Create channel and interval
+        dep[row.channel]= {}
+        dep[row.channel][row.interval]= {
+          date: row.date,
+          countOfAbandonedContacts: row.countOfAbandonedContacts,
+          countOfAnsweredOnTimeContacts: row.countOfAnsweredOnTimeContacts,
+          countOfArrivedContacts: row.countOfArrivedContacts,
+          countOfCompletedContacts: row.countOfCompletedContacts,
+          countOfHandledContacts: row.countOfHandledContacts
+
+        }
+      }
+    }
+    else { //Create everything (department, channel, interval)
+      returnData[row.department] = {}
+      returnData[row.department][row.channel] = {}
+      returnData[row.department][row.channel][row.interval] = {
+        date: row.date,
+        countOfAbandonedContacts: row.countOfAbandonedContacts,
+        countOfAnsweredOnTimeContacts: row.countOfAnsweredOnTimeContacts,
+        countOfArrivedContacts: row.countOfArrivedContacts,
+        countOfCompletedContacts: row.countOfCompletedContacts,
+        countOfHandledContacts: row.countOfHandledContacts
+      }
+    }
+  }
+  // console.log({returnData});
+  return returnData
+  /*
+channel:"PH"
+countOfAbandonedContacts:0
+countOfAnsweredOnTimeContacts:0
+countOfArrivedContacts:2
+countOfCompletedContacts:2
+countOfHandledContacts:2
+date:"2024-02-09"
+department:"fi"
+interval:"08:00"
+
+  */
+}
 
 function computeCollectionQueues(state, queues){
   let arr = [...state.queueData].filter(a=>queues.includes(a.id))
