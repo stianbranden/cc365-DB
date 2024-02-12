@@ -144,16 +144,16 @@ function calculateServiceLevel(department, channel, interval, re = 'number' ){
         display: inline;
     }
     .interval:nth-of-type(4n+3){
-        border-right: 1px solid;
+        border-right: 1px solid var(--textcolor);
     }
     .interval:last-of-type{
         border-right: none;
     }
     .target {
-        border-inline: 1px solid;
+        border-inline: 1px solid var(--textcolor);
         width: 5rem;
     }
-    border-bottom: 1px solid;
+    border-bottom: 1px solid var(--textcolor);
 }
 
 .program {
@@ -164,14 +164,14 @@ function calculateServiceLevel(department, channel, interval, re = 'number' ){
         width: 10rem;
     }
     .channel-name {
-        border-right: 1px solid;
+        border-right: 1px solid var(--textcolor);
         width: 6rem;
         padding-right: 0.5rem;
     }
     .data {
         font-size: 0.6rem;
         &:nth-of-type(4n+1) {
-            border-right: 1px solid;
+            border-right: 1px solid var(--textcolor);
         }
         &:last-of-type{
             border-right: none;
@@ -179,7 +179,7 @@ function calculateServiceLevel(department, channel, interval, re = 'number' ){
     }
     .blue {
         background-color: #{lighten($color-light-blue, 5%)};
-        
+        color: #eee;
     }
     .green {
         background-color: #{lighten($color-good, 5%)};
@@ -191,9 +191,10 @@ function calculateServiceLevel(department, channel, interval, re = 'number' ){
     }
     .red {
         background-color: #{lighten($color-bad, 5%)};
+        color: #eee;
     }
     .target {
-        border-right: 1px solid;
+        border-right: 1px solid var(--textcolor);
     }
 }
 </style>

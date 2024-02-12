@@ -24,10 +24,10 @@ import IntervalDataTable from '../components/IntervalDataTable.vue'
     display: flex;
     justify-content: space-between !important;
     padding: 0 !important;
-    margin: 2.5vw;  
+    margin-inline: 2.5vw;  
 }
 .wfm {
-    margin: 2.5vw;
+    margin-inline: 2.5vw;
     padding: 1rem;
     display: flex;
     justify-content: center;
