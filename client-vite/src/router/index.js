@@ -38,6 +38,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "alerts" */ '../views/QualityAssurance.vue')
   },
   {
+    path: '/wfm',
+    name: 'WFM',
+    component: () => import(/* webpackChunkName: "alerts" */ '../views/WFM.vue')
+  },
+  {
     path: '/mycollections',
     name: 'MyCollections',
     component: () => import(/* webpackChunkName: "area" */ '../views/MyCollections.vue')
