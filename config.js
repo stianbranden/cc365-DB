@@ -9,11 +9,11 @@ const unitsStage = {
     },
     norway: {
         abbr: 'no',
-        groups: ['NO-AS-EM,AC,CH,PH,CB', 'NO-BU-EM,AC,PH,CB', 'NO-BUHOT-PH,CB', 'NO-CAS-EM', 'NO-PS-PH,CB', 'NO-STA-EM,PH,CB', 'NO-HOT-PH,CB', 'NO-INT-EM']
+        groups: ['NO-AS-EM,AC,CH,PH,CB', 'NO-BU-EM,AC,PH,CB', 'NO-BUHOT-PH,CB', 'NO-CAS-EM', 'NO-PS-PH,CB', 'NO-STA-EM,PH,CB', 'NO-HOT-PH,CB']
     },
     finland: {
         abbr: 'fi',
-        groups: ['FI-AS-EM,AC,CH,PH,CB', 'FI-BU-EM,AC,PH,CB', 'FI-BUHOT-PH,CB', 'FI-CAS-EM', 'FI-INT-EM', 'FI-PS-PH,CB', 'FI-STA-EM,PH,CB', 'FI-HOT-PH,CB', 'FI-KI-EM,PH,AC', 'FI-KIHOT-EM,PH,AC']
+        groups: ['FI-AS-EM,AC,CH,PH,CB', 'FI-BU-EM,AC,PH,CB', 'FI-BUHOT-PH,CB', 'FI-CAS-EM', 'FI-PS-PH,CB', 'FI-STA-EM,PH,CB', 'FI-HOT-PH,CB', 'FI-KI-EM,PH,AC', 'FI-KIHOT-EM,PH,AC']
     },
     helpdesk: {
         abbr: 'thd',
