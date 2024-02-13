@@ -33,32 +33,32 @@ const intervals = [
 const departments = [
     {
         key: 'dk',
-        name: 'GS Denmark', 
+        name: 'GS DK', 
         target: 50
     },
     {
         key: 'fi',
-        name: 'GS Finland' , 
+        name: 'GS FI' , 
         target: 50
     },
     {
         key: 'no',
-        name: 'GS Norway' , 
+        name: 'GS NO' , 
         target: 50
     },
     {
         key: 'se',
-        name: 'GS Sweden' , 
+        name: 'GS SE' , 
         target: 50
     },
     {
         key: 'ki',
-        name: 'PS Kitchen&Interior' , 
+        name: 'PS K&I' , 
         target: 50
     },
     {
         key: 'thd',
-        name: 'PS Helpdesk' , 
+        name: 'PS THD' , 
         target: 70
     },
 ]
@@ -109,11 +109,11 @@ function calculateServiceLevel(department, channel, interval, re = 'number' ){
             </th>
         </tr>
         <template v-for="department in departments" :key="department.key">
-            <tr class="program" v-for="channel in Object.keys(store.getters.getIntervalDataByDepartment[department.key])">
+            <tr class="program" v-for="channel in Object.keys(store.getters.getIntervalDataByDepartment[department.key]) || []">
                 <th class="program-name">{{department.name}}</th>
                 <th class="channel-name">{{getChannelName(channel)}}</th>
                 <td class="target">{{department.target}}%</td>
-                <td class="data" v-for="interval in intervals" :key="department.key + channel + interval" :class="calculateServiceLevel(department, channel, interval, 'color')">
+                <td class="data" v-for="interval in intervals" :key="department.key + channel + interval" :class="calculateServiceLevel(department, channel, interval, 'color')" :title="calculateServiceLevel(department, channel, interval, 'number')">
                     {{calculateServiceLevel(department, channel, interval, 'number')}}
                 </td>
             </tr>
@@ -161,7 +161,7 @@ function calculateServiceLevel(department, channel, interval, re = 'number' ){
     height: 2rem;
     .program-name, .channel-name {
         text-align: right;
-        width: 10rem;
+        width: 5rem;
     }
     .channel-name {
         border-right: 1px solid var(--textcolor);

@@ -22,12 +22,12 @@ import IntervalDataTable from '../components/IntervalDataTable.vue'
 <style lang="scss" scoped>
 .home {
     display: flex;
-    justify-content: space-between !important;
-    padding: 0 !important;
-    margin-inline: 2.5vw;  
+    justify-content: space-evenly !important;
+    // padding: 0 !important;
+    // margin-inline: 2.5vw;  
 }
 .wfm {
-    margin-inline: 2.5vw;
+    margin-inline: 2rem;
     padding: 1rem;
     display: flex;
     justify-content: center;
