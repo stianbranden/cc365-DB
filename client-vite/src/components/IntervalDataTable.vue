@@ -109,7 +109,7 @@ function calculateServiceLevel(department, channel, interval, re = 'number' ){
             </th>
         </tr>
         <template v-for="department in departments" :key="department.key">
-            <tr class="program" v-for="channel in Object.keys(store.getters.getIntervalDataByDepartment[department.key]) || []">
+            <tr class="program" v-for="channel in Object.keys(store.getters.getIntervalDataByDepartment[department.key] ||[])">
                 <th class="program-name">{{department.name}}</th>
                 <th class="channel-name">{{getChannelName(channel)}}</th>
                 <td class="target">{{department.target}}%</td>
