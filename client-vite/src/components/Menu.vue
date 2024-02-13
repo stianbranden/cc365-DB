@@ -29,12 +29,13 @@
                     <logo department="thd" />
                     <span>Helpdesk</span>
                 </li>
-                <li @click="navigateExternal('/old')">
+                <li @click="navigate('WFM')">
                     <div>
-                        <font-awesome-icon icon="folder" />
+                        <font-awesome-icon icon="shield" />
                     </div>
-                    <span>Old UI</span>
+                    <span>WFM</span>
                 </li>
+                
                 
 
 
