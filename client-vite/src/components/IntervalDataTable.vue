@@ -81,9 +81,9 @@ function calculateServiceLevel(department, channel, interval, re = 'number' ){
         if (re === 'number' && countOfCompletedContacts) return Math.floor(serviceLevel) + '%'
         if (re === 'color' && countOfCompletedContacts ) {
             // console.log({target, serviceLevel, data});
-            if (serviceLevel > target+10) return 'blue'
-            if (serviceLevel > target-10) return 'green'
-            if (serviceLevel > target-20) return 'yellow'
+            if (serviceLevel > target+20) return 'blue'
+            if (serviceLevel >= target) return 'green'
+            if (serviceLevel >= target-10) return 'yellow'
             if (serviceLevel >= 0) return 'red'
         }
     }
