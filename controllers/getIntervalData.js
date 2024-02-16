@@ -31,8 +31,9 @@ function getIntervalData(){
         try {
             // await connectDB()
             const queueMap = (await Config.findOne({name: 'queueMap'}).lean()).data.queues
-            intervalQuery.url = intervalQuery.url.replace('${today}', moment().startOf('day').toISOString())
-            const data = JSON.parse(await request(intervalQuery))
+            const query = {...intervalQuery}
+            query.url = query.url.replace('${today}', moment().startOf('day').toISOString())
+            const data = JSON.parse(await request(query))
             const intervalData = []
             for ( let i = 0; i < data.length; i++){
                 const {queueName, queueId, timeCategory, countOfAnsweredOnTimeContacts, countOfArrivedContacts, countOfCompletedContacts, countOfHandledContacts, countOfAbandonedContacts} = data[i]
