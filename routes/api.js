@@ -340,6 +340,7 @@ router.post('/quality/toggleForm/:segmentId/:formId', async(req, res)=>{
 })
 
 
+
 function processText(text, user, department){
     let timeStamp = moment().tz('Europe/Oslo').format('HH:mm');
     let timeZone = moment().tz('Europe/Oslo').format('z')

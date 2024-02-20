@@ -45,6 +45,25 @@
         {{user.assignment}} x assigned to {{user.name}}
        </span>
       </div>
+      
+      <div class="history">
+        <table v-if="segment.showHistory">
+          <tr>
+            <th>User</th>
+            <th>#</th>
+            <th>Time</th>
+          </tr>
+          <tr v-for="log in segment.logs" :key="log._id">
+            <td>{{log.user}}</td>
+            <td>{{log.contactsPushed}}</td>
+            <td>{{formatDate(log.createdAt)}}</td>
+          </tr>
+        </table>
+        <div v-else />
+        <div class="showHistory">
+          <font-awesome-icon icon="clock" @click="toggleHistory(segment)" title="Show/hide history" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -52,8 +71,17 @@
 <script setup>
 // @ is an alias to /src
 import {useStore} from 'vuex'
+import { useDateFormat } from '@vueuse/core'
 const store = useStore()
 store.dispatch('getSegments')
+
+function formatDate(dt){
+  // return dt
+  return useDateFormat(dt, 'Do of MMMM YYYY @HH:mm').value
+}
+function toggleHistory(segment){
+  segment.showHistory = !segment.showHistory
+}
 
 function getFormName(id){
   const {name} = store.state.qualityForms.filter(form=>form.id===id)[0] || 'N/A'
@@ -108,6 +136,20 @@ div.quality{
     > div {
       margin-block: 1rem;
     }
+    .history{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0;
+    td, th {
+      text-align: left;
+      // min-width: 4rem;
+      padding-right: 1rem;
+      }
+    } 
+    .showHistory {
+      text-align: right;
+      cursor: pointer;
+    }
   }
   .info {
     display: flex;
@@ -135,6 +177,7 @@ div.quality{
   .active {
     // cursor: pointer;
   }
+  
 }
 
 </style>

@@ -1,10 +1,20 @@
 const Segment = require('../models/C1segment')
+const ContactGoalPushHistory = require('../models/ContactGoalPushHistory')
+
+async function returnLogs(segmentName){
+    const logs = await ContactGoalPushHistory.find({segmentName}).sort({createdAt: 'desc'}).lean()
+    return logs
+}
 
 function getSegments(){
     return new Promise(async (resolve, reject)=>{
         try {
-            const segment = await Segment.find().lean()
-            resolve(segment)
+            const segments = await Segment.find().lean()
+            for (let i = 0; i < segments.length; i++){
+                const {name} = segments[i]
+                segments[i].logs = await returnLogs(name)
+            }
+            resolve(segments)
         } catch (error) {
             reject(error)
         }
@@ -14,6 +24,7 @@ function getSegment(name){
     return new Promise(async (resolve, reject)=>{
         try {
             const segment = await Segment.findOne({name}).lean()
+            segment.logs = await returnLogs(name)
             resolve(segment)
         } catch (error) {
             reject(error)
@@ -24,6 +35,7 @@ function getSegmentbyId(id){
     return new Promise(async (resolve, reject)=>{
         try {
             const segment = await Segment.findById(id).lean()
+            segment.logs = await returnLogs(name)
             resolve(segment)
         } catch (error) {
             reject(error)
