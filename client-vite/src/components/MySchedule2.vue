@@ -5,6 +5,11 @@
             {{shift.name}}<br>{{shift.startTime.substring(11,16)}} - {{shift.endTime.substring(11,16)}}
         </div>
     </div>
+    <div class="activity" v-if="store.state.mySchedule.dayOff" :style="genDayOffStyle(store.state.mySchedule.dayOff)">
+        <div class="name" :title="genDayOffTooltip(store.state.mySchedule.dayOff)">
+            {{store.state.mySchedule.dayOff.name}}
+        </div>
+    </div>
   </div>
 </template>
 
@@ -55,6 +60,16 @@ const updateSchedule = _=>{
 // updateSchedule()
 watch(ping, updateSchedule)
 
+function genDayOffTooltip (dayOff){
+    return dayOff.name
+}
+
+function genDayOffStyle(dayOff) {
+    const padding = 0
+    const w = width.value - padding * 16
+    return `background-color: ${dayOff.displayColorHex}; overflow: hidden; width: ${w}px; color: ${contrastFont(dayOff.displayColorHex)}`
+}
+
 function genStyle(shift){
     const padding = 0
     const w = (width.value - padding * 16) * shift.lengthOfShift / totalShiftLength.value
@@ -103,6 +118,9 @@ function contrastFont(bgcolor){
             font-size: 0.8rem;
             
         }
+        // @include jumbo {
+        //     font-size: 0.5rem;
+        // }
     }
 }
 </style>
