@@ -1,13 +1,17 @@
 <script setup>
 import SummaryCard from '../components/SummaryCard.vue'
 import IntervalDataTable from '../components/IntervalDataTable.vue'
-import Alerts from '../components/Alerts.vue'
+// import Alerts from '../components/Alerts.vue'
+// import { useStore } from 'vuex'
+
+// const store = useStore()
 
 </script>
 
 <template>
-    <div class="home" :class="{showAlerts: store.state.showAlerts}">
-        <Alerts v-if="store.state.showAlerts" /> 
+    <!-- <div class="home" :class="{showAlerts: store.state.showAlerts}"> -->
+    <div class="home">
+        <!-- <Alerts v-if="store.state.showAlerts" />  -->
         <SummaryCard key="dk" title='CCC Denmark' department='dk' @dblclick="navigate('denmark')" />
         <SummaryCard key="fi" title='CCC Finland' department='fi' @dblclick="navigate('finland')" />
         <SummaryCard key="no" title='CCC Norway' department='no' @dblclick="navigate('norway')" />
