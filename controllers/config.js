@@ -235,7 +235,7 @@ const graphApi = {
     },
     getProfileData: {
         method: 'GET',
-        url: 'https://graph.microsoft.com/v1.0/me?$select=displayName,state,jobtitle,employeeId',
+        url: 'https://graph.microsoft.com/v1.0/me?$select=displayName,state,jobtitle,employeeId,department,officeLocation',
         headers: {
             'Accept': 'application/json'
         }

@@ -51,6 +51,14 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: 'n/a'
     },
+    department: {
+        type: String,
+        default: 'n/a'
+    },
+    officeLocation: {
+        type: String,
+        default: 'n/a'
+    },
     doNotUpdate: {
         type: Boolean,
         default: false

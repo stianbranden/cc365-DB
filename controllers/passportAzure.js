@@ -82,7 +82,7 @@ module.exports = function (passport) {
             profileQuery.headers["Authorization"] = 'Bearer ' + accessToken;
             const graphProfile = JSON.parse(await request(profileQuery));
             logStd(JSON.stringify(graphProfile));
-            const {state, jobTitle, employeeId} = graphProfile;
+            const {state, jobTitle, employeeId, department, officeLocation} = graphProfile;
             //console.log({graphProfile});
             let agent = await getAgentWithEmail(profile.upn);
             if ( !agent ) agent = await getAgentWithEmploymentNumber(employeeId);
@@ -106,6 +106,8 @@ module.exports = function (passport) {
                   title: jobTitle,
                   access_token: accessToken,
                   employmentNumber: employeeId,
+                  department,
+                  officeLocation,
                   custom_access,
                   alerts,
                   pages
@@ -131,6 +133,8 @@ module.exports = function (passport) {
                     family_name: profile.family_name,
                     access_token: accessToken,
                     employmentNumber: employeeId,
+                    department,
+                    officeLocation,
                     custom_access,
                     alerts,
                     pages
