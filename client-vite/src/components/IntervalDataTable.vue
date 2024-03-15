@@ -63,7 +63,8 @@ const departments = [
     },
 ]
 
-function getChannelName(abbr){
+function getChannelName(abbr, form){
+    if (form === 'short') return abbr
     if (abbr === 'PH') return 'Phone'
     if (abbr === 'CH') return 'Chat'
     if (abbr === 'CB') return 'Callback'
@@ -111,10 +112,10 @@ function calculateServiceLevel(department, channel, interval, re = 'number' ){
         <template v-for="department in departments" :key="department.key">
             <tr class="program" v-for="channel in Object.keys(store.getters.getIntervalDataByDepartment[department.key] ||[])">
                 <th class="program-name">{{department.name}}</th>
-                <th class="channel-name">{{getChannelName(channel)}}</th>
+                <th class="channel-name"><span class="long">{{getChannelName(channel, 'long')}}</span><span class="short">{{getChannelName(channel, 'short')}}</span></th>
                 <td class="target">{{department.target}}%</td>
                 <td class="data" v-for="interval in intervals" :key="department.key + channel + interval" :class="calculateServiceLevel(department, channel, interval, 'color')" :title="calculateServiceLevel(department, channel, interval, 'number')">
-                    {{calculateServiceLevel(department, channel, interval, 'number')}}
+                    <span>{{calculateServiceLevel(department, channel, interval, 'number')}}</span>
                 </td>
             </tr>
         </template>
@@ -126,7 +127,10 @@ function calculateServiceLevel(department, channel, interval, re = 'number' ){
     border-collapse: collapse;
     width: 100%;
     th, td {
-        padding-inline: 0.15rem;
+        padding-inline: 0.1rem;
+        @include jumbo {
+            padding-inline: 0.15rem;
+        }
         width: 1.4rem;
     }
 }
@@ -152,6 +156,13 @@ function calculateServiceLevel(department, channel, interval, re = 'number' ){
     .target {
         border-inline: 1px solid var(--textcolor);
         width: 5rem;
+        font-size: 0.6rem;
+        vertical-align: bottom;
+        padding-bottom: 0.15rem;
+        @include jumbo {
+            font-size: 1rem;
+        }
+
     }
     border-bottom: 1px solid var(--textcolor);
 }
@@ -162,19 +173,48 @@ function calculateServiceLevel(department, channel, interval, re = 'number' ){
     .program-name, .channel-name {
         text-align: right;
         width: 5rem;
+        font-size: 0.6rem;
+        > .long {
+            display: none;
+        }
+        @include jumbo {
+            font-size: 1rem;
+            > .short {
+                display: none;
+            }
+            > .long {display: initial;}
+        }
     }
     .channel-name {
         border-right: 1px solid var(--textcolor);
         width: 6rem;
-        padding-right: 0.5rem;
+        // padding-right: 0.2rem;
+        text-align: center;
+        @include jumbo {
+            text-align: right;
+            padding-right: 0.5rem;
+        }
+    }
+    .target {
+        border-right: 1px solid var(--textcolor);
+        font-size: 0.8rem;
+        @include jumbo {
+            font-size: 1rem;
+        }
     }
     .data {
-        font-size: 0.6rem;
+        font-size: 0.4rem;
         &:nth-of-type(4n+1) {
             border-right: 1px solid var(--textcolor);
         }
         &:last-of-type{
             border-right: none;
+        }
+        > span {
+            display: none;
+            @include jumbo {
+                display: initial;
+            }
         }
     }
     .blue {
@@ -192,9 +232,6 @@ function calculateServiceLevel(department, channel, interval, re = 'number' ){
     .red {
         background-color: #{lighten($color-bad, 5%)};
         color: #eee;
-    }
-    .target {
-        border-right: 1px solid var(--textcolor);
     }
 }
 </style>
