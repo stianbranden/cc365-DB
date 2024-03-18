@@ -35,7 +35,7 @@ function getSegmentbyId(id){
     return new Promise(async (resolve, reject)=>{
         try {
             const segment = await Segment.findById(id).lean()
-            segment.logs = await returnLogs(name)
+            segment.logs = await returnLogs(segment.name)
             resolve(segment)
         } catch (error) {
             reject(error)
