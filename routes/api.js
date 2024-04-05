@@ -20,6 +20,7 @@ const PersonAccount = require('../models/PersonAccount')
 const moment = require('moment')
 const {getSegments, getSegmentbyId, updateSegment} = require('../controllers/segment.js');
 const { getForms } = require('../controllers/form.js');
+const {createBPOFile, getBPOFileForSkillAndDate} = require('../controllers/bpo.js')
 
 const genError = (statusCode, error)=>{
     return {
@@ -336,6 +337,16 @@ router.post('/quality/toggleForm/:segmentId/:formId', async(req, res)=>{
 
     } catch (error) {
         res.status(500).send(genError(500,error.message))
+    }
+})
+
+router.get('/bpo/:skill/:date/:activeOrAll', async(req, res)=>{
+    try {
+        const {skill, date, activeOrAll} = req.params
+        const files = await getBPOFileForSkillAndDate(skill, date, activeOrAll == 'active')
+        res.status(200).send(files)
+    } catch (error) {
+        res.status(500).send(genError(500,error.message))        
     }
 })
 

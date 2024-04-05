@@ -74,7 +74,8 @@ export default createStore({
       lightSrc: VITE_PBI_MYPAGE_L_SRC,
       darkSrc: VITE_PBI_MYPAGE_D_SRC
     },
-    intervalData: []
+    intervalData: [],
+    bpoFiles: []
   },
   mutations: {
     ioConnect(state){
@@ -204,6 +205,12 @@ export default createStore({
     }
   },
   actions: {
+    getAllActiveBPOFiles({state}){
+      const date = 20240321
+      fetch(VITE_API_ROOT + 'bpo/all/' + date + '/active')
+      .then(response=>response.json())
+      .then(files=>state.bpoFiles = files)
+    },
     getSegments({state}){
       fetch(VITE_API_ROOT + 'quality/segments')
       .then(response=>response.json())
@@ -394,6 +401,16 @@ export default createStore({
   modules: {
   },
   getters: {
+    listBPOSkills(state){
+      const skills = []
+      state.bpoFiles.forEach(file=>{
+        if( !skills.includes(file.skill) ) skills.push(file.skill)
+      })
+      return skills
+    },
+    getBPOFiles(state){
+      return state.bpoFiles
+    },
     getUser(state){
       if (state.user) return state.user
       return {}

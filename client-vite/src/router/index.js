@@ -43,6 +43,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "alerts" */ '../views/WFM.vue')
   },
   {
+    path: '/bpo',
+    name: 'BPO Operations Center',
+    component: () => import(/* webpackChunkName: "alerts" */ '../views/BPO.vue')
+  },
+  {
     path: '/mycollections',
     name: 'MyCollections',
     component: () => import(/* webpackChunkName: "area" */ '../views/MyCollections.vue')

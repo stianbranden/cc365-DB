@@ -1,5 +1,6 @@
-require('dotenv').config()
-const connectDB = require('./connectDB')
+// require('dotenv').config()
+// const connectDB = require('./connectDB')
+
 const BPOfile = require('../models/BPO')
 
 function fileTemplate(name, isActive, skill, date){
@@ -57,7 +58,7 @@ function createBPOFile(name, isActive, rows, delimiter='	'){
             }
         }
         try {
-            await connectDB()
+            //await connectDB()
             for (let i = 0; i<files.length; i++){
                 const file = files[i]
                 await deactiveActive(file.skill, file.date)
@@ -74,11 +75,14 @@ function createBPOFile(name, isActive, rows, delimiter='	'){
 }
 
 
-function getBPOFileForSkillAndDate(skill, date){
+function getBPOFileForSkillAndDate(skill, date, onlyActive=false){
     return new Promise(async (resolve, reject)=>{
         try {
-            await connectDB()
-            const files = await BPOfile.find({skill, date}).lean()
+            // await connectDB()
+            const query = {date}
+            if(skill != 'all') query.skill = skill
+            if(onlyActive) query.isActive = true
+            const files = await BPOfile.find(query).lean()
             resolve(files)
         } catch (error) {
             reject(error)
@@ -87,8 +91,16 @@ function getBPOFileForSkillAndDate(skill, date){
 }
 
 
+module.exports = {
+    getBPOFileForSkillAndDate,
+    createBPOFile
+}
+
 //Testing
 
+//getBPOFileForSkillAndDate('GS-FI Phone', 20240321, true).then(file=>console.log(file))
+
+/*
 const data = `source	skillcombination	startdatetime	enddatetime	agents
 GS-FI Phone	GS-FI Phone	20240321 09:00	20240321 09:15	2
 GS-FI Phone	GS-FI Phone	20240321 09:15	20240321 09:30	2
@@ -180,3 +192,5 @@ GS-FI Chat	GS-FI Chat	20240321 19:30	20240321 19:45	3
 GS-FI Chat	GS-FI Chat	20240321 19:45	20240321 20:00	3`
 
 createBPOFile('sameday', true, data).then(_=>getBPOFileForSkillAndDate('GS-FI Chat', 20240321).then(files=>console.log(files)))
+
+*/
