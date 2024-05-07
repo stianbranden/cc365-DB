@@ -350,6 +350,16 @@ router.get('/bpo/:skill/:date/:activeOrAll', async(req, res)=>{
     }
 })
 
+router.post('/bpo/file', async (req, res)=>{
+    try {
+        const {fileType, fileData, separator} = req.body
+        await createBPOFile(fileType, true, fileData, separator)
+        res.status(200).send({msg: 'OK'})
+    } catch (error) {
+        res.status(500).send(genError(500,error.message))
+    }
+})
+
 
 
 function processText(text, user, department){

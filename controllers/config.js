@@ -65,6 +65,22 @@ const queries =  {
             'x-api-key': XAPIKEY
         }
     },
+    usersInUserGroups: {
+        method: "GET",
+        url: raiUrl + '/rci/userGroups/${userGroupId}/users',
+        headers: {
+            authorization: 'Basic ' + BASE64,
+            'x-api-key': XAPIKEY
+        }
+    },
+    timePerQuarterAndProfile: {
+        method: "GET",
+        url: raiUrl + '/rai/agentHistory?startTime=${today}&endTime=${tomorrow}&showProfile=true&timeCategory=quarterHour&limit=10000',
+        headers: {
+            authorization: 'Basic ' + BASE64,
+            'x-api-key': XAPIKEY
+        }
+    },
     deliverDeviations: {
         method: "GET",
         url: raiUrl + '/rmi/contacts?showAllInProcess=1&limit=10000&queueId=' + DELDEVQUEUES,

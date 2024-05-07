@@ -37,6 +37,7 @@ const passport = require('passport');
 const ejsLayouts = require('express-ejs-layouts');
 const morgan = require('morgan')
 const cron = require('node-cron');
+const moment = require('moment')
 const {units} = require('./config')
 const queueUpdateFrequency = process.env.UPDATE_FREQUENCY || 10000;
 
@@ -48,6 +49,9 @@ const {setGlobalLocalsVariables} = require('./middleware/setLocals');
 const { getPm2Data } = require('./controllers/getPm2');
 const logToMongo = require('./middleware/logToMongo');
 const getIntervalData = require('./controllers/getIntervalData');
+const {getProfileTimeForWebhelp} = require('./controllers/getUsersInWebhelpGroups')
+const {createBPOFile, getBPOFileForSkillAndDate} = require('./controllers/bpo') 
+
  /*Setup EJS*/
 app.set('view engine', 'ejs');
 app.use(ejsLayouts);
@@ -195,6 +199,11 @@ server.listen(process.env.PORT, ()=>{
         io.in('vue').emit('intervalData', data)
     })
 
+    getProfileTimeForWebhelp().then(data=>{
+        dataToUsers.bpoReadyTime.vue = data
+        io.in('vue').emit('bpoReadyTime', data)
+    })
+
     //Start up Teleopti data fetching
     getTodaysTeleoptiData({dropScheduleCollection: false}).then(_=>startInterval('scheduleUpdate'));
     
@@ -250,6 +259,10 @@ server.listen(process.env.PORT, ()=>{
             dataToUsers.intervalData.vue = data
             io.in('vue').emit('intervalData', data)
         })
+        getProfileTimeForWebhelp().then(data=>{
+            dataToUsers.bpoReadyTime.vue = data
+            io.in('vue').emit('bpoReadyTime', data)
+        })
     })
 
 });
@@ -286,6 +299,7 @@ io.on('connection', socket =>{
         }
         if (dataToUsers.delDev[room]) socket.emit('delDev', dataToUsers.delDev[room])
         if (dataToUsers.intervalData[room]) socket.emit('intervalData', dataToUsers.intervalData[room] )
+        if (dataToUsers.bpoReadyTime[room]) socket.emit('bpoReadyTime', dataToUsers.bpoReadyTime[room] )
         
         socket.emit('reconnect-to-agents');
         
@@ -297,6 +311,20 @@ io.on('connection', socket =>{
         socket.emit('confirm-connection-to-agent', agentId);
         socket.join(agentId);
     });
+
+    socket.on('bpo-file', async ({fileType, active, fileData, separator}) =>{
+        try {
+            await createBPOFile(fileType, active, fileData, separator)
+            const date = moment().format('YYYYMMDD')
+            const files = await getBPOFileForSkillAndDate('all', date, false) 
+            socket.emit('bpo-file-status', {msg: 'ok', files})
+        } catch (error) {
+            logErr(error)
+            socket.emit('bpo-file-status', {msg: 'fail', error: JSON.stringify(error)})
+        }
+
+
+    })
 });
 
 let dataToUsers = {
@@ -324,6 +352,9 @@ let dataToUsers = {
         vue: null
     },
     intervalData: {
+        vue: null
+    },
+    bpoReadyTime: {
         vue: null
     }
 }

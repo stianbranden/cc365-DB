@@ -1,6 +1,7 @@
 // require('dotenv').config()
 // const connectDB = require('./connectDB')
 
+const moment = require('moment')
 const BPOfile = require('../models/BPO')
 
 function fileTemplate(name, isActive, skill, date){
@@ -36,6 +37,25 @@ function deleteOldVersion(name, skill, date){
     })
 }
 
+function inAcceptedRange(name, date){
+    const now = moment()
+    let test = false
+    if (name === 'Custom') test = true
+    else if ( ['08:00', '09:00', '11:00', '14:00'].indexOf(name) >= 0) {
+        test = Number(now.format('YYYYMMDD')) === date
+        // console.log({name, date, test})
+    }
+    else if ( name === 'Next week') {
+        test = date >= Number(now.add(1,'week').startOf('isoWeek').format('YYYYMMDD')) && date <= Number(now.endOf('isoWeek').format('YYYYMMDD'))
+        // console.log({name, date, test})
+    } 
+    else if ( name === 'Long term') {
+        test = date >= Number(now.add(1,'month').startOf('month').format('YYYYMMDD')) && date <= Number(now.endOf('month').format('YYYYMMDD'))
+        // console.log({name, date, test})
+    } 
+    return test
+}
+
 function createBPOFile(name, isActive, rows, delimiter='	'){
     return new Promise(async (resolve, reject)=>{
         const rowArr = rows.split('\n')
@@ -45,16 +65,18 @@ function createBPOFile(name, isActive, rows, delimiter='	'){
             const skill = row[1]
             if (skill != 'skillcombination'){
                 const date = Number(row[2].split(' ')[0])
-                if (findInArr(files, skill, date)=== -1){
-                    files.push(fileTemplate(name, isActive, skill, date))
+                if (inAcceptedRange(name, date)) {
+                    if (findInArr(files, skill, date)=== -1){
+                        files.push(fileTemplate(name, isActive, skill, date))
+                    }
+                    const file = files[findInArr(files, skill, date)]
+    
+                    file.schedule.push({
+                        intervalStart: row[2].split(' ')[1],
+                        intervalEnd: row[3].split(' ')[1],
+                        agents: Number(row[4])
+                    })
                 }
-                const file = files[findInArr(files, skill, date)]
-
-                file.schedule.push({
-                    intervalStart: row[2].split(' ')[1],
-                    intervalEnd: row[3].split(' ')[1],
-                    agents: Number(row[4])
-                })
             }
         }
         try {

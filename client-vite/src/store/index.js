@@ -75,7 +75,44 @@ export default createStore({
       darkSrc: VITE_PBI_MYPAGE_D_SRC
     },
     intervalData: [],
-    bpoFiles: []
+    skillName: 'GS-FI Phone',
+    bpoFiles: [],
+    bpoReadyTime: [],
+    bpoFiletoProfileMap: [
+      {file: 'GS-DK Phone', profiles: ['Phone (DK)']},
+      {file: 'GS-DK Chat', profiles: ['Chat (DK)']},
+      {file: 'GS-DK Email', profiles: ['Email (DK)']},
+      {file: 'GS-FI Phone', profiles: ['Phone (FI)']},
+      {file: 'GS-FI Chat', profiles: ['Chat (FI)']},
+      {file: 'GS-FI Email', profiles: ['Email (FI)']},
+      {file: 'GS-NO Phone', profiles: ['Phone (NO)']},
+      {file: 'GS-NO Chat', profiles: ['Chat (NO)']},
+      {file: 'GS-NO Email', profiles: ['Email (NO)']},
+      {file: 'GS-SE Phone', profiles: ['Phone (SE)']},
+      {file: 'GS-SE Chat', profiles: ['Chat (SE)']},
+      {file: 'GS-SE Email', profiles: ['Email (SE)']}
+
+    ],
+    intervalLabels: [
+      //    '06:00','06:15', '06:30', '06:45',
+          '07:00','07:15', '07:30', '07:45',
+          '08:00','08:15', '08:30', '08:45',
+          '09:00','09:15', '09:30', '09:45',
+          '10:00','10:15', '10:30', '10:45',
+          '11:00','11:15', '11:30', '11:45',
+          '12:00','12:15', '12:30', '12:45',
+          '13:00','13:15', '13:30', '13:45',
+          '14:00','14:15', '14:30', '14:45',
+          '15:00','15:15', '15:30', '15:45',
+          '16:00','16:15', '16:30', '16:45',
+          '17:00','17:15', '17:30', '17:45',
+          '18:00','18:15', '18:30', '18:45',
+          '19:00','19:15', '19:30', '19:45',
+          '20:00','20:15', '20:30', '20:45',
+          '21:00','21:15', '21:30', '21:45',
+          '22:00','22:15', '22:30', '22:45'
+    ],
+    bpoFileTransferStatus: {status: 0, msg: 'N/A'}
   },
   mutations: {
     ioConnect(state){
@@ -122,6 +159,10 @@ export default createStore({
         state.intervalData = data
         state.lastPing = moment().toISOString()
       })
+      state.socket.on('bpoReadyTime', data=>{
+        state.bpoReadyTime = data
+        state.lastPing = moment().toISOString()
+      })
 
 
       //Socket state mngmnt
@@ -130,6 +171,18 @@ export default createStore({
       })
       state.socket.on('connect', _=>{
         state.socketConnected = true;
+      })
+
+      state.socket.on('bpo-file-status', data=>{
+        // console.log(data);
+        if (data.msg === 'ok') {
+          state.bpoFiles = data.files
+          state.bpoFileTransferStatus = {status: 2, msg: 'Transfer completed'}
+        }
+        else if (data.msg === 'fail') {
+          state.bpoFileTransferStatus = {status: 3, msg: 'Transfer failed'}
+          console.log(data.error)
+        }
       })
       //console.log(state.socket);
     },
@@ -202,12 +255,23 @@ export default createStore({
     setSelectedBot(state, localBot){
       state.selectedBot = localBot
       localStorage.setItem('hotbot', localBot)
+    },
+    setSkillName(state, newName){
+      state.skillName = newName
+      localStorage.setItem('skillName', newName)
+    },
+    resetBPOFileStatus(state){
+      state.bpoFileTransferStatus= {status: 0, msg: 'N/A'}
     }
   },
   actions: {
+    addBPOFiles({state}, data){
+      state.bpoFileTransferStatus = {status: 1, msg: 'Transfer in progress'}
+      state.socket.emit('bpo-file', data)
+    },
     getAllActiveBPOFiles({state}){
-      const date = 20240321
-      fetch(VITE_API_ROOT + 'bpo/all/' + date + '/active')
+      const date = moment().format('YYYYMMDD')
+      fetch(VITE_API_ROOT + 'bpo/all/' + date + '/all')
       .then(response=>response.json())
       .then(files=>state.bpoFiles = files)
     },
@@ -304,6 +368,9 @@ export default createStore({
 
       let localBot = localStorage.getItem('hotbot') == null ? 'None' : localStorage.getItem('hotbot')
       commit('setSelectedBot', localBot)
+
+      let skillName = localStorage.getItem('skillName') == null ? '' : localStorage.getItem('skillName')
+      commit('setSkillName', skillName)
     },
     createAlert: ({dispatch}, data) =>{
       return new Promise(async (resolve, reject)=>{

@@ -22,7 +22,7 @@ const genAccessLevel = (label='Alerts', alter='root', path)=>{
   }
 }
 
-const generateCustomAccess = async (role, title, upn)=>{
+const generateCustomAccess = async (role, title, upn, department)=>{
   const custom_access = [];
   const accesses = await Access.find();
   let alerts = []
@@ -35,6 +35,7 @@ const generateCustomAccess = async (role, title, upn)=>{
       if ( key === 'role' ) hasAccess.push(role === value);
       if ( key === 'title' ) hasAccess.push(title === value);
       if ( key === 'upn' ) hasAccess.push(upn === value);
+      if ( key === 'department' ) hasAccess.push(department === value);
     })
     /*logStd(hasAccess);
     logStd(hasAccess.length);
@@ -92,7 +93,7 @@ module.exports = function (passport) {
               agentId = agent._id;
             }
 
-            const {custom_access, alerts, pages} = await generateCustomAccess(state, jobTitle, profile.upn);
+            const {custom_access, alerts, pages} = await generateCustomAccess(state, jobTitle, profile.upn, department);
             
             let user = await User.findById(profile.upn);
             if (user){
