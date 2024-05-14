@@ -276,6 +276,7 @@ export default createStore({
       .then(files=>state.bpoFiles = files)
     },
     getSegments({state}){
+      // console.log('running getsegments');
       fetch(VITE_API_ROOT + 'quality/segments')
       .then(response=>response.json())
       .then(data=>state.qualitySegments = data)
@@ -289,19 +290,19 @@ export default createStore({
       fetch(VITE_API_ROOT + 'quality/toggleSegment/' + id, {method: 'POST'})
       .then(response=>response.json())
       // .then(data=>console.log(data))
-      .finally(dispatch('getSegments'))
+      .finally(_=>dispatch('getSegments'))
     },
     toggleUser({dispatch}, {segmentId, userId}){
       fetch(VITE_API_ROOT + 'quality/toggleUser/' + segmentId + '/' + userId, {method: 'POST'})
       .then(response=>response.json())
-      // .then(data=>console.log(data))
-      .finally(dispatch('getSegments'))
+      //  .then(data=>console.log(data))
+      .finally(_=>dispatch('getSegments'))
     },
     bumpUser({dispatch}, {segmentId, userId}){
       fetch(VITE_API_ROOT + 'quality/bumpUser/' + segmentId + '/' + userId, {method: 'POST'})
       .then(response=>response.json())
       // .then(data=>console.log(data))
-      .finally(dispatch('getSegments'))
+      .finally(_=>dispatch('getSegments'))
     },
     toggleForm({state, dispatch}, {segmentId, formId}){
       const forms = [...state.qualityForms].filter(a=>a.status === 1)
@@ -314,7 +315,7 @@ export default createStore({
       fetch(VITE_API_ROOT + 'quality/toggleForm/' + segmentId + '/' + newFormId, {method: 'POST'})
       .then(response=>response.json())
       // .then(data=>console.log(data))
-      .finally(dispatch('getSegments'))
+      .finally(_=>dispatch('getSegments'))
     },
     getAdminData({state}){
       fetch(VITE_API_ROOT + 'admin')
