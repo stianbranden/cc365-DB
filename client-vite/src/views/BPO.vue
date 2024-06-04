@@ -85,7 +85,7 @@ function addFile(){
       notInScope: 0,
       error: 0
     }
-    store.state.bpoFileTransferStatus = {status: 1, msg: 'Transfering ' + status.length + ' files'}
+    store.state.bpoFileTransferStatus = {status: 1, msg: 0 + ' out of ' + status.length + ' files'}
     for ( let i = 0; i < data.length; i++){
       // if (i===0) console.log(data[i]);
       const transfer = await fetch(VITE_API_ROOT + 'bpo/filev2', {
@@ -101,6 +101,7 @@ function addFile(){
       if ( response.code === 201 ) status.notInScope++
       else if (response.code === 200 ) status.success++
       else status.error++
+      store.state.bpoFileTransferStatus = {status: 1, msg: i + ' out of ' + status.length + ' files'}
       // console.log(response)
     }
     store.state.bpoFileTransferStatus = {status: 2, msg: 'Transfer completed with ' + status.success + ' completed, ' + status.notInScope + ' ignored and ' + status.error + ' errors'}
