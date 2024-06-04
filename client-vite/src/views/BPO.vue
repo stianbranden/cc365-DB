@@ -3,6 +3,7 @@ import {useStore} from 'vuex'
 import {ref, shallowRef, watch, nextTick, computed, onMounted} from 'vue'
 import moment from 'moment'
 import Chart from 'chart.js/auto';
+// const axios = require('axios')
 const {VITE_API_ROOT} = import.meta.env
 
 const store = useStore()
@@ -32,7 +33,7 @@ const colors = [
 ]
 
 
-function addFile(){
+function addFile_(){
   const file = fileData.value.value
   const type = fileType.value
   const data = {
@@ -43,6 +44,70 @@ function addFile(){
   }
   store.dispatch('addBPOFiles', data)
   console.log(data);
+}
+
+function objFromRow(row){
+  const arr = row.split('\t')
+  return {
+    skillcombination: arr[1],
+    startdatetime: arr[2],
+    enddatetime: arr[3],
+    agents: arr[4]
+  }
+}
+
+function addFile(){
+  return new Promise( async (resolve, reject)=>{
+    //source	skillcombination	startdatetime	enddatetime	agents
+    const data = []
+    const file = fileData.value.value
+    const type = fileType.value
+    const rows = file.split('\n')
+    for ( let i = 0; i < rows.length; i++){
+      const obj = objFromRow(rows[i])
+      if (obj.skillcombination != 'skillcombination'){
+        const index = data.findIndex(d=>d.date === Number(obj.startdatetime.split(' ')[0]) && d.skillcombination === obj.skillcombination)
+        if ( index === -1 ){
+          data.push({
+            type,
+            skillcombination: obj.skillcombination,
+            date: Number(obj.startdatetime.split(' ')[0]),
+            rows: [obj],
+            isActive: true
+          })
+        } 
+        else data[index].rows.push(obj)
+      }
+    }
+    const status = {
+      length: data.length,
+      success: 0,
+      notInScope: 0,
+      error: 0
+    }
+    store.state.bpoFileTransferStatus = {status: 1, msg: 'Transfering ' + status.length + ' files'}
+    for ( let i = 0; i < data.length; i++){
+      // if (i===0) console.log(data[i]);
+      const transfer = await fetch(VITE_API_ROOT + 'bpo/filev2', {
+        headers: {
+          "Content-Type": "application/json",
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        // mode: 'no-cors',
+        method: 'POST', 
+        body: JSON.stringify(data[i])
+      })
+      const response = await transfer.json()
+      if ( response.code === 201 ) status.notInScope++
+      else if (response.code === 200 ) status.success++
+      else status.error++
+      // console.log(response)
+    }
+    store.state.bpoFileTransferStatus = {status: 2, msg: 'Transfer completed with ' + status.success + ' completed, ' + status.notInScope + ' ignored and ' + status.error + ' errors'}
+    // console.log(data)
+    store.dispatch('getAllActiveBPOFiles')
+    resolve('ok') //sbasfd
+  })  
 }
 
 function hasDST(){

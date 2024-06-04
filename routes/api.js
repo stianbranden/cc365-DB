@@ -20,7 +20,7 @@ const PersonAccount = require('../models/PersonAccount')
 const moment = require('moment')
 const {getSegments, getSegmentbyId, updateSegment} = require('../controllers/segment.js');
 const { getForms } = require('../controllers/form.js');
-const {createBPOFile, getBPOFileForSkillAndDate} = require('../controllers/bpo.js')
+const {createBPOFile,createBPOFilev2, getBPOFileForSkillAndDate} = require('../controllers/bpo.js')
 
 const genError = (statusCode, error)=>{
     return {
@@ -360,6 +360,16 @@ router.post('/bpo/file', async (req, res)=>{
     }
 })
 
+router.post('/bpo/filev2', async (req, res)=>{
+    try {
+        // console.log(req.body);
+        const fileStatus = await createBPOFilev2(req.body)
+        // console.log(fileStatus);
+        res.status(fileStatus.code).send({msg: fileStatus.msg, code: fileStatus.code})
+    } catch (error) {
+        res.status(500).send(genError(500,error.message))
+    }
+})
 
 
 function processText(text, user, department){

@@ -77,7 +77,7 @@ function createBPOFile(name, isActive, rows, delimiter='	'){
                         agents: Number(row[4])
                     })
                 }
-            }
+            }//kdfkldsfv
         }
         try {
             //await connectDB()
@@ -88,11 +88,37 @@ function createBPOFile(name, isActive, rows, delimiter='	'){
                 await deleteOldVersion(file.name, file.skill, file.date)
             }
             resolve(files.length)
+            // store.dispatch("getAllActiveBPOFiles")
         } catch (error) {
             reject(error)
         }
 
         // console.table(file)
+    })
+}
+
+function createBPOFilev2(data){
+    return new Promise(async (resolve, reject)=>{
+        try {
+            const {skillcombination, date, type, isActive, rows} = data
+            if (inAcceptedRange(type, date)){
+                const file = fileTemplate(type, isActive, skillcombination, date)
+                rows.forEach(row=>{
+                    file.schedule.push({
+                        intervalStart: row.startdatetime.split(' ')[1],
+                        intervalEnd: row.enddatetime.split(' ')[1],
+                        agents: Number(row.agents)
+                    })
+                })
+                if (isActive) await deactiveActive(file.skill, file.date)
+                await new BPOfile(file).save()
+                await deleteOldVersion(file.name, file.skill, file.date)
+                resolve({msg: 'OK', code: 200})
+            }
+            else resolve({msg: date + ' is not included in file ' + type, code: 201})
+        } catch (error) {
+            resolve({msg: error.message, code: 500})
+        }
     })
 }
 
@@ -115,7 +141,8 @@ function getBPOFileForSkillAndDate(skill, date, onlyActive=false){
 
 module.exports = {
     getBPOFileForSkillAndDate,
-    createBPOFile
+    createBPOFile,
+    createBPOFilev2
 }
 
 //Testing
