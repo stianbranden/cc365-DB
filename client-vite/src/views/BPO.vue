@@ -47,7 +47,10 @@ function addFile_(){
 }
 
 function objFromRow(row){
-  const arr = row.split('\t')
+  let splitter = '\t'
+  if ( row.includes(',') ) splitter = ','
+  const arr = row.split(splitter)
+  // console.log(arr);
   return {
     skillcombination: arr[1],
     startdatetime: arr[2],
@@ -65,7 +68,8 @@ function addFile(){
     const rows = file.split('\n')
     for ( let i = 0; i < rows.length; i++){
       const obj = objFromRow(rows[i])
-      if (obj.skillcombination != 'skillcombination'){
+      console.log(obj);
+      if (obj.skillcombination != 'skillcombination' && obj.skillcombination){
         const index = data.findIndex(d=>d.date === Number(obj.startdatetime.split(' ')[0]) && d.skillcombination === obj.skillcombination)
         if ( index === -1 ){
           data.push({
