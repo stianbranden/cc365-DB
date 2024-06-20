@@ -107,6 +107,7 @@ function addFile(){
     store.state.bpoFileTransferStatus = {status: 2, msg: 'Transfer completed with ' + status.success + ' completed, ' + status.notInScope + ' ignored and ' + status.error + ' errors'}
     // console.log(data)
     store.dispatch('getAllActiveBPOFiles')
+    createChart()
     resolve('ok') //sbasfd
   })  
 }

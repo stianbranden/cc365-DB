@@ -271,6 +271,7 @@ export default createStore({
     },
     getAllActiveBPOFiles({state}){
       const date = moment().format('YYYYMMDD')
+      console.log('Getting BPO files');
       fetch(VITE_API_ROOT + 'bpo/all/' + date + '/all')
       .then(response=>response.json())
       .then(files=>state.bpoFiles = files)

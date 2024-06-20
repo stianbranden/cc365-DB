@@ -17,6 +17,8 @@ const User = require('../models/User')
 const Access = require('../models/Access')
 const Collection = require('../models/Collection')
 const PersonAccount = require('../models/PersonAccount')
+const Transcript = require('../models/Transcript')
+const AIUsage = require('../models/Usage')
 const moment = require('moment')
 const {getSegments, getSegmentbyId, updateSegment} = require('../controllers/segment.js');
 const { getForms } = require('../controllers/form.js');
@@ -369,6 +371,22 @@ router.post('/bpo/filev2', async (req, res)=>{
     } catch (error) {
         res.status(500).send(genError(500,error.message))
     }
+})
+
+router.get('/pbi/:model', async (req, res)=>{
+    const {model} = req.params
+    const {date} = req.query
+    const query = {}
+    if (date) query.date = date
+    
+    try {
+        if ( model === 'transcript') res.status(200).send(await Transcript.find(query).lean())
+        else if ( model === 'aiusage') res.status(200).send(await AIUsage.find(query).lean())
+        else res.status(404).send({message: "Could not find model " + model})
+    } catch (error) {
+        res.status(500).send({message: error.message})
+    }
+
 })
 
 
