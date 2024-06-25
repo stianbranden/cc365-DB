@@ -76,6 +76,7 @@ export default createStore({
     },
     intervalData: [],
     skillName: 'GS-FI Phone',
+    bpoDate: moment(),
     bpoFiles: [],
     bpoReadyTime: [],
     bpoFiletoProfileMap: [
@@ -270,7 +271,7 @@ export default createStore({
       state.socket.emit('bpo-file', data)
     },
     getAllActiveBPOFiles({state}){
-      const date = moment().format('YYYYMMDD')
+      const date = state.bpoDate.format('YYYYMMDD')
       console.log('Getting BPO files');
       fetch(VITE_API_ROOT + 'bpo/all/' + date + '/all')
       .then(response=>response.json())

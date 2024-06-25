@@ -271,9 +271,13 @@ onMounted(_=>{
       createChart()
     },100)
   }
- 
+
 
 })
+
+function addDay(){
+  store.state.bpoDate.add(1, 'day')
+}
 
 </script>
 
@@ -282,7 +286,9 @@ onMounted(_=>{
   <div class="home">
     <div class="card">
       <div class="card-header">
-        <span class="bpo-name" @click="selectSkill=!selectSkill">{{skillName}}</span>
+        <font-awesome-icon icon="angle-left" />
+        <span class="bpo-name" @click="selectSkill=!selectSkill">{{skillName}} - {{store.state.bpoDate.format('Do of MMMM YYYY')}}</span>
+        <font-awesome-icon icon="angle-right" @click="addDay()" />
       </div>
       <div class="form" v-show="selectSkill">
         <label for="skill">Select a skill: </label>
