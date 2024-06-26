@@ -266,6 +266,10 @@ export default createStore({
     }
   },
   actions: {
+    changeBpoDate({state, dispatch}, days){
+      state.bpoDate.add(days, 'days')
+      dispatch('getAllActiveBPOFiles')
+    },
     addBPOFiles({state}, data){
       state.bpoFileTransferStatus = {status: 1, msg: 'Transfer in progress'}
       state.socket.emit('bpo-file', data)
