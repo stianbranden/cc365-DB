@@ -161,8 +161,11 @@ export default createStore({
         state.lastPing = moment().toISOString()
       })
       state.socket.on('bpoReadyTime', data=>{
-        state.bpoReadyTime = data
-        state.lastPing = moment().toISOString()
+        // console.log(data);
+        if ( data[0]?.date === state.bpoDate.format('YYYYMMDD')){
+          state.bpoReadyTime = data
+          state.lastPing = moment().toISOString()
+        }
       })
 
 
@@ -268,7 +271,7 @@ export default createStore({
   actions: {
     changeBpoDate({state, dispatch}, days){
       state.bpoDate.add(days, 'days')
-      dispatch('getAllActiveBPOFiles')
+      dispatch('getReadyTimeForDay')
     },
     addBPOFiles({state}, data){
       state.bpoFileTransferStatus = {status: 1, msg: 'Transfer in progress'}
@@ -276,11 +279,22 @@ export default createStore({
     },
     getAllActiveBPOFiles({state}){
       const date = state.bpoDate.format('YYYYMMDD')
-      console.log('Getting BPO files');
+      // console.log('Getting BPO files');
       fetch(VITE_API_ROOT + 'bpo/all/' + date + '/all')
       .then(response=>response.json())
       .then(files=>state.bpoFiles = files)
     },
+    getReadyTimeForDay({state, dispatch}){
+      const date = state.bpoDate.format('YYYYMMDD')
+      // console.log('Getting ready time data');
+      fetch(VITE_API_ROOT + 'bpo/ready/' + date)
+      .then(response=>response.json())
+      .then(files=>{
+        state.bpoReadyTime = files
+        dispatch('getAllActiveBPOFiles')
+      })
+    }
+    ,
     getSegments({state}){
       // console.log('running getsegments');
       fetch(VITE_API_ROOT + 'quality/segments')

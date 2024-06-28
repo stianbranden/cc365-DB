@@ -8,7 +8,9 @@ const {VITE_API_ROOT} = import.meta.env
 
 const store = useStore()
 store.dispatch('getAllActiveBPOFiles')
+
 const ping = computed(_=>store.state.lastPing)
+const filesInState = computed(_=>store.state.bpoFiles)
 const bpoTransferStatus = computed(_=>store.state.bpoFileTransferStatus.status)
 
 const bpo = ref([])
@@ -264,19 +266,29 @@ watch(bpoTransferStatus, (a, b)=>{
   }
 })
 
-onMounted(_=>{
-  if (skillName.value){
-    setTimeout(_=>{
-      setValues()
-      createChart()
-    },100)
-  }
+watch(filesInState, _=>{
+  // console.log('Run deep watch');
+  setValues()
+  createChart()
+}, {deep: true} )
+
+// onMounted(_=>{
+//   if (skillName.value){
+//     console.log('Run onMounted');
+//     setTimeout(_=>{
+//       setValues()
+//       createChart()
+//     },100)
+//   }
 
 
-})
+// })
 
 function addDay(){
-  store.state.bpoDate.add(1, 'day')
+  store.dispatch('changeBpoDate', 1)
+}
+function reduceDay(){
+  store.dispatch('changeBpoDate', -1)
 }
 
 </script>
@@ -286,7 +298,7 @@ function addDay(){
   <div class="home">
     <div class="card">
       <div class="card-header">
-        <font-awesome-icon icon="angle-left" />
+        <font-awesome-icon icon="angle-left" @click="reduceDay()" />
         <span class="bpo-name" @click="selectSkill=!selectSkill">{{skillName}} - {{store.state.bpoDate.format('Do of MMMM YYYY')}}</span>
         <font-awesome-icon icon="angle-right" @click="addDay()" />
       </div>
@@ -349,8 +361,12 @@ function addDay(){
   .form {
     padding-block-start: 1rem;
   }
-  .card-header .bpo-name {
-    cursor: pointer;
+  .card-header {
+    *{
+      cursor: pointer;
+    }
+    display: flex;
+    justify-content: space-between;
   }
 }
 
