@@ -23,7 +23,8 @@ const ReadyTime = require('../models/ReadyTime')
 const moment = require('moment')
 const {getSegments, getSegmentbyId, updateSegment} = require('../controllers/segment.js');
 const { getForms } = require('../controllers/form.js');
-const {createBPOFile,createBPOFilev2, getBPOFileForSkillAndDate} = require('../controllers/bpo.js')
+const {createBPOFile,createBPOFilev2, getBPOFileForSkillAndDate} = require('../controllers/bpo.js');
+const BPO = require('../models/BPO.js');
 
 const genError = (statusCode, error)=>{
     return {
@@ -383,6 +384,8 @@ router.get('/pbi/:model', async (req, res)=>{
     try {
         if ( model === 'transcript') res.status(200).send(await Transcript.find(query).lean())
         else if ( model === 'aiusage') res.status(200).send(await AIUsage.find(query).lean())
+        else if ( model === 'bpo') res.status(200).send(await BPO.find(query).lean())
+        else if ( model === 'readytime') res.status(200).send(await ReadyTime.find(query).lean())
         else res.status(404).send({message: "Could not find model " + model})
     } catch (error) {
         res.status(500).send({message: error.message})
