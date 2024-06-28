@@ -272,17 +272,6 @@ watch(filesInState, _=>{
   createChart()
 }, {deep: true} )
 
-// onMounted(_=>{
-//   if (skillName.value){
-//     console.log('Run onMounted');
-//     setTimeout(_=>{
-//       setValues()
-//       createChart()
-//     },100)
-//   }
-
-
-// })
 
 function addDay(){
   store.dispatch('changeBpoDate', 1)
