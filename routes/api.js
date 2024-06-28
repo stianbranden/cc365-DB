@@ -19,6 +19,7 @@ const Collection = require('../models/Collection')
 const PersonAccount = require('../models/PersonAccount')
 const Transcript = require('../models/Transcript')
 const AIUsage = require('../models/Usage')
+const ReadyTime = require('../models/ReadyTime')
 const moment = require('moment')
 const {getSegments, getSegmentbyId, updateSegment} = require('../controllers/segment.js');
 const { getForms } = require('../controllers/form.js');
@@ -387,6 +388,16 @@ router.get('/pbi/:model', async (req, res)=>{
         res.status(500).send({message: error.message})
     }
 
+})
+
+router.get('/bpo/ready/:date', async (req, res)=>{
+    const {date} = req.params
+    try {
+        const readyTime = await ReadyTime.find({date: Number(date)}).lean()
+        res.status(200).send(readyTime)
+    } catch (error) {
+        res.status(500).send({message: error.message})
+    }
 })
 
 
