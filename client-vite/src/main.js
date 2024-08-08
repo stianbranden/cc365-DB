@@ -49,8 +49,8 @@ import {
     faTrash, 
     faArrowUpRightFromSquare,
     faCircleXmark,
-    faMedal
-    
+    faMedal,
+    faChartSimple    
 
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -65,7 +65,7 @@ library.add(faLightbulb, faPhoneAlt, faComments, faEnvelope, faFolder, faCircleN
     faUsers,faPlusCircle, faBell, faBellSlash, faExclamationTriangle, faSort, faFilter,
     faClipboard, faEdit, faCog, faFile, faTrashAlt, faAngleDown, faAngleUp, faTruck, faUserCog,
     faCalendar, faUndoAlt, faUser, faCodeBranch, faSync, faStar, faShield, faGaugeSimpleHigh, faCircleMinus, 
-    faPenToSquare, faCircleCheck, faTrash, faArrowUpRightFromSquare, faCircleXmark, faMedal )
+    faPenToSquare, faCircleCheck, faTrash, faArrowUpRightFromSquare, faCircleXmark, faMedal, faChartSimple)
 
 createApp(App)
     .component('font-awesome-icon', FontAwesomeIcon)

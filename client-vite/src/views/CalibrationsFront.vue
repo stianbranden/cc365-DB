@@ -38,13 +38,13 @@ function deleteCalibration(id){
         <div class="card-body">
             <div class="calibration-wrapper" v-for="calibration in store.state.calibrations" :key="calibration._id">
                 <div class="calibrations">
-                    <div class="name">{{calibration.openDelete ? 'Delete session?' : calibration.name}}</div>
+                    <div class="name" :title="calibration.name">{{calibration.openDelete ? 'Delete session?' : calibration.name}}</div>
                     <div class="buttons" v-if="calibration.openDelete">
                         <button @click="deleteCalibration(calibration._id)" class="red"><font-awesome-icon icon="circle-check" /></button>
                         <button @click="calibration.openDelete = false"><font-awesome-icon icon="circle-xmark" /></button>
                     </div>
                     <div class="buttons" v-else>
-                        <button @click="router.push({name: 'Calibration Session', params: {session: calibration._id, sessionName: calibration.name}})"><font-awesome-icon icon="arrow-up-right-from-square" /></button>
+                        <button @click="router.push({name: 'Calibration Session', params: {session: calibration._id}})"><font-awesome-icon icon="arrow-up-right-from-square" /></button>
                         <button @click="calibration.openDelete = true" class="red"><font-awesome-icon icon="trash" /></button> 
                     </div>
                 </div>
@@ -99,6 +99,9 @@ function deleteCalibration(id){
     
     > *:first-child {
         justify-self: left;
+        max-width: 180px;
+        overflow-x: hidden;
+        text-wrap: nowrap;
     }
     button {
         margin-inline: 0.1rem;

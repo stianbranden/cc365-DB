@@ -38,6 +38,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "alerts" */ '../views/QualityAssurance.vue')
   },
   {
+    path: '/quality/contactstatus',
+    name: 'ContactGoal Status',
+    component: () => import(/* webpackChunkName: "alerts" */ '../views/ContactGoalStatus.vue')
+  },
+  {
     path: '/quality/contactgoaladmin',
     name: 'ContactGoal Admin',
     component: () => import(/* webpackChunkName: "alerts" */ '../views/ContactGoalSetting.vue')
@@ -135,9 +140,11 @@ router.afterEach(to=>{
       })
     }
   }
-  else if ( name === 'QualityAdmin' || name === 'ContactGoal Admin' || name === 'Calibration' || name === 'Calibration Session'){
+  else if ( name === 'QualityAdmin' || name === 'ContactGoal Admin' || name === 'Calibration' || name === 'Calibration Session'|| name === 'ContactGoal Status'){
     pages.push({name: 'Quality Admin', routeName: 'QualityAdmin', params: {}, link: true})
-    if ( name === 'Calibration' || name === 'ContactGoal Admin') pages.push({name, routeName: name, params: {}, link: false})
+    if ( name === 'Calibration' || 
+      name === 'ContactGoal Admin' || 
+      name === 'ContactGoal Status' ) pages.push({name, routeName: name, params: {}, link: false})
     else if ( name === 'Calibration Session') {
       name = store.getters.getSession(to.params.session).name
       pages.push({name: 'Calibration', routeName: 'Calibration', params: {}, link: true })

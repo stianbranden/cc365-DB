@@ -86,7 +86,7 @@ function editCommentClick(){
 
 <template>
 <div class="home">
-    <div class="calibration-session-data">
+    <div class="calibration-session-data" :class="store.getters.getSession(sessionId).contacts == 0 ?'no-contacts' : ''">
         <div class="card">
             <div class="card-header">
                 {{store.getters.getSession(sessionId).name}}    
@@ -105,6 +105,26 @@ function editCommentClick(){
                     Critical Passrate: {{getPassRate(true)}}
                 </div>
                 
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span></span>
+                <span>
+                    Session Comment
+                </span>
+                <span>
+                    <font-awesome-icon class="btn" icon="pen-to-square" v-if="!editComment" @click="editCommentClick()" title="Edit comment" />
+                    <font-awesome-icon class="btn" icon="circle-check" v-else @click="saveComment()" title="Save comment" />
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="saved-comment" v-if="!editComment">
+                    {{store.getters.getSession(sessionId).comment}}
+                </div>
+                <div class="form" v-else>
+                    <textarea name="comment" id="" cols="25" rows="10" v-model="comment"></textarea>
+                </div>
             </div>
         </div>
         <div class="card">
@@ -129,26 +149,6 @@ function editCommentClick(){
                 </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-header">
-                <span></span>
-                <span>
-                    Session Comment
-                </span>
-                <span>
-                    <font-awesome-icon class="btn" icon="pen-to-square" v-if="!editComment" @click="editCommentClick()" title="Edit comment" />
-                    <font-awesome-icon class="btn" icon="circle-check" v-else @click="saveComment()" title="Save comment" />
-                </span>
-            </div>
-            <div class="card-body">
-                <div class="saved-comment" v-if="!editComment">
-                    {{store.getters.getSession(sessionId).comment}}
-                </div>
-                <div class="form" v-else>
-                    <textarea name="comment" id="" cols="25" rows="10" v-model="comment"></textarea>
-                </div>
-            </div>
-        </div>
     </div>
     <ContactCalibration v-if="store.getters.getSession(sessionId).contacts.length > 0" :contacts="store.getters.getSession(sessionId).contacts" :abbreviateNames="abbreviateNames"/>
 </div>
@@ -161,6 +161,11 @@ function editCommentClick(){
     }
     @include tv {
         display: block;
+    }
+    &.no-contacts{
+        @include tv {
+            display: flex;
+        }
     }
 }
 .btn {

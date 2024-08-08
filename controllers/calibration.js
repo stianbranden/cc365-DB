@@ -2,7 +2,8 @@ const axios = require('axios')
 const FormData = require('form-data');
 const {Calibration, ContactCalibration} = require('../models/Calibration')
 const {generateReport, getReportData} = require('./config')
-const authCalabrio = require('./authCalabrio')
+const authCalabrio = require('./authCalabrio');
+const { logErr } = require('./logger');
 
 function createCalibration({name, gauge}){
     return new Promise(async (resolve, reject)=>{
@@ -34,16 +35,18 @@ function readCalibration(_id){
     })
 }
 
-function listCalibrations(searchObj){
+function listCalibrations(searchObj={}){
     return new Promise(async (resolve, reject)=>{
         try {
+            searchObj.deleted = false
             const calibrations = await Calibration.find(searchObj).sort({updatedAt: -1}).lean()
             if (calibrations)
                 resolve(calibrations)
             else
                 reject({message: 'No calibrations found'})
         } catch (error) {
-         reject(error)
+            logErr(error)
+            reject(error)
         }
     })
 }
@@ -75,9 +78,10 @@ function deleteCalibration(_id){
             if (calibration){
                 for ( let i = 0; i < calibration.contacts.length; i++){
                     const contactId = calibration.contacts[i]
-                    await ContactCalibration.findByIdAndUpdate(contactId, {calibration: null})
+                    // await ContactCalibration.findByIdAndUpdate(contactId, {calibration: null})
+                    await removeContactFromSession(contactId, _id)
                 }
-                await Calibration.findByIdAndDelete(_id)
+                await Calibration.findByIdAndUpdate(_id, {deleted: true, name: _id, contacts: []})
 
                 resolve({})
             }
@@ -318,10 +322,10 @@ function readContactsOnCalibration(sessionId){
         try {
             const session = await Calibration.findById(sessionId).lean()
             const contacts = await ContactCalibration.find({calibration: session.name}).lean()
-            if (contacts.length)
+            // if (contacts.length)
                 resolve(contacts)
-            else
-            reject({message: 'Could not find contacts on session'})
+    //         else
+    //         reject({message: 'Could not find contacts on session'})
     } catch (error) {
         reject(error)
     }

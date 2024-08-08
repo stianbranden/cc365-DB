@@ -132,11 +132,11 @@ function getPhraseHits(transcript){
 </script>
 
 <template>
-    <div class="card card-big">
+    <div class="card card-big contact-calibration">
         <div class="card-header">
-            <div><font-awesome-icon icon="angle-left" v-if="i>0" @click="i--" /></div>
+            <div><font-awesome-icon icon="angle-left" class="btn" v-if="i>0" @click="i--" /></div>
             <div>Contact #{{i+1}} ({{contacts[i]}})</div>
-            <div><font-awesome-icon icon="angle-right" v-if="i+1<contacts.length" @click="i++" /></div>
+            <div><font-awesome-icon icon="angle-right" class="btn" v-if="i+1<contacts.length" @click="i++" /></div>
         </div>
         <div class="card-body">
             <div class="top">

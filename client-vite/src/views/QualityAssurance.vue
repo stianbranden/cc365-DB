@@ -16,6 +16,12 @@ const router = useRouter()
         ContactGoal Admin
       </span>
     </div>
+    <div class="tile" @click="router.push({name: 'ContactGoal Status'})">
+      <font-awesome-icon icon="chart-simple" class="icon" />
+      <span>
+        ContactGoal Status
+      </span>
+    </div>
   </div>
 </template>
 

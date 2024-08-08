@@ -73,7 +73,12 @@ const Calibration = new mongoose.Schema({
     name: {type: String, unique: true},
     gauge: String,
     contacts: [Number],
-    comment: String
+    comment: String, 
+    deleted: {
+        required: true,
+        type: Boolean, 
+        default: false
+    }
 }, {timestamps: true})
 
 
