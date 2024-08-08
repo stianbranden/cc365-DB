@@ -38,6 +38,21 @@ const routes = [
     component: () => import(/* webpackChunkName: "alerts" */ '../views/QualityAssurance.vue')
   },
   {
+    path: '/quality/contactgoaladmin',
+    name: 'ContactGoal Admin',
+    component: () => import(/* webpackChunkName: "alerts" */ '../views/ContactGoalSetting.vue')
+  },
+  {
+    path: '/quality/calibrations',
+    name: 'Calibration',
+    component: () => import(/* webpackChunkName: "alerts" */ '../views/CalibrationsFront.vue')
+  },
+  {
+    path: '/quality/calibrations/:session',
+    name: 'Calibration Session',
+    component: () => import(/* webpackChunkName: "alerts" */ '../views/CalibrationSession.vue')
+  },
+  {
     path: '/wfm',
     name: 'WFM',
     component: () => import(/* webpackChunkName: "alerts" */ '../views/WFM.vue')
@@ -118,6 +133,20 @@ router.afterEach(to=>{
         params: {department: name, channel: to.params.channel},
         link: false
       })
+    }
+  }
+  else if ( name === 'QualityAdmin' || name === 'ContactGoal Admin' || name === 'Calibration' || name === 'Calibration Session'){
+    pages.push({name: 'Quality Admin', routeName: 'QualityAdmin', params: {}, link: true})
+    if ( name === 'Calibration' || name === 'ContactGoal Admin') pages.push({name, routeName: name, params: {}, link: false})
+    else if ( name === 'Calibration Session') {
+      name = store.getters.getSession(to.params.session).name
+      pages.push({name: 'Calibration', routeName: 'Calibration', params: {}, link: true })
+      pages.push({name, routeName: name, params: {}, link: false})
+      name = "Calibration - '"+name+"'"
+    }
+    else {
+      name = 'Quality Admin'
+      pages[0].link = false;
     }
   }
   store.commit('setPageName', name)

@@ -4,7 +4,7 @@
             <font-awesome-icon icon="angle-down" v-if="!expanded" /> 
             <font-awesome-icon icon="angle-up" v-else /> 
             {{name}} </span>
-        <span class="pages"><font-awesome-icon :icon="['far', 'file']" /> {{numPages}}</span>
+        <span class="pages"><font-awesome-icon :icon="['r', 'file']" /> {{numPages}}</span>
         <span class="alerts"><font-awesome-icon icon="exclamation-triangle" /> {{numAlerts}}</span>
         <span class="alerts"><font-awesome-icon icon="users" /> {{numUsers}}</span>
         <span class="options">

@@ -273,6 +273,20 @@ const c1apis = {
     c1evalForms: {
         method: 'get',
         url: C1BASEURL + 'recording/evalform/'
+    },
+    generateReport: {
+        method: 'POST',
+        url: C1BASEURL + 'recording/generateReport',
+        headers: { 
+            'Content-Type': 'application/json'
+        },
+        data: JSON.stringify({
+            "paramString": "report=report_evaluation_calibration&param_contact={contactId}&param_decimal_precision=2&param_output_format=csv&Pref=&LocaleLanguage=en&tz=Europe/Stockholm"
+        })
+    },
+    getReportData: {
+        method: 'POST',
+        url: C1BASEURL.replace('rest/', '') + 'qmreports'
     }
 }
 

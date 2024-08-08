@@ -113,7 +113,16 @@ export default createStore({
           '21:00','21:15', '21:30', '21:45',
           '22:00','22:15', '22:30', '22:45'
     ],
-    bpoFileTransferStatus: {status: 0, msg: 'N/A'}
+    bpoFileTransferStatus: {status: 0, msg: 'N/A'},
+    calibrations: [],
+    saveCalibrationError: {
+      hasError: false,
+      message: null,
+      placement: null
+    },
+    contactsWithoutSession: [],
+    contactCalibration: {},
+    contactsOnCalibration: []
   },
   mutations: {
     ioConnect(state){
@@ -269,6 +278,283 @@ export default createStore({
     }
   },
   actions: {
+    getAIData({state}, contactId){
+      return new Promise( async (resolve, reject)=>{
+        try {
+          const response = await fetch(VITE_API_ROOT + 'aidata/' + contactId, {
+            method: 'GET'
+          })
+          if (response.status === 200 ){
+            const contact = await response.json()
+            // state.contactCalibration = contact
+            resolve(contact)
+          }
+          else {
+            const e = (await response.json()).message
+            console.error(e)
+            reject(e)
+          }
+        } catch (error) {
+          console.error(error);
+          reject(error)
+        }
+      })
+    },
+    saveContactComment({state}, {contactId, comment}){
+      return new Promise( async (resolve, reject)=>{
+        try {
+          const response = await fetch(VITE_API_ROOT + 'calibration/contact/comment', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({contactId, comment})
+          })
+          if (response.status === 200 ){
+            const contact = await response.json()
+            state.contactCalibration = contact
+            resolve('ok')
+          }
+          else {
+            const e = (await response.json()).message
+            console.error(e)
+          }
+        } catch (error) {
+          console.error(error);
+          reject(error)
+        }
+      })
+    },
+    saveSessionComment({state}, {sessionId, comment}){
+      return new Promise (async (resolve, reject)=>{
+        try {
+          const response = await fetch(VITE_API_ROOT + 'calibration/comment', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({sessionId, comment})
+          })
+          if (response.status === 200 ){
+            const sessions = await response.json()
+            // console.log(sessions)
+            state.calibrations = sessions
+            resolve('ok')
+          }
+          else {
+            const e = (await response.json()).message
+            reject(error)
+            console.error(e)
+          }
+        } catch (error) {
+          console.error(error)
+          reject(error)
+        }
+
+      })
+    },
+    async getContactsOnSession({state}, sessionId){
+      try {
+        const response = await fetch(VITE_API_ROOT + 'calibration/'+ sessionId + '/contacts', {
+          method: 'GET'
+        })
+        if (response.status === 200 ){
+          const contacts = await response.json()
+          state.contactsOnCalibration = contacts;
+          
+        }
+        else {
+          const e = (await response.json()).message
+          console.error(e)
+        }
+      } catch (error) {
+        console.error(error);
+        
+      }
+    },
+    async refreshContactCalibration({state}, contactId){
+      try {
+        const response = await fetch(VITE_API_ROOT + 'calibration/contact/refresh', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({contactId})
+        })
+        if (response.status === 200 ){
+          const contact = await response.json()
+          state.contactCalibration = contact
+        }
+        else {
+          const e = (await response.json()).message
+          console.error(e)
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async getContactCalibration({state}, contactId){
+      try {
+        const response = await fetch(VITE_API_ROOT + 'calibration/contact/' + contactId)
+        if (response.status === 200){
+          const contact = await response.json()
+          state.contactCalibration = contact
+        }
+        else {
+          const e = (await response.json()).message
+          console.error(e)
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async getContactsWithoutSession({state}){
+      try {
+        const response = await fetch(VITE_API_ROOT + 'calibration/contacts')
+        if ( response.status === 200 ){
+          const contacts = await response.json()
+          console.log(contacts);
+          
+          state.contactsWithoutSession = contacts
+        }
+        else {
+          const e = (await response.json()).message
+          console.error(e)
+          state.saveCalibrationError = {
+            hasError: true,
+            message: e,
+            placement: 'session'
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async assignContactToSession({state, dispatch}, {contactId, sessionId}){
+      try {
+        const response = await fetch(VITE_API_ROOT + 'calibration/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({sessionId, contactId})
+        })
+        if (response.status === 200 ){
+          const session = await response.json()
+          state.contactsWithoutSession = state.contactsWithoutSession.filter(a=>a._id !== contactId)
+          state.calibrations = state.calibrations.filter(a=>a._id !== sessionId)
+          state.calibrations.push(session)
+          dispatch('getContactsOnSession', sessionId)
+        }
+        else {
+          console.log(response)
+          const e = (await response.json()).message
+          console.error(e)
+          state.saveCalibrationError = {
+            hasError: true,
+            message: e,
+            placement: 'session'
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async removeContactFromSession({state, dispatch}, {contactId, sessionId}){
+      try {
+        const response = await fetch(VITE_API_ROOT + 'calibration/contact/' + contactId +'/' + sessionId, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        if (response.status < 400 ){
+          const session = await response.json()
+          // console.log(session);
+          // state.contactsWithoutSession.push(contactId)
+          dispatch('getContactsWithoutSession')
+          state.calibrations = state.calibrations.filter(a=>a._id !== sessionId)
+          state.calibrations.push(session)
+          dispatch('getContactsOnSession', sessionId)
+        }
+        else {
+          console.log(response)
+          const e = (await response.json()).message
+          console.error(e)
+          state.saveCalibrationError = {
+            hasError: true,
+            message: e,
+            placement: 'session'
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    getCalibrations({state}){
+      fetch(VITE_API_ROOT + 'calibration')
+      .then(response=>response.json())
+      .then(data=>{
+        // console.log(data);
+        state.calibrations = data
+      }).catch(error=>{
+        console.error(error.message)
+      })
+    },
+    async createCalibration({state}, data){
+      // console.log(data);
+      try {
+        const response = await fetch(VITE_API_ROOT + 'calibration', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        if (response.status === 200 ){
+          const data = await response.json()
+          state.calibrations.unshift(data)
+        }
+        else {
+          console.log(response)
+          const e = (await response.json()).message
+          console.error(e)
+          state.saveCalibrationError = {
+            hasError: true,
+            message: e,
+            placement: 'save'
+          }
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async deleteCalibration({state, dispatch}, id){
+      try {
+        const response = await fetch(VITE_API_ROOT + 'calibration/' + id, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        })
+        if ( response.status < 400 ){
+          state.calibrations = state.calibrations.filter(a=> a._id !== id)
+          dispatch('getContactsWithoutSession')
+        }
+        else {
+          // console.log(await response.json())
+          const e = (await response.json()).message
+          console.error(e)
+          state.saveCalibrationError = {
+            hasError: true,
+            message: e,
+            placement: 'list'
+          }
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    },
     changeBpoDate({state, dispatch}, days){
       state.bpoDate.add(days, 'days')
       dispatch('getReadyTimeForDay')
@@ -489,6 +775,9 @@ export default createStore({
   modules: {
   },
   getters: {
+    getSession: (state)=>(sessionId)=>{
+      return state.calibrations.filter(a=>a._id === sessionId)[0]
+    },
     listBPOSkills(state){
       const skills = []
       state.bpoFiles.forEach(file=>{

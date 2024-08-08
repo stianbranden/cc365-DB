@@ -53,9 +53,11 @@ body {
   --linkcolor: white;
   --buttoncolor: white;
   --cardbgcolor: white;
+  --cellcolor: #{darken(white, 10%)};
   --cardmenucolor: #{$secondary-brand-color};
   --cardmenuhovercolor: #{$brand-color};
   --iconcolor : #bbb;
+  --iconhovercolor: #aaa;
   --cardwidth: 275px;
   --cardbodyheight: 225px;
   --navhover: #{lighten($brand-color, 10%)};
@@ -73,10 +75,12 @@ body {
     --linkcolor: #eee;
     --buttoncolor: black;
     --cardbgcolor: #{$color-dark-grey};
+    --cellcolor: #{lighten($color-dark-grey, 10%)};
     --cardmenucolor: black;
     --cardmenuhovercolor: #{$secondary-brand-color};
     --activealertbgcolor: #{darken($color-bad, 30%)};
     --iconcolor : #aaa;
+    --iconhovercolor: #bbb;
     --recentalertcolor: #{darken($color-yellow, 40%)};
     --alertcheckboxcolor: #{$blackish};
     //--alertbordercolor: #{$color-dark-grey};
@@ -98,6 +102,11 @@ body {
     background-color: var(--buttoncolor);
     border: 1px solid var(--textcolor);
     color: var(--textcolor);
+    &.active {
+      background-color: var(--textcolor);
+      border: 1px solid var(--buttoncolor);
+      color: var(--buttoncolor);
+    }
     cursor: pointer;
   }
 

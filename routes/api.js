@@ -25,6 +25,8 @@ const {getSegments, getSegmentbyId, updateSegment} = require('../controllers/seg
 const { getForms } = require('../controllers/form.js');
 const {createBPOFile,createBPOFilev2, getBPOFileForSkillAndDate} = require('../controllers/bpo.js');
 const BPO = require('../models/BPO.js');
+const { createCalibration, listCalibrations, deleteCalibration, readCalibration, assignContactToSession, removeContactFromSession, getContactsWithoutSession, 
+    readContactCalibration, getCalibrationResults, readContactsOnCalibration, editSessionComment, editContactComment } = require('../controllers/calibration.js');
 
 const genError = (statusCode, error)=>{
     return {
@@ -375,6 +377,152 @@ router.post('/bpo/filev2', async (req, res)=>{
     }
 })
 
+router.get('/bpo/ready/:date', async (req, res)=>{
+    const {date} = req.params
+    try {
+        const readyTime = await ReadyTime.find({date: Number(date)}).lean()
+        res.status(200).send(readyTime)
+    } catch (error) {
+        res.status(500).send({message: error.message})
+    }
+})
+
+router.post('/calibration', async (req, res)=>{
+    const {body} = req
+    try {
+        const calibration = await createCalibration(body)
+        res.status(200).send(calibration)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
+
+router.get('/calibration', async (req, res)=>{
+    try {
+        const calibrations = await listCalibrations()
+        res.status(200).send(calibrations)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
+
+router.get('/calibration/contacts', async (req, res)=>{
+    try {
+        const contacts = await getContactsWithoutSession()
+        res.status(200).send(contacts)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
+
+router.post('/calibration/comment', async (req, res)=>{
+    try {
+        const {sessionId, comment}= req.body
+        await editSessionComment(sessionId, comment)
+        const calibrations = await listCalibrations()
+        res.status(200).send(calibrations)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
+
+router.get('/calibration/:id', async (req, res)=>{
+    const {id} = req.params
+    try {
+        const calibration = await readCalibration(id)
+        res.status(200).send(calibration)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
+
+router.get('/calibration/:id/contacts', async (req, res)=>{
+    const {id} = req.params
+    try {
+        const contacts = await readContactsOnCalibration(id)
+        res.status(200).send(contacts)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
+
+router.delete('/calibration/:id', async (req, res)=>{
+    const {id} = req.params
+    try {
+        await deleteCalibration(id)
+        res.status(204).send({})
+    } catch (error) {
+        res.status(500).send(error)
+        logErr(error)
+    }
+})
+
+router.post('/calibration/contact', async (req, res)=>{
+    const {sessionId, contactId}= req.body
+    try {
+        const session = await assignContactToSession(contactId, sessionId)
+        res.status(200).send(session)
+    } catch (error) {
+        res.status(500).send(error)
+    } 
+})
+router.post('/calibration/contact/refresh', async (req, res)=>{
+    const {contactId}= req.body
+    try {
+        await getCalibrationResults(contactId)
+        const contact = await readContactCalibration(contactId)
+        res.status(200).send(contact)
+    } catch (error) {
+        res.status(500).send(error)
+    } 
+    
+})
+
+router.post('/calibration/contact/comment', async (req, res)=>{
+    const {contactId, comment}= req.body
+    try {
+        await editContactComment(contactId, comment)
+        const contact = await readContactCalibration(contactId)
+        res.status(200).send(contact)
+    } catch (error) {
+        res.status(500).send(error)
+    } 
+    
+})
+
+router.get('/calibration/contact/:contactId', async (req, res)=>{
+    const {contactId} = req.params
+    try {
+        const contact = await readContactCalibration(contactId)
+        res.status(200).send(contact)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
+
+router.delete('/calibration/contact/:contactId/:sessionId', async (req, res)=>{
+    const {sessionId, contactId}= req.params
+    try {
+        const session = await removeContactFromSession(contactId, sessionId)
+        res.status(200).send(session)
+    } catch (error) {
+        res.status(500).send(error)
+    } 
+})
+
+router.get('/aidata/:contactId', async (req, res)=>{
+    const {contactId}= req.params
+    try {
+        const contact = await Transcript.findOne({"meta.recordingId": contactId}).lean()
+        if (!contact) return res.status(200).send({hasSummary: false})
+        res.status(200).send(contact)
+    } catch (error) {
+        // logErr(error)
+        res.status(500).send(error)
+    } 
+
+})
+
 router.get('/pbi/:model', async (req, res)=>{
     const {model} = req.params
     const {date} = req.query
@@ -393,15 +541,6 @@ router.get('/pbi/:model', async (req, res)=>{
 
 })
 
-router.get('/bpo/ready/:date', async (req, res)=>{
-    const {date} = req.params
-    try {
-        const readyTime = await ReadyTime.find({date: Number(date)}).lean()
-        res.status(200).send(readyTime)
-    } catch (error) {
-        res.status(500).send({message: error.message})
-    }
-})
 
 
 function processText(text, user, department){
