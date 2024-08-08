@@ -26,18 +26,25 @@ import IntervalDataTable from '../components/IntervalDataTable.vue'
 
 
 <style lang="scss" scoped>
+.home, .wfm {
+    @include medium {
+        flex-wrap: nowrap !important;
+        scale: 0.9;
+        margin-bottom: 0 !important;
+    }
+    @include tv {
+        scale: 1;
+        margin-bottom: 2rem !important;
+    }
+}
 .home {
     display: flex;
     justify-content: space-evenly !important;
     @include medium {
         flex-wrap: nowrap !important;
-
     }
     // padding: 0 !important;
     // margin-inline: 2.5vw;  
-    > * {
-        // scale: 80%;
-    }
 }
 .wfm {
     margin-inline: 2rem;

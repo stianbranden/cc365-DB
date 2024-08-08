@@ -156,6 +156,7 @@ function calculateServiceLevel(department, channel, interval, re = 'number' ){
         text-align: right;
         width: 5rem;
         font-size: 0.6rem;
+        text-wrap: nowrap;
         > .long {
             display: none;
         }
