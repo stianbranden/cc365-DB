@@ -10,16 +10,16 @@ const router = useRouter()
       <font-awesome-icon class="icon" icon="medal" />
       <span>Calibration</span>
     </div>
-    <div class="tile" @click="router.push({name: 'ContactGoal Admin'})">
-      <font-awesome-icon icon="cog" class="icon" />
-      <span>
-        ContactGoal Admin
-      </span>
-    </div>
     <div class="tile" @click="router.push({name: 'ContactGoal Status'})">
       <font-awesome-icon icon="chart-simple" class="icon" />
       <span>
         ContactGoal Status
+      </span>
+    </div>
+    <div class="tile" @click="router.push({name: 'ContactGoal Admin'})">
+      <font-awesome-icon icon="cog" class="icon" />
+      <span>
+        ContactGoal Admin
       </span>
     </div>
   </div>

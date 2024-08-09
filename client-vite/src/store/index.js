@@ -122,7 +122,8 @@ export default createStore({
     },
     contactsWithoutSession: [],
     contactCalibration: {},
-    contactsOnCalibration: []
+    contactsOnCalibration: [],
+    cgp: [] //ContactGoalProgress
   },
   mutations: {
     ioConnect(state){
@@ -175,6 +176,9 @@ export default createStore({
           state.bpoReadyTime = data
           state.lastPing = moment().toISOString()
         }
+      })
+      state.socket.on('cgp', data=>{
+        state.cgp = data
       })
 
 

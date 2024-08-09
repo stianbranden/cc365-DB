@@ -51,6 +51,7 @@ const logToMongo = require('./middleware/logToMongo');
 const getIntervalData = require('./controllers/getIntervalData');
 const {getProfileTimeForWebhelp} = require('./controllers/getUsersInWebhelpGroups')
 const {createBPOFile, getBPOFileForSkillAndDate} = require('./controllers/bpo') 
+const {returnContactGoalProgress} = require('./controllers/contactGoal')
 
  /*Setup EJS*/
 app.set('view engine', 'ejs');
@@ -188,6 +189,11 @@ server.listen(process.env.PORT, ()=>{
         startInterval('queueUpdate');
     });
 
+    returnContactGoalProgress().then(data=>{
+        dataToUsers.cgp.vue = data
+        io.in('vue').emit('cgp', data)
+    })
+
     fetchDeliveryDeviations().then(data=>{
         dataToUsers.delDev.vue = data;
         io.in('vue').emit('delDev', data)
@@ -251,6 +257,10 @@ server.listen(process.env.PORT, ()=>{
     })
 
     cron.schedule('0 */10 * * * *', _=>{
+        returnContactGoalProgress().then(data=>{
+            dataToUsers.cgp.vue = data
+            io.in('vue').emit('cgp', data)
+        })
         fetchDeliveryDeviations().then(data=>{
             dataToUsers.delDev.vue = data;
             io.in('vue').emit('delDev', data)
@@ -300,6 +310,7 @@ io.on('connection', socket =>{
         if (dataToUsers.delDev[room]) socket.emit('delDev', dataToUsers.delDev[room])
         if (dataToUsers.intervalData[room]) socket.emit('intervalData', dataToUsers.intervalData[room] )
         if (dataToUsers.bpoReadyTime[room]) socket.emit('bpoReadyTime', dataToUsers.bpoReadyTime[room] )
+        if (dataToUsers.cgp[room]) socket.emit('cgp', dataToUsers.cgp[room] )
         
         socket.emit('reconnect-to-agents');
         
@@ -355,6 +366,9 @@ let dataToUsers = {
         vue: null
     },
     bpoReadyTime: {
+        vue: null
+    },
+    cgp: {
         vue: null
     }
 }
