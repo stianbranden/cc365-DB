@@ -289,7 +289,7 @@ function getPhraseHits(transcript){
 </template>
 
 <style lang="scss" scoped>
-#everything .home .card.card-big {
+.card-big {
     width: calc(4 * var(--cardwidth));
     .card-body {
         min-height: calc(2 * var(--cardbodyheight) + 4rem);

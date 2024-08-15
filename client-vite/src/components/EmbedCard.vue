@@ -58,7 +58,7 @@ watch(filters, _=> {
 </script>
 
 <style lang="scss" scoped>
-#everything .home .card.viz-card .card-body {
+.home .card.viz-card .card-body {
     height: 257px;
     position: relative;
     border-radius: 0 0 0.5rem 0.5rem;

@@ -1,5 +1,5 @@
 <template>
-  <div id="everything" :class="{dark: store.getters.getDark}">
+  <div id="everything" class="vue" :class="{dark: store.getters.getDark}">
     <Navigation />
     <Warnings />
     <router-view/>  
@@ -45,7 +45,15 @@ body {
   margin: 0;
   box-sizing: border-box;
 }
-#everything {
+
+.btn {
+    cursor: pointer;
+    &:hover {
+        color: var(--iconhovercolor)
+    }
+}
+
+.vue {
   --bgcolor: lightgrey;
   --headercolor: #{$brand-color};
   --textcolor: black;
@@ -86,16 +94,16 @@ body {
     //--alertbordercolor: #{$color-dark-grey};
   }
 
-
-
-
   width: 100vw;
   min-height: 100vh;
   padding-bottom: 2rem;
   overflow: hidden;
   background-color: var(--bgcolor);
   color: var(--textcolor);
+}
 
+
+.home {
   button {
     padding: 0.5rem;
     border-radius: 0.5rem;
@@ -109,126 +117,124 @@ body {
     }
     cursor: pointer;
   }
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: baseline;
+  padding: 0 1rem 2rem 1rem;
+  height: 100%;
+  overflow: auto;
+  margin-bottom: 2rem;
+  &.showAlerts {
+    @include small {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+      grid-template-areas: 
+        "alerts one"
+        "alerts two"
+        "three four"
+        "five six" 
+        "seven eight"
+      ;
+    }
+    @include medium {
+      overflow-x: hidden;
+      padding: 0 2rem 2rem 2rem;
+      grid-template-columns: auto 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr 1fr;
+      grid-template-areas: 
+        "alerts one two"
+        "alerts three four"
+        "five six seven" 
+        "eight nine ten"
+      ;
+    }
+    @include tv {
+      grid-template-columns: auto 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr;
+      grid-template-areas: 
+        "alerts one two three"
+        "alerts four five six"
+        "seven eight nine ten"
+      ;
+    }
+    @include jumbo {
+      grid-template-columns: auto 1fr 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr ;
+      grid-template-areas: 
+        "alerts one two three four"
+        "alerts five six seven eight"
+      ;
+    }
+  }
+  .card {
+    width: var(--cardwidth);
+    height: fit-content;
+    border-radius: 0.5rem;
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    background-color: var(--cardbgcolor);
+    margin: 2rem 1rem;
+    justify-self: center;
+    align-self: center;
 
-  .home {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-content: baseline;
-    padding: 0 1rem 2rem 1rem;
-    height: 100%;
-    overflow: auto;
-    margin-bottom: 2rem;
-    &.showAlerts {
+    @include jumbo {
+      //transform: scale(1.05);
+    }
+
+    &.alerts-card{
+      width: 90vw;
+      grid-area: alerts;
+      min-width: calc(1.3 * var(--cardwidth));
+      max-width: calc(2 * var(--cardwidth));
       @include small {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
-        grid-template-areas: 
-          "alerts one"
-          "alerts two"
-          "three four"
-          "five six" 
-          "seven eight"
-        ;
+        max-width: calc(1.5 * var(--cardwidth));
+        width: unset;
       }
       @include medium {
-        overflow-x: hidden;
-        padding: 0 2rem 2rem 2rem;
-        grid-template-columns: auto 1fr 1fr;
-        grid-template-rows: 1fr 1fr 1fr 1fr;
-        grid-template-areas: 
-          "alerts one two"
-          "alerts three four"
-          "five six seven" 
-          "eight nine ten"
-        ;
+        min-width: calc(1.2 * var(--cardwidth));
+        max-width: calc(2 * var(--cardwidth));
       }
       @include tv {
-        grid-template-columns: auto 1fr 1fr 1fr;
-        grid-template-rows: 1fr 1fr 1fr;
-        grid-template-areas: 
-          "alerts one two three"
-          "alerts four five six"
-          "seven eight nine ten"
-        ;
+        min-width: calc(1.65 * var(--cardwidth));
+        max-width: calc(2.5 * var(--cardwidth));
       }
-      @include jumbo {
-        grid-template-columns: auto 1fr 1fr 1fr 1fr;
-        grid-template-rows: 1fr 1fr ;
-        grid-template-areas: 
-          "alerts one two three four"
-          "alerts five six seven eight"
-        ;
+      .card-body {
+        min-height: calc(2 * var(--cardbodyheight) + 4rem + 2rem + 2rem);//calc(2.55 * var(--cardbodyheight)) !important;
+        overflow-y: auto;
       }
     }
-    .card {
-      width: var(--cardwidth);
-      height: fit-content;
-      border-radius: 0.5rem;
-      box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
-      background-color: var(--cardbgcolor);
-      margin: 2rem 1rem;
-      justify-self: center;
-      align-self: center;
 
-      @include jumbo {
-        //transform: scale(1.05);
-      }
-  
-      &.alerts-card{
-        width: 90vw;
-        grid-area: alerts;
-        min-width: calc(1.3 * var(--cardwidth));
-        max-width: calc(2 * var(--cardwidth));
-        @include small {
-          max-width: calc(1.5 * var(--cardwidth));
-          width: unset;
-        }
-        @include medium {
-          min-width: calc(1.2 * var(--cardwidth));
-          max-width: calc(2 * var(--cardwidth));
-        }
-        @include tv {
-          min-width: calc(1.65 * var(--cardwidth));
-          max-width: calc(2.5 * var(--cardwidth));
-        }
-        .card-body {
-          min-height: calc(2 * var(--cardbodyheight) + 4rem + 2rem + 2rem);//calc(2.55 * var(--cardbodyheight)) !important;
-          overflow-y: auto;
-        }
-      }
-  
-      .card-body, .card-spinner {
-        height: var(--cardbodyheight);
-      }
-      .card-header {
-        border-radius: 0.5rem 0.5rem 0 0;
-          position: relative;
-          background-color: var(--headercolor);
-          color: white;
-          padding: 0.5rem;
-          height: 2rem;
-          z-index: 2;
-      }
-      .card-menu{
-        background-color: var(--cardmenucolor);
-          height: 2rem;
-          border-radius: 0 0 0.5rem 0.5rem;
-          position: relative;
-          display: flex;
-          padding: 0 1rem;
-          align-items: center;
-          color: white;
-          z-index: 2;
-      }
+    .card-body, .card-spinner {
+      height: var(--cardbodyheight);
     }
-  }
-  footer{
-    font-size: 0.8rem;
-    margin-top: 3rem;
+    .card-header {
+      border-radius: 0.5rem 0.5rem 0 0;
+        position: relative;
+        background-color: var(--headercolor);
+        color: white;
+        padding: 0.5rem;
+        height: 2rem;
+        z-index: 2;
+    }
+    .card-menu{
+      background-color: var(--cardmenucolor);
+        height: 2rem;
+        border-radius: 0 0 0.5rem 0.5rem;
+        position: relative;
+        display: flex;
+        padding: 0 1rem;
+        align-items: center;
+        color: white;
+        z-index: 2;
+    }
   }
 }
+footer{
+  font-size: 0.8rem;
+  margin-top: 3rem;
+}
+
 
 
 #app {
