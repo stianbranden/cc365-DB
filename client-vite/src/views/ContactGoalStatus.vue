@@ -7,7 +7,7 @@ function returnUpdateTime(dt, fixed = false){
     const time = moment(dt)
     const today = moment()
     if ( !fixed && time.format('YYYY-MM-DD') === today.format('YYYY-MM-DD')) return time.format('HH:mm')
-    return time.format('YYYY-MM-DD HH:mm')
+    return time.format('MMM Do HH:mm')
 }
 
 </script>

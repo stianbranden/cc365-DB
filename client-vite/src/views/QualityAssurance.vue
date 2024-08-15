@@ -6,10 +6,10 @@ const router = useRouter()
 
 <template>
   <div class="quality">
-    <div class="tile" @click="router.push({name: 'Calibration'})">
-      <font-awesome-icon class="icon" icon="medal" />
-      <span>Calibration</span>
-    </div>
+      <div class="tile" @click="router.push({name: 'Calibration'})">
+        <font-awesome-icon class="icon" icon="medal" />
+        <span>Calibration</span>
+      </div>
     <div class="tile" @click="router.push({name: 'ContactGoal Status'})">
       <font-awesome-icon icon="chart-simple" class="icon" />
       <span>
