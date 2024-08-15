@@ -9,6 +9,17 @@ import {version} from '../../package.json'
 
 export default createStore({
   state: {
+    newFeatures: 0,
+    colors: [
+      {name: 'elkjop-green', hex: '#78be20', rgba: 'rgba(120, 190, 32, 0.4)', rgb: 'rgb(120, 190, 32)' },
+      {name: 'elkjop-blue', hex: '#141b4d', rgba: 'rgba(20,27,77,0.4)', rgb: 'rgb(20,27,77)' },
+      {name: 'best', hex: '#006633', rgba: 'rgba(0,102,51,0.4)' },
+      {name: 'light-blue', hex: '#003399', rgba: 'rgba(0,51,153,0.4)' },
+      {name: 'hotpink', hex: '#C83586', rgba: 'rgba(200,53,134,0.4)' },
+      {name: 'purple', hex: '#4F247E', rgba: 'rgba(79,36,126,0.4)' },
+      {name: 'yellow', hex: '#f9e300', rgba: 'rgba(249,227,0,0.4)' },
+      {name: 'lighter-blue', hex: '#0099cc', rgba: 'rgba(0,153,204,0.4)' }
+    ],
     version: version,
     releaseNotes: [],
     socket: null,
@@ -123,7 +134,8 @@ export default createStore({
     contactsWithoutSession: [],
     contactCalibration: {},
     contactsOnCalibration: [],
-    cgp: [] //ContactGoalProgress
+    cgp: [], //ContactGoalProgress
+    aiContactReasonData: [] //GPT Contact Reasons
   },
   mutations: {
     ioConnect(state){
@@ -180,6 +192,10 @@ export default createStore({
       state.socket.on('cgp', data=>{
         state.cgp = data
       })
+      state.socket.on('aiContactReasonData', data=>{
+        state.aiContactReasonData = data
+      })
+      
 
 
       //Socket state mngmnt
@@ -233,6 +249,9 @@ export default createStore({
     },
     setAlerts(state, newValue){
       state.showAlerts = newValue
+    },
+    setNewFeatures(state, newValue){
+      state.newFeatures = newValue
     },
     setNotifications(state, newValue){
       if ( newValue ){
@@ -682,6 +701,9 @@ export default createStore({
 
       let skillName = localStorage.getItem('skillName') == null ? '' : localStorage.getItem('skillName')
       commit('setSkillName', skillName)
+
+      const newFeatures = localStorage.getItem('newFeatures') == null ? 0 : localStorage.getItem('newFeatures')
+      commit('setNewFeatures', newFeatures)
     },
     createAlert: ({dispatch}, data) =>{
       return new Promise(async (resolve, reject)=>{

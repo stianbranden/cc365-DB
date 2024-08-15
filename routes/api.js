@@ -27,6 +27,7 @@ const {createBPOFile,createBPOFilev2, getBPOFileForSkillAndDate} = require('../c
 const BPO = require('../models/BPO.js');
 const { createCalibration, listCalibrations, deleteCalibration, readCalibration, assignContactToSession, removeContactFromSession, getContactsWithoutSession, 
     readContactCalibration, getCalibrationResults, readContactsOnCalibration, editSessionComment, editContactComment } = require('../controllers/calibration.js');
+const { getTranscriptDataForContact, getBulkTranscriptData } = require('../controllers/aidata.js');
 
 const genError = (statusCode, error)=>{
     return {
@@ -513,13 +514,32 @@ router.delete('/calibration/contact/:contactId/:sessionId', async (req, res)=>{
 router.get('/aidata/:contactId', async (req, res)=>{
     const {contactId}= req.params
     try {
-        const contact = await Transcript.findOne({"meta.recordingId": contactId}).lean()
+        const contact = await getTranscriptDataForContact(contactId)
         if (!contact) return res.status(200).send({hasSummary: false})
         res.status(200).send(contact)
     } catch (error) {
         // logErr(error)
         res.status(500).send(error)
     } 
+})
+
+router.get('/contacts/:dates/:language', async (req, res)=>{
+    try {
+        // logStd('Hello from api')
+        const {language, dates} = req.params
+        const query = {}
+        if ( language && language != 'all'){
+            query['meta'] = {
+                language
+            }
+        }
+        const contacts = await getBulkTranscriptData(dates, query)
+        res.status(200).send(contacts)
+    } catch (error) {
+        logErr(error)
+        res.status(500).send(error)
+    }
+
 
 })
 

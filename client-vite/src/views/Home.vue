@@ -19,6 +19,9 @@
     >
       Nordic {{viz.name}}
     </EmbedCard>
+    <template v-if="store.state.newFeatures">
+      <ContactReasons v-if="store.state.aiContactReasonData.length"/>
+    </template>
   </div>
 </template>
 
@@ -32,6 +35,7 @@ import SummaryCard from '../components/SummaryCard.vue'
 import Alerts from '../components/Alerts.vue'
 import CollectionQueueCard from '../components/CollectionQueueCard.vue'
 import EmbedCard from '../components/EmbedCard.vue'
+import ContactReasons from '../components/ContactReasons.vue'
 
 
 export default {
@@ -41,7 +45,8 @@ export default {
     SummaryCard,
     Alerts,
     CollectionQueueCard,
-    EmbedCard
+    EmbedCard,
+    ContactReasons
   },
   setup() {
     const router = useRouter()

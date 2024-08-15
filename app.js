@@ -51,7 +51,8 @@ const logToMongo = require('./middleware/logToMongo');
 const getIntervalData = require('./controllers/getIntervalData');
 const {getProfileTimeForWebhelp} = require('./controllers/getUsersInWebhelpGroups')
 const {createBPOFile, getBPOFileForSkillAndDate} = require('./controllers/bpo') 
-const {returnContactGoalProgress} = require('./controllers/contactGoal')
+const {returnContactGoalProgress} = require('./controllers/contactGoal');
+const { getBulkTranscriptData } = require('./controllers/aidata');
 
  /*Setup EJS*/
 app.set('view engine', 'ejs');
@@ -209,6 +210,11 @@ server.listen(process.env.PORT, ()=>{
         dataToUsers.bpoReadyTime.vue = data
         io.in('vue').emit('bpoReadyTime', data)
     })
+    getBulkTranscriptData('today', {}).then(data=>{
+        dataToUsers.aiContactReasonData.vue = data
+        io.in('vue').emit('aiContactReasonData', data)
+    })
+
 
     //Start up Teleopti data fetching
     getTodaysTeleoptiData({dropScheduleCollection: false}).then(_=>startInterval('scheduleUpdate'));
@@ -273,6 +279,10 @@ server.listen(process.env.PORT, ()=>{
             dataToUsers.bpoReadyTime.vue = data
             io.in('vue').emit('bpoReadyTime', data)
         })
+        getBulkTranscriptData('today', {}).then(data=>{
+            dataToUsers.aiContactReasonData.vue = data
+            io.in('vue').emit('aiContactReasonData', data)
+        })
     })
 
 });
@@ -311,6 +321,7 @@ io.on('connection', socket =>{
         if (dataToUsers.intervalData[room]) socket.emit('intervalData', dataToUsers.intervalData[room] )
         if (dataToUsers.bpoReadyTime[room]) socket.emit('bpoReadyTime', dataToUsers.bpoReadyTime[room] )
         if (dataToUsers.cgp[room]) socket.emit('cgp', dataToUsers.cgp[room] )
+        if (dataToUsers.aiContactReasonData[room]) socket.emit('aiContactReasonData', dataToUsers.aiContactReasonData[room] )
         
         socket.emit('reconnect-to-agents');
         
@@ -369,6 +380,9 @@ let dataToUsers = {
         vue: null
     },
     cgp: {
+        vue: null
+    },
+    aiContactReasonData: {
         vue: null
     }
 }
