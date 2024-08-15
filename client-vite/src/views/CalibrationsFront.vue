@@ -71,6 +71,9 @@ function deleteCalibration(id){
 .error {
     background: red
 }
+.home {
+    justify-content: flex-start;
+}
 .card-body {
     display: flex;
     flex-direction: column;

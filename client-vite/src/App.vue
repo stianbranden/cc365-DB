@@ -40,6 +40,13 @@ export default {
 
 
 <style lang="scss">
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
   padding: 0;
   margin: 0;
@@ -104,6 +111,8 @@ body {
 
 
 .home {
+  // margin-top: 1rem;
+  margin-inline: 2rem;
   button {
     padding: 0.5rem;
     border-radius: 0.5rem;
