@@ -437,6 +437,16 @@ router.get('/calibration/:id', async (req, res)=>{
     }
 })
 
+router.post('/calibration/delete/:id', async (req, res)=>{
+    const {id} = req.params
+    try {
+        await deleteCalibration(id)
+        res.status(204).send({})
+    } catch (error) {
+        res.status(500).send(error)
+        logErr(error)
+    }
+})
 router.get('/calibration/:id/contacts', async (req, res)=>{
     const {id} = req.params
     try {
@@ -447,16 +457,6 @@ router.get('/calibration/:id/contacts', async (req, res)=>{
     }
 })
 
-router.delete('/calibration/:id', async (req, res)=>{
-    const {id} = req.params
-    try {
-        await deleteCalibration(id)
-        res.status(204).send({})
-    } catch (error) {
-        res.status(500).send(error)
-        logErr(error)
-    }
-})
 
 router.post('/calibration/contact', async (req, res)=>{
     const {sessionId, contactId}= req.body
@@ -501,7 +501,7 @@ router.get('/calibration/contact/:contactId', async (req, res)=>{
     }
 })
 
-router.delete('/calibration/contact/:contactId/:sessionId', async (req, res)=>{
+router.post('/calibration/deleteContact/:contactId/:sessionId', async (req, res)=>{
     const {sessionId, contactId}= req.params
     try {
         const session = await removeContactFromSession(contactId, sessionId)

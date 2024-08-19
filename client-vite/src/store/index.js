@@ -485,8 +485,8 @@ export default createStore({
     },
     async removeContactFromSession({state, dispatch}, {contactId, sessionId}){
       try {
-        const response = await fetch(VITE_API_ROOT + 'calibration/contact/' + contactId +'/' + sessionId, {
-          method: 'DELETE',
+        const response = await fetch(VITE_API_ROOT + 'calibration/deleteContact/' + contactId +'/' + sessionId, {
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           }
@@ -554,8 +554,8 @@ export default createStore({
     },
     async deleteCalibration({state, dispatch}, id){
       try {
-        const response = await fetch(VITE_API_ROOT + 'calibration/' + id, {
-          method: 'DELETE',
+        const response = await fetch(VITE_API_ROOT + 'calibration/delete/' + id, {
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
