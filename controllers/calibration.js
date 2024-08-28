@@ -172,14 +172,14 @@ function getEvaluatorsFromCSV(lines, gauge, colStart){
     for ( let i = columns[0]+1; i < fields.length; i++){
         if (fields[i]) columns.push(i)
     }
-    console.log('Columns found: ' + columns );
+    // console.log('Columns found: ' + columns );
     
 
     // for (let i=colStart+11; i < fields.length; i = i+3){
     for ( let ind in columns){
         const i = columns[ind]
         const name = fields[i]
-        console.log({i, name});
+        // console.log({i, name});
         
         const isGauge = name === gauge
         //Need to create an array over line numbers for each question
