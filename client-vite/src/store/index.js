@@ -406,6 +406,12 @@ export default createStore({
         })
         if (response.status === 200 ){
           const contact = await response.json()
+          contact.evaluation = contact.evaluation.sort((a,b)=>{
+            if (a.isGauge) return -1
+            if (b.isGauge) return 1
+            if (a.evaluator > b.evaluator) return 1
+            return -1
+          })
           state.contactCalibration = contact
         }
         else {
