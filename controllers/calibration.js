@@ -166,17 +166,46 @@ function getEvaluatorsFromCSV(lines, gauge, colStart){
     const evaluators = []
     const fields = lines[4].split(',')
     // const colStart = fields.indexOf('Called Number')
-    for (let i=colStart+11; i < fields.length; i = i+3){
+
+    //We need to be able to account for a variable distance betwwen evaluators...
+    const columns = [colStart+11]
+    for ( let i = columns[0]+1; i < fields.length; i++){
+        if (fields[i]) columns.push(i)
+    }
+    console.log('Columns found: ' + columns );
+    
+
+    // for (let i=colStart+11; i < fields.length; i = i+3){
+    for ( let ind in columns){
+        const i = columns[ind]
         const name = fields[i]
+        console.log({i, name});
+        
         const isGauge = name === gauge
+        //Need to create an array over line numbers for each question
+        const questions = getQuestionLineNumberArray(lines)
         const scores = []
-        for (let j = 0; j < lines.length; j++){
-            const score = lines[j].split(',')[i+2]
-            if (typeof score === 'string' && score.length > 0 && !isNaN(Number(score))) {
-                // console.log(score, typeof score)
-                scores.push(Number(score))
+        for ( let qLineNumber in questions){
+            const j = questions[qLineNumber]
+            const scoreFields = lines[j].split(',')
+            for ( let k = 0; k < 3; k++){
+                const score = scoreFields[i+k]
+                if (typeof score === 'string' && score.length > 0 && !isNaN(Number(score))) {
+                    // console.log(score, typeof score)
+                    scores.push(Number(score))
+                    break
+                }
+
             }
         }
+
+        // for (let j = 0; j < lines.length; j++){
+        //     const score = lines[j].split(',')[i+2]
+        //     if (typeof score === 'string' && score.length > 0 && !isNaN(Number(score))) {
+        //         // console.log(score, typeof score)
+        //         scores.push(Number(score))
+        //     }
+        // }
 
         const comments = []
         lines.forEach((line, index)=>{
@@ -259,8 +288,23 @@ function getQuestionsFromCSV(lines, colStart){
         }
     }
     return sections
+}
 
-
+function getQuestionLineNumberArray(lines){
+    const questions = []
+    for ( let i = 0; i < lines.length; i++) {
+        const f = lines[i].split(',')[1]
+        if ( f === 'Section:'){
+            for ( let j = i+2; j < lines.length; j++){
+                const fields2 = lines[j].split(',')
+                if ( fields2[1].length && fields2[1] !== 'Form Comments' ){
+                    questions.push(j)
+                }
+                else break
+            }
+        }
+    }
+    return questions
 }
 
 function getCSVReport({paramString, collation, signature, contactId, sessionId}){
