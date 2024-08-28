@@ -87,24 +87,32 @@ function editCommentClick(){
 <template>
 <div class="home">
     <div class="calibration-session-data" :class="store.getters.getSession(sessionId).contacts == 0 ?'no-contacts' : ''">
-        <div class="card">
+        <div class="card session-summary">
             <div class="card-header">
-                {{store.getters.getSession(sessionId).name}}    
+                Session summary 
             </div>
             <div class="card-body">
-                <div>
-                    Gauge: {{store.getters.getSession(sessionId).gauge}}
-                </div>
-                <div>
-                    NO Contacts: {{store.getters.getSession(sessionId).contacts.length}}
-                </div>
-                <div>
-                    Passrate: {{getPassRate(false)}}
-                </div>
-                <div>
-                    Critical Passrate: {{getPassRate(true)}}
-                </div>
-                
+
+                <span class="name">
+                    {{store.getters.getSession(sessionId).name}}    
+                </span>
+                <span>
+                    Gauge:
+                    </span>
+                    <span> {{store.getters.getSession(sessionId).gauge}}
+                </span>
+                <span>
+                    NO Contacts:
+                    </span>
+                    <span> {{store.getters.getSession(sessionId).contacts.length}}
+                </span>
+                <span>
+                    Passrate:</span><span> {{getPassRate(false)}}
+                </span>
+                <span>
+                    Critical Passrate: </span><span>{{getPassRate(true)}}
+                </span>
+                <!-- <span></span><span></span> -->
             </div>
         </div>
         <div class="card">
@@ -222,5 +230,22 @@ function editCommentClick(){
         align-items: center;
     }
 
+}
+.session-summary > .card-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 3rem repeat(4, 1.3rem);
+    justify-items: baseline;
+
+    margin-inline: 0.5rem;
+    .name {
+        // font-size: 1rem;
+        grid-column: 1/3;
+        font-weight: bold;
+    }
+    :not(.name){
+        height: 1.3rem;
+        font-size: 0.8rem;
+    }
 }
 </style>
