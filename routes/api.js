@@ -27,7 +27,7 @@ const {createBPOFile,createBPOFilev2, getBPOFileForSkillAndDate} = require('../c
 const BPO = require('../models/BPO.js');
 const { createCalibration, listCalibrations, deleteCalibration, readCalibration, assignContactToSession, removeContactFromSession, getContactsWithoutSession, 
     readContactCalibration, getCalibrationResults, readContactsOnCalibration, editSessionComment, editContactComment } = require('../controllers/calibration.js');
-const { getTranscriptDataForContact, getBulkTranscriptData } = require('../controllers/aidata.js');
+const { getTranscriptDataForContact, getBulkTranscriptData, getTranscriptsFromUpdateDate } = require('../controllers/aidata.js');
 
 const genError = (statusCode, error)=>{
     return {
@@ -509,6 +509,17 @@ router.post('/calibration/deleteContact/:contactId/:sessionId', async (req, res)
     } catch (error) {
         res.status(500).send(error)
     } 
+})
+
+router.get('/aidata', async (req, res)=>{
+    const {date = moment().format('YYYY-MM-DD'), limit=100, page=1, details='false'} = req.query
+    try {
+        const response = await getTranscriptsFromUpdateDate(date, limit, page, details === 'true')
+        res.status(200).send(response)
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+
 })
 
 router.get('/aidata/:contactId', async (req, res)=>{

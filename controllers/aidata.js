@@ -41,4 +41,39 @@ function flattenTranscriptJson(array){
     return returnJson
 }
 
-module.exports = {getTranscriptDataForContact, getBulkTranscriptData}
+function getTranscriptsFromUpdateDate(date, limit, page, details){
+    return new Promise( async (resolve, reject)=>{
+        try {
+            const startOfDay = new Date(date);
+            startOfDay.setUTCHours(0, 0, 0, 0); // Set time to 00:00:00.000
+            const endOfDay = new Date(date);
+            endOfDay.setUTCHours(23, 59, 59, 999); // Set time to 23:59:59.999
+            const query = {updatedAt: { $gte: startOfDay, $lt: endOfDay }}
+            const countDoc = await Transcript.countDocuments(query)
+            const metadata = {
+                totalContacts: countDoc,
+                limit,
+                page,
+                totalPages: Math.ceil(countDoc/limit)
+            }
+            let contacts = []
+            if ( page > 0 ){
+                const skip = (page-1)*limit
+                const select = details ? '' : '-transcript -chat -events.silenceEvents -events.overtalkEvents -mediaEnergy'
+                contacts = await Transcript.find(query)
+                    .select(select)
+                    .sort({updatedAt: 'asc'})
+                    .limit(limit)
+                    .skip(skip)
+                    .lean()
+            }
+            resolve({metadata, contacts})
+
+        } catch (error) {
+            reject(error)
+        }
+    })
+
+}
+
+module.exports = {getTranscriptDataForContact, getBulkTranscriptData, getTranscriptsFromUpdateDate}
