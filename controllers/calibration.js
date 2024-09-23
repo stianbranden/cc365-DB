@@ -162,7 +162,100 @@ function getContactsWithoutSession(){
     })
 }
 
-function getEvaluatorsFromCSV(lines, gauge, colStart){
+function getEvaluatorsFromCSV(lines, gauge){
+    const names = []
+    let start = false
+    const primaryNameRow = lines[4].split(',')
+    const secondaryNameRow = lines[5].split(',')
+    primaryNameRow.forEach((a, index)=>{
+        if (start) {
+            const b = secondaryNameRow[index]
+            if (a.length > 3) names.push(a)
+            else if (b.length>3) names.push(b)
+        }
+        else if (a === 'Contact Time') start = true
+    })
+    
+    const questionsWithScore = []
+    lines.forEach((line, index)=>{
+        if (line.split(',')[1] === 'Question'){
+            for ( let i = index+1; i < lines.length; i++){
+                const nextLine = lines[i].split(',')
+                if (nextLine[1] === 'Form Comments') break
+                else if ( nextLine[1].length > 3 ){
+                    const arr = []
+                    nextLine.forEach(a=>{
+                        if (a.length > 0) arr.push(a)
+                    })
+                    questionsWithScore.push(arr)
+                }
+                else break
+            }
+    
+        }
+    })
+    const evaluations = []
+    names.forEach((name, index)=>{
+        const comments = []
+        lines.forEach((line, index)=>{
+            const f = line.split(',')
+            if ( f[1] === 'Form Comments'){
+                for ( let j = index+1; j< lines.length-1; j++){
+                    const comName = lines[j].split(',')[1]
+                    if (comName.length && comName === name ){
+                        for ( let k = j; k < lines.length-2; k++){
+                            const comLine = lines[k].split(',')
+                            let comment = comLine[5]
+                            if (comment.startsWith('"')){
+                                const full = lines.join('')
+                                const start = full.indexOf(comment)
+                                const lastPart = full.slice(start)
+                                comment = lastPart.slice(1, lastPart.indexOf('",'))
+                                // console.log({start, lastPart, comment});
+                                
+                            }
+                            const commentName = comLine[1]
+                            
+                            if ( comment && comment.length && (commentName.length === 0 || commentName === name)) {
+                                // console.log({k, comment, commentName, name});
+                                comments.push(comment)
+                            }
+                            if ( commentName.length > 0 && commentName != name){
+                                // console.log({k, line: lines[k], comment, commentName, comNameL: commentName?.length, name, break: 'yes'});
+                                break; 
+                            }
+                            else
+                            {
+                                // console.log({k, line: lines[k], comment, commentName, comNameL: commentName?.length, name, break: 'no'});
+                                
+                            } 
+                        }
+                    }
+                }
+            }
+        })
+
+        const obj = {evaluator: name, isGauge: name === gauge, scores: [], accuracy: [], comments}
+        questionsWithScore.forEach(qline=>{
+            obj.scores.push(Number(qline.slice(-names.length)[index]))
+        })
+        evaluations.push(obj)
+    })
+    evaluations.forEach(e=>{
+        if (!e.isGauge){
+            const gauge = evaluations.filter(a=>a.isGauge)[0]
+            e.scores.forEach((s, index)=>{
+                if (s === gauge.scores[index]) e.accuracy.push(1)
+                else e.accuracy.push(0)
+            })
+        }
+    })
+
+    // console.log(evaluations);
+    return evaluations
+}
+
+function getEvaluatorsFromCSV_(lines, gauge, colStart){
     const evaluators = []
     const fields = lines[4].split(',')
     // const colStart = fields.indexOf('Called Number')
