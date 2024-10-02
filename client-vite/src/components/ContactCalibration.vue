@@ -182,7 +182,7 @@ function getPhraseHits(transcript){
                             :key="evaluation.evaluator" 
                             :class="evaluation.isGauge ? 'gauge' : evaluation.accuracy[findI(sectionI, questionI)] === 1 ? 'hit ' : 'miss '"
                         >
-                            {{evaluation.scores[findI(sectionI, questionI)]}}
+                            {{evaluation.scores[findI(sectionI, questionI)] === 0 ? 'NO' : 'YES'}}
                         </span>
                     </template>
                 </template>
