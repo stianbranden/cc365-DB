@@ -22,6 +22,7 @@ function returnUpdateTime(dt, fixed = false){
 
                 </div>
                 <div class="number">{{evals.backlog}}</div>
+                <div class="small-number">Started: {{ evals.inProgress }}</div>
             </div>
         </div>
     </div>
@@ -33,9 +34,12 @@ function returnUpdateTime(dt, fixed = false){
         display: flex;
         flex-direction: column;
         padding: 0.5rem;
-        padding-block-end: 2rem;
+        // padding-block-end: 2rem;
         .number {
             font-size: 4rem;
+        }
+        .small-number {
+            font-size: 0.7rem;
         }
         .wrap {
             display: grid;

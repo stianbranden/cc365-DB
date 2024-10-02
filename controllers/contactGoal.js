@@ -1,4 +1,4 @@
-const ContactGoalProgress = require('../models/ContactGoalProgress')
+const ContactGoalProgress = require('../models/ContactGoalProgress_new')
 
 function returnContactGoalProgress(){
     return new Promise( async (resolve, reject)=>{
