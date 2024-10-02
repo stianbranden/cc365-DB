@@ -1,22 +1,28 @@
 <script setup>
 import {useRouter} from 'vue-router'
 const router = useRouter()
+import { useStore } from 'vuex'
+const store = useStore()
+
+function qualityAdmin(){
+  return store.getters.getUserPages.includes('QualityAdmin')
+}
 
 </script>
 
 <template>
   <div class="quality">
-      <div class="tile" @click="router.push({name: 'Calibration'})">
-        <font-awesome-icon class="icon" icon="medal" />
-        <span>Calibration</span>
-      </div>
+    <div class="tile" @click="router.push({name: 'Calibration'})" v-if="qualityAdmin()">
+      <font-awesome-icon class="icon" icon="medal" />
+      <span>Calibration</span>
+    </div>
     <div class="tile" @click="router.push({name: 'ContactGoal Status'})">
       <font-awesome-icon icon="chart-simple" class="icon" />
       <span>
         ContactGoal Status
       </span>
     </div>
-    <div class="tile" @click="router.push({name: 'ContactGoal Admin'})">
+    <div class="tile" @click="router.push({name: 'ContactGoal Admin'})" v-if="qualityAdmin()">
       <font-awesome-icon icon="cog" class="icon" />
       <span>
         ContactGoal Admin

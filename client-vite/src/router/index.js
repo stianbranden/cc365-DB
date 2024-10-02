@@ -45,16 +45,19 @@ const routes = [
   {
     path: '/quality/contactgoaladmin',
     name: 'ContactGoal Admin',
+    beforeEnter: [isQualityAdmin],
     component: () => import(/* webpackChunkName: "alerts" */ '../views/ContactGoalSetting.vue')
   },
   {
     path: '/quality/calibrations',
     name: 'Calibration',
+    beforeEnter: [isQualityAdmin],
     component: () => import(/* webpackChunkName: "alerts" */ '../views/CalibrationsFront.vue')
   },
   {
     path: '/quality/calibrations/:session',
     name: 'Calibration Session',
+    beforeEnter: [isQualityAdmin],
     component: () => import(/* webpackChunkName: "alerts" */ '../views/CalibrationSession.vue')
   },
   {
@@ -164,6 +167,11 @@ function protectRoute(to, from, next){
   const acceptedRoutes = store.getters.getUserPages
   
   if ( acceptedRoutes.includes(to.name) ) next()
+  else next({name: 'Nordic'})
+}
+
+function isQualityAdmin(to, from, next){
+  if (store.getters.getUserPages.includes('QualityAdmin')) next()
   else next({name: 'Nordic'})
 }
 
