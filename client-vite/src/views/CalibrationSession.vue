@@ -207,6 +207,7 @@ function editCommentClick(){
     }
     .contact-list {
         overflow-y: auto;
+        height: 95%;
         > div {
             padding-inline: 5rem;
             display: grid;
