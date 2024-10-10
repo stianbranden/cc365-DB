@@ -50,12 +50,14 @@ import {
     faArrowUpRightFromSquare,
     faCircleXmark,
     faMedal,
-    faChartSimple    
+    faChartSimple,
+    faCircleHalfStroke,
+    faCircle,  
 
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
-    faTimesCircle, faBell, faBellSlash, faEdit, faFile, faTrashAlt
+    faTimesCircle, faBell, faBellSlash, faEdit, faFile, faTrashAlt, faCircle as farCircle, faCircleCheck as farCircleCheck, faCircleXmark as farCircleXmark, faCircleQuestion
 } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
@@ -65,7 +67,8 @@ library.add(faLightbulb, faPhoneAlt, faComments, faEnvelope, faFolder, faCircleN
     faUsers,faPlusCircle, faBell, faBellSlash, faExclamationTriangle, faSort, faFilter,
     faClipboard, faEdit, faCog, faFile, faTrashAlt, faAngleDown, faAngleUp, faTruck, faUserCog,
     faCalendar, faUndoAlt, faUser, faCodeBranch, faSync, faStar, faShield, faGaugeSimpleHigh, faCircleMinus, 
-    faPenToSquare, faCircleCheck, faTrash, faArrowUpRightFromSquare, faCircleXmark, faMedal, faChartSimple)
+    faPenToSquare, faCircleCheck, faTrash, faArrowUpRightFromSquare, faCircleXmark, faMedal, faChartSimple,
+    faCircleHalfStroke,faCircle, farCircle, farCircleCheck, farCircleXmark, faCircleQuestion)
 
 createApp(App)
     .component('font-awesome-icon', FontAwesomeIcon)

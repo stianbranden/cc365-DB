@@ -28,6 +28,7 @@ const BPO = require('../models/BPO.js');
 const { createCalibration, listCalibrations, deleteCalibration, readCalibration, assignContactToSession, removeContactFromSession, getContactsWithoutSession, 
     readContactCalibration, getCalibrationResults, readContactsOnCalibration, editSessionComment, editContactComment } = require('../controllers/calibration.js');
 const { getTranscriptDataForContact, getBulkTranscriptData, getTranscriptsFromUpdateDate } = require('../controllers/aidata.js');
+const Evaluation = require('../models/Evaluation.js');
 
 const genError = (statusCode, error)=>{
     return {
@@ -385,6 +386,30 @@ router.get('/bpo/ready/:date', async (req, res)=>{
         res.status(200).send(readyTime)
     } catch (error) {
         res.status(500).send({message: error.message})
+    }
+})
+
+router.get('/evaluations', async (req, res)=>{
+    const {id, mode} = req.query
+    // console.log(req.params);
+    
+    if ( mode === "evaluator" ){
+        try {
+            const evaluations = await Evaluation.find({"evaluator.username": new RegExp(id, 'i')}).lean()
+            res.status(200).send(evaluations)
+        } catch (error) {
+            res.status(500).send({message: error.message})
+        }
+    }
+    else {
+        try {
+            const evaluations = await Evaluation.find({
+                "agent.username": new RegExp(id, 'i')
+            }).lean()
+            res.status(200).send(evaluations)
+        } catch (error) {
+            res.status(500).send({message: error.message})
+        }
     }
 })
 

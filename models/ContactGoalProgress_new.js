@@ -10,6 +10,12 @@ const ProgressSchema = new mongoose.Schema({
         required: true,
         default: 'John Doe'
     },
+    username: {
+        type: String,
+        required: true,
+        default: 'John_Doe@something.com'
+    },
+
     backlog: {
         type: Number,
         required: true,

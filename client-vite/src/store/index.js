@@ -135,7 +135,8 @@ export default createStore({
     contactCalibration: {},
     contactsOnCalibration: [],
     cgp: [], //ContactGoalProgress
-    aiContactReasonData: [] //GPT Contact Reasons
+    aiContactReasonData: [], //GPT Contact Reasons
+    evaluations: [] //Evaluators or agents
   },
   mutations: {
     ioConnect(state){
@@ -301,6 +302,44 @@ export default createStore({
     }
   },
   actions: {
+    async updateEvaluations({state}, {evaluatorMode, id}){
+      // const id = state.user._id === 'stianbra@elkjop.no' ? 'fridaly@elkjop.no' : state.user._id
+      const mode = evaluatorMode ? 'evaluator': 'agent'
+      console.log({mode, id});
+      
+      const url = VITE_API_ROOT + `evaluations?id=${id}&mode=${mode}`
+      console.log('updateEvaluations');
+      try {
+        
+        const response = await fetch(url, {
+          method: 'GET'
+        })
+        if (response.status === 200 ){
+          const evaluations = await response.json()
+          // state.contactCalibration = contact
+          state.evaluations = evaluations.sort((a,b)=>{
+            if (a.evalStateId === 2 && b.evalStateId != 2) return -1
+            else if (a.evalStateId != 2 && b.evalStateId === 2) return 1
+            else if (a.evalStateId === 0 && b.evalStateId > 0) return -1
+            else if (a.evalStateId >0 && b.evalStateId === 0) return 1
+            else {
+              return a._id > b._id ? -1 : 1
+            }
+
+          })
+          console.log(evaluations);
+          
+          return 'OK'
+        }
+        else {
+          const e = (await response.json()).message
+          console.error(e)
+        }
+      } catch (error) {
+        console.error(error.message)
+        return error.message
+      }
+    },
     getAIData({state}, contactId){
       return new Promise( async (resolve, reject)=>{
         try {
@@ -1033,8 +1072,14 @@ export default createStore({
     getBotSelections: state => state.hotbots, 
     getIntervalDataByDepartment: state =>{
       return returnDepartmentIntervalData(state.intervalData)
-    }
-
+    },
+    isQualityAdmin: state => {
+      let routes = []
+      if (state.user && state.user.pages){
+        state.user.pages.forEach(p=>routes.push(p.routerName))
+      }
+      return routes.includes('QualityAdmin')
+    } 
   }
 })
 
