@@ -201,36 +201,44 @@ function getEvaluatorsFromCSV(lines, gauge){
             const f = line.split(',')
             if ( f[1] === 'Form Comments'){
                 for ( let j = index+1; j< lines.length-1; j++){
-                    const comName = lines[j].split(',')[1]
-                    if (comName.length && comName === name ){
-                        for ( let k = j; k < lines.length-2; k++){
-                            const comLine = lines[k].split(',')
-                            let comment = comLine[5]
-                            if (comment.startsWith('"')){
-                                const full = lines.join('')
-                                const start = full.indexOf(comment)
-                                const lastPart = full.slice(start)
-                                comment = lastPart.slice(1, lastPart.indexOf('",'))
-                                // console.log({start, lastPart, comment});
+                    try {
+                        const comName = lines[j].split(',')[1]
+                        if (comName && comName.length && comName === name ){
+                            for ( let k = j; k < lines.length-2; k++){
+                                const comLine = lines[k].split(',')
+                                let comment = comLine[5]
+                                if ( comment){
+                                    if (comment.startsWith('"')){
+                                        const full = lines.join('')
+                                        const start = full.indexOf(comment)
+                                        const lastPart = full.slice(start)
+                                        comment = lastPart.slice(1, lastPart.indexOf('",'))
+                                        // console.log({start, lastPart, comment});
+                                        
+                                    }
+                                }
+                                const commentName = comLine[1]
                                 
+                                if ( comment && comment.length && (commentName.length === 0 || commentName === name)) {
+                                    // console.log({k, comment, commentName, name});
+                                    comments.push(comment)
+                                }
+                                if ( commentName && commentName.length > 0 && commentName != name){
+                                    // console.log({k, line: lines[k], comment, commentName, comNameL: commentName?.length, name, break: 'yes'});
+                                    break; 
+                                }
+                                else
+                                {
+                                    // console.log({k, line: lines[k], comment, commentName, comNameL: commentName?.length, name, break: 'no'});
+                                    
+                                } 
                             }
-                            const commentName = comLine[1]
-                            
-                            if ( comment && comment.length && (commentName.length === 0 || commentName === name)) {
-                                // console.log({k, comment, commentName, name});
-                                comments.push(comment)
-                            }
-                            if ( commentName.length > 0 && commentName != name){
-                                // console.log({k, line: lines[k], comment, commentName, comNameL: commentName?.length, name, break: 'yes'});
-                                break; 
-                            }
-                            else
-                            {
-                                // console.log({k, line: lines[k], comment, commentName, comNameL: commentName?.length, name, break: 'no'});
-                                
-                            } 
                         }
+                    } catch (error) {
+                        console.log('Comment inproperly formatted, ignoring', error);
+                        
                     }
+
                 }
             }
         })
@@ -244,10 +252,12 @@ function getEvaluatorsFromCSV(lines, gauge){
     evaluations.forEach(e=>{
         if (!e.isGauge){
             const gauge = evaluations.filter(a=>a.isGauge)[0]
-            e.scores.forEach((s, index)=>{
-                if (s === gauge.scores[index]) e.accuracy.push(1)
-                else e.accuracy.push(0)
-            })
+            if (gauge){
+                e.scores.forEach((s, index)=>{
+                    if (s === gauge?.scores[index]) e.accuracy.push(1)
+                    else e.accuracy.push(0)
+                })
+            }
         }
     })
 
