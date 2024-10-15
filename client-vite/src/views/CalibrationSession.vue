@@ -1,5 +1,6 @@
 <script setup>
 import ContactCalibration from '../components/ContactCalibration.vue'
+import CalibrationReport from '../components/CalibrationReport.vue'
 
 import { watchDeep } from '@vueuse/core'
 import { ref } from 'vue'
@@ -17,6 +18,7 @@ store.dispatch('getContactsOnSession', sessionId)
 const abbreviateNames = ref(true)
 const editComment = ref(false)
 const comment = ref('')
+const page = ref('contacts')
 
 
 function addContact(contactId){
@@ -112,6 +114,10 @@ function editCommentClick(){
                 <span>
                     Critical Passrate: </span><span>{{getPassRate(true)}}
                 </span>
+                <div class="buttons"  v-if="store.getters.getSession(sessionId).contacts.length > 0">
+                    <button class="selector" :class="page==='contacts' ? 'active' : ''" @click="page='contacts'">Contacts</button>
+                    <button class="selector" :class="page==='report' ? 'active' : ''" @click="page='report'">Report</button>
+                </div>
                 <!-- <span></span><span></span> -->
             </div>
         </div>
@@ -158,7 +164,10 @@ function editCommentClick(){
             </div>
         </div>
     </div>
-    <ContactCalibration v-if="store.getters.getSession(sessionId).contacts.length > 0" :contacts="store.getters.getSession(sessionId).contacts" :abbreviateNames="abbreviateNames"/>
+    <template v-if="store.getters.getSession(sessionId).contacts.length > 0"> 
+        <ContactCalibration v-if="page==='contacts'" :contacts="store.getters.getSession(sessionId).contacts" :abbreviateNames="abbreviateNames"/>
+        <CalibrationReport v-else />
+    </template>
 </div>
 </template>
 
@@ -247,6 +256,25 @@ function editCommentClick(){
     :not(.name){
         height: 1.3rem;
         font-size: 0.8rem;
+    }
+    .buttons {
+        // justify-self: center;
+        margin-block-start: 1rem;
+        display: flex;
+        width: 100%;
+        .selector {
+            width: 5rem;
+            height: 2rem;
+            &:first-of-type {
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+            &:last-of-type {
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+
+            }
+        }
     }
 }
 </style>
