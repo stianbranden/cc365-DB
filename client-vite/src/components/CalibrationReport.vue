@@ -191,6 +191,7 @@ function getDistinctEvaluators(){
 <style lang="scss" scoped>
 .card-big {
     width: calc(4 * var(--cardwidth));
+    align-self: flex-start;
     .card-body {
         min-height: calc(2 * var(--cardbodyheight) + 4rem);
         height: fit-content;
