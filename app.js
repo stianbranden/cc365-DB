@@ -210,7 +210,7 @@ server.listen(process.env.PORT, ()=>{
         dataToUsers.bpoReadyTime.vue = data
         io.in('vue').emit('bpoReadyTime', data)
     })
-    getBulkTranscriptData('today', {}).then(data=>{
+    getBulkTranscriptData('today', {hasSummary: true}).then(data=>{
         dataToUsers.aiContactReasonData.vue = data
         io.in('vue').emit('aiContactReasonData', data)
     })
@@ -279,7 +279,7 @@ server.listen(process.env.PORT, ()=>{
             dataToUsers.bpoReadyTime.vue = data
             io.in('vue').emit('bpoReadyTime', data)
         })
-        getBulkTranscriptData('today', {}).then(data=>{
+        getBulkTranscriptData('today', {hasSummary: true}).then(data=>{
             dataToUsers.aiContactReasonData.vue = data
             io.in('vue').emit('aiContactReasonData', data)
         })
