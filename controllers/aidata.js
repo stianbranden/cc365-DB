@@ -35,7 +35,7 @@ function flattenTranscriptJson(array){
     const returnJson = []
     array.forEach(e => {
         const {meta, sentiment, contactReason} = e
-        delete contactReason['level3']
+        // delete contactReason.level3
         returnJson.push({...meta, sentiment, ...contactReason})
     });
     return returnJson
