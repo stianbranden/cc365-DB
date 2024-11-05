@@ -61,6 +61,7 @@ function getTranscriptsFromUpdateDate(date, limit, page, details){
                 const skip = (page-1)*limit
                 const select = details ? '' : '-transcript -chat -events.silenceEvents -events.overtalkEvents -mediaEnergy'
                 contacts = await Transcript.find(query)
+                    .allowDiskUse(true)
                     .select(select)
                     .sort({updatedAt: 'asc'})
                     .limit(limit)
