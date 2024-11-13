@@ -19,9 +19,7 @@
     >
       Nordic {{viz.name}}
     </EmbedCard>
-    <template v-if="store.state.newFeatures">
-      <ContactReasons v-if="store.state.aiContactReasonData.length"/>
-    </template>
+    <ContactReasons v-if="store.state.aiContactReasonData.length"/>
   </div>
 </template>
 

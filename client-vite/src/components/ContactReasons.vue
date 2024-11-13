@@ -10,7 +10,8 @@ const store = useStore()
 const crChartEl = ref(null)
 const crChart = shallowRef()
 
-const topN = ref(9)
+const topN = ref(5)
+const chosenJourney = ref(null)
 const chosenLevel1 = ref(null)
 const language = ref('all')
 
@@ -31,7 +32,8 @@ function createChart(){
         options: {
             onClick: function(e,a,c) {
                 const level1 = c.data.labels[a[0].index]
-                if (!chosenLevel1.value && level1 != 'Others') chosenLevel1.value = level1
+                if (chosenJourney.value && !chosenLevel1.value && level1 != 'Others') chosenLevel1.value = level1
+                if (!chosenJourney.value && level1 != 'Others') chosenJourney.value = level1
             },
             
             // label: 'Heello',
@@ -48,6 +50,7 @@ function createChart(){
                         footer: function(a){
                             // console.log(a);
                             
+                            if (!chosenJourney.value && a[0].label != 'Others') return 'Click to drill down'
                             if (!chosenLevel1.value && a[0].label != 'Others') return 'Click to drill down'
                             
                         }
@@ -114,21 +117,25 @@ function returnLabel(num, label){
 
 function returnData(data_){
     
-    const data = data_.filter(a=>a.language === language.value || language.value === 'all')
+    const data = data_.filter(a=>a.service_journey && (a.language === language.value || language.value === 'all'))
     const labels = data.reduce(function (acc, curr) {
-        const l = chosenLevel1.value ? curr.level2 : curr.level1
+        const l = chosenLevel1.value ? curr.level2 : chosenJourney.value ? curr.level1 : curr.service_journey?.fullname
         if (!acc.includes(l)) acc.push(l);
         return acc;
     }, []);
     
     const returnData = []
     labels.forEach(l=>{
-        let num = data.filter(a=>a.level1 === l).length
-        if (chosenLevel1.value) num = data.filter(a=>a.level1 === chosenLevel1.value).filter(a=>a.level2 === l).length
+        let num = data.filter(a=>a.service_journey?.fullname === l).length
+        if (chosenJourney.value) num = data.filter(a=>a.service_journey?.fullname === chosenJourney.value).filter(a=>a.level1 === l).length
+        if (chosenLevel1.value) num = data.filter(a=>a.service_journey?.fullname === chosenJourney.value && a.level1 === chosenLevel1.value).filter(a=>a.level2 === l).length
         if ( num > 0) returnData.push({l,num})
     })
     returnData.sort((a,b)=>a.num > b.num ? -1: 1)
         // console.log(returnData);
+    // console.log(returnData);
+    // console.log(data);
+
     
     const other = {l: 'Others', num: 0}
 
@@ -181,12 +188,17 @@ watch(data, _=>{
 , { immediate: true}
 )
 
-watch([chosenLevel1, topN, language], _=>{
+watch([chosenJourney, topN, language, chosenLevel1], _=>{
     updateChart()
 })
 // watch(topN, _=>{
 //     updateChart()
 // })
+
+function drillUp(){
+    if ( chosenLevel1.value ) chosenLevel1.value = null
+    else if (chosenJourney.value ) chosenJourney.value = null
+}
 
 </script>
 
@@ -195,10 +207,10 @@ watch([chosenLevel1, topN, language], _=>{
     <div class="card-header">
         <span></span>
         <span>
-            AI Contact Reasons {{chosenLevel1 ? ' - ' + chosenLevel1 : ''}}
+            AI Contact Reasons {{chosenJourney ? ' - ' + chosenJourney : ''}} {{ chosenLevel1 ? ' - ' + chosenLevel1 : '' }}
         </span>
         <span>
-            <font-awesome-icon v-if="chosenLevel1" class="btn" icon="angle-up" @click="chosenLevel1 = null" />
+            <font-awesome-icon v-if="chosenJourney || chosenLevel1" class="btn" icon="angle-up" @click="drillUp()" />
         </span>
         </div>
     <div class="card-body">
