@@ -29,6 +29,7 @@ const { createCalibration, listCalibrations, deleteCalibration, readCalibration,
     readContactCalibration, getCalibrationResults, readContactsOnCalibration, editSessionComment, editContactComment } = require('../controllers/calibration.js');
 const { getTranscriptDataForContact, getBulkTranscriptData, getTranscriptsFromUpdateDate } = require('../controllers/aidata.js');
 const Evaluation = require('../models/Evaluation.js');
+const { readTarget, newTarget, updateTarget, deleteTarget } = require('../controllers/scorecardTargets.js');
 
 const genError = (statusCode, error)=>{
     return {
@@ -595,6 +596,40 @@ router.get('/pbi/:model', async (req, res)=>{
         res.status(500).send({message: error.message})
     }
 
+})
+
+router.get('/target', async (req, res)=>{
+    try {
+        const targets = await readTarget()
+        res.status(200).send(targets)
+    } catch ({message}) {
+        res.status(500).send({message})
+    }
+})
+
+router.post('/target', async ({body}, res)=>{
+    try {
+        await newTarget(body)
+        res.status(200).send('OK')
+    } catch ({message}) {
+        res.status(500).send({message})
+    }
+})
+router.post('/updateTarget/:id', async ({body, params}, res)=>{
+    try {
+        await updateTarget(params.id, body)
+        res.status(200).send('OK')
+    } catch ({message}) {
+        res.status(500).send({message})
+    }
+})
+router.post('/deleteTarget/:id', async ({params}, res)=>{
+    try {
+        await deleteTarget(params.id)
+        res.status(200).send('OK')
+    } catch ({message}) {
+        res.status(500).send({message})
+    }
 })
 
 

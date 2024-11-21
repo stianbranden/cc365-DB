@@ -136,7 +136,8 @@ export default createStore({
     contactsOnCalibration: [],
     cgp: [], //ContactGoalProgress
     aiContactReasonData: [], //GPT Contact Reasons
-    evaluations: [] //Evaluators or agents
+    evaluations: [], //Evaluators or agents
+    scorecardTargets: []
   },
   mutations: {
     ioConnect(state){
@@ -302,6 +303,85 @@ export default createStore({
     }
   },
   actions: {
+    async getScorecardTargets({state}){
+      try {
+        const response = await fetch(VITE_API_ROOT + 'target', {
+          method: 'GET'
+        }) 
+        if (response.status === 200 ){
+          const targets = await response.json()
+          state.scorecardTargets = targets
+          console.log(targets);
+          
+          return 'OK'
+        }
+        else {
+          throw new Error((await response.json()).message)
+        }
+      } catch (error) {
+        console.error(error.message)
+        return error.message
+      }
+    },
+    async deleteTarget({dispatch}, id){
+      try {
+        const response = await fetch(VITE_API_ROOT + 'deleteTarget/' + id, {
+          method: 'POST'
+        }) 
+        if (response.status === 200 ){
+          await dispatch('getScorecardTargets')
+          return 'OK'
+        }
+        else {
+          throw new Error((await response.json()).message)
+        }
+      } catch (error) {
+        console.error(error.message)
+        return error.message
+      }
+    },
+    async addTarget({dispatch}, data){
+      try {
+        const response = await fetch(VITE_API_ROOT + 'target', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        }) 
+        if (response.status === 200 ){
+          await dispatch('getScorecardTargets')
+          return 'OK'
+        }
+        else {
+          throw new Error((await response.json()).message)
+        }
+      } catch (error) {
+        console.error(error.message)
+        return error.message
+      }
+    },
+    async editTarget({dispatch}, id, data){
+      try {
+        const response = await fetch(VITE_API_ROOT + 'updateTarget/' + id, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        }) 
+        if (response.status === 200 ){
+          await dispatch('getScorecardTargets')
+          return 'OK'
+        }
+        else {
+          throw new Error((await response.json()).message)
+        }
+      } catch (error) {
+        console.error(error.message)
+        return error.message
+      }
+    },
     async updateEvaluations({state}, {evaluatorMode, id}){
       // const id = state.user._id === 'stianbra@elkjop.no' ? 'fridaly@elkjop.no' : state.user._id
       const mode = evaluatorMode ? 'evaluator': 'agent'
