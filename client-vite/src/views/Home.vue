@@ -7,7 +7,7 @@
     <SummaryCard key="se" title='GS Sweden' department='se' @dblclick="navigate('sweden')" />
     <SummaryCard key="ki" title='PS Kitchen&Interior' department='ki' @dblclick="navigate('kitchen')" />
     <SummaryCard key="thd" title='PS Technical Helpdesk' department='thd' @dblclick="navigate('helpdesk')" />
-    <SummaryCard key="b2b" title='PS B2B' department='b2b' @dblclick="navigate('b2b')" />
+    <!-- <SummaryCard key="b2b" title='PS B2B' department='b2b' @dblclick="navigate('b2b')" /> -->
     <CollectionQueueCard v-for="collection in collections" :key="collection._id" :collectionId="collection._id" />
     <EmbedCard
       v-for="viz in vizes"   

@@ -18,7 +18,7 @@ import IntervalDataTable from '../components/IntervalDataTable.vue'
         <SummaryCard key="se" title='PS Sweden' department='se' @dblclick="navigate('sweden')" />
         <SummaryCard key="ki" title='PS Kitchen&Interior' department='ki' @dblclick="navigate('kitchen')" />
         <SummaryCard key="thd" title='PS Techincal Helpdesk' department='thd' @dblclick="navigate('helpdesk')" />
-        <SummaryCard key="b2b" title='PS B2B' department='b2b' @dblclick="navigate('b2b')" />
+        <!-- <SummaryCard key="b2b" title='PS B2B' department='b2b' @dblclick="navigate('b2b')" /> -->
     </div>
     <div class="wfm">
         <IntervalDataTable />

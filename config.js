@@ -1,19 +1,19 @@
 const unitsStage = {
     denmark: {
         abbr: 'dk',
-        groups: ['DK-AS-EM,AC,CH,PH,CB',   'DK-CAS-EM', 'DK-PS-PH,CB', 'DK-STA-EM,PH,CB', 'DK-HOT-PH,CB']
+        groups: ['DK-AS-EM,AC,CH,PH,CB',  'DK-BU-EM,AC,PH,CB', 'DK-BUHOT-PH,CB', 'DK-CAS-EM', 'DK-PS-PH,CB', 'DK-STA-EM,PH,CB', 'DK-HOT-PH,CB']
     },
     sweden: {
         abbr: 'se',
-        groups: ['SE-AS-EM,AC,CH,PH,CB',  'SE-CAS-EM', 'SE-PS-PH,CB', 'SE-STA-EM,PH,CB', 'SE-HOT-PH,CB']
+        groups: ['SE-AS-EM,AC,CH,PH,CB', 'SE-BU-EM,AC,PH,CB', 'SE-BUHOT-PH,CB', 'SE-CAS-EM', 'SE-PS-PH,CB', 'SE-STA-EM,PH,CB', 'SE-HOT-PH,CB']
     },
     norway: {
         abbr: 'no',
-        groups: ['NO-AS-EM,AC,CH,PH,CB',  'NO-CAS-EM', 'NO-PS-PH,CB', 'NO-STA-EM,PH,CB', 'NO-HOT-PH,CB']
+        groups: ['NO-AS-EM,AC,CH,PH,CB', 'NO-BU-EM,AC,PH,CB', 'NO-BUHOT-PH,CB', 'NO-CAS-EM', 'NO-PS-PH,CB', 'NO-STA-EM,PH,CB', 'NO-HOT-PH,CB']
     },
     finland: {
         abbr: 'fi',
-        groups: ['FI-AS-EM,AC,CH,PH,CB',  'FI-CAS-EM', 'FI-PS-PH,CB', 'FI-STA-EM,PH,CB', 'FI-HOT-PH,CB', 'FI-KI-EM,PH,AC', 'FI-KIHOT-EM,PH,AC']
+        groups: ['FI-AS-EM,AC,CH,PH,CB', 'FI-BU-EM,AC,PH,CB', 'FI-BUHOT-PH,CB', 'FI-CAS-EM', 'FI-PS-PH,CB', 'FI-STA-EM,PH,CB', 'FI-HOT-PH,CB', 'FI-KI-EM,PH,AC', 'FI-KIHOT-EM,PH,AC']
     },
     helpdesk: {
         abbr: 'thd',
@@ -42,10 +42,10 @@ const unitsStage = {
     b2b: {
         abbr: 'b2b',
         groups: [
-            'DK-BU-EM,AC,PH,CB', 'DK-BUHOT-PH,CB',
-            'SE-BU-EM,AC,PH,CB', 'SE-BUHOT-PH,CB',
-            'NO-BU-EM,AC,PH,CB', 'NO-BUHOT-PH,CB',
-            'FI-BU-EM,AC,PH,CB', 'FI-BUHOT-PH,CB',
+            
+            
+            
+            
         ]
     },
     backoffice: {
