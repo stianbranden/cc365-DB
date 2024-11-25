@@ -136,6 +136,9 @@ function getAbbr(name){
         case 'helpdesk':
             abbr = 'thd'
             break;
+        case 'b2b':
+            abbr = 'b2b'
+            break;
         default:
             break;
     }

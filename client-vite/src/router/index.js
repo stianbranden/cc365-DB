@@ -103,6 +103,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "chat" */ '../views/ChatTranscript.vue')
   },
   {
+    path: '/target',
+    name: 'ScorecardTargets',
+    component: () => import(/* webpackChunkName: "chat" */ '../views/ScoreCardTargets.vue')
+  },
+  {
     path: '/:department',
     name: 'Department',
     component: () => import(/* webpackChunkName: "department" */ '../views/Department.vue')

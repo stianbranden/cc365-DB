@@ -43,6 +43,11 @@ const departments = [
         name: 'PS THD' , 
         target: 70
     },
+    {
+        key: 'b2b',
+        name: 'PS B2B' , 
+        target: 50
+    },
 ]
 
 function getChannelName(abbr, form){
