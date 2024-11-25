@@ -20,7 +20,7 @@
     >
       Nordic {{viz.name}}
     </EmbedCard>
-    <ContactReasons v-if="store.state.aiContactReasonData.length"/>
+    <ContactReasons v-if="store.state.aiContactReasonData.length" class="col-span-2" />
   </div>
 </template>
 
@@ -71,6 +71,8 @@ export default {
 </script>
 
 <style lang="scss">
-
+.col-span-2 {
+  grid-column: span 2 / span 2;
+}
 
 </style>
