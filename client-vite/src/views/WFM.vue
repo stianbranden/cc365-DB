@@ -12,10 +12,10 @@ import IntervalDataTable from '../components/IntervalDataTable.vue'
     <!-- <div class="home" :class="{showAlerts: store.state.showAlerts}"> -->
     <div class="home">
         <!-- <Alerts v-if="store.state.showAlerts" />  -->
-        <SummaryCard key="dk" title='PS Denmark' department='dk' @dblclick="navigate('denmark')" />
-        <SummaryCard key="fi" title='PS Finland' department='fi' @dblclick="navigate('finland')" />
-        <SummaryCard key="no" title='PS Norway' department='no' @dblclick="navigate('norway')" />
-        <SummaryCard key="se" title='PS Sweden' department='se' @dblclick="navigate('sweden')" />
+        <SummaryCard key="dk" title='GS Denmark' department='dk' @dblclick="navigate('denmark')" />
+        <SummaryCard key="fi" title='GS Finland' department='fi' @dblclick="navigate('finland')" />
+        <SummaryCard key="no" title='GS Norway' department='no' @dblclick="navigate('norway')" />
+        <SummaryCard key="se" title='GS Sweden' department='se' @dblclick="navigate('sweden')" />
         <SummaryCard key="ki" title='PS Kitchen&Interior' department='ki' @dblclick="navigate('kitchen')" />
         <SummaryCard key="thd" title='PS Techincal Helpdesk' department='thd' @dblclick="navigate('helpdesk')" />
         <!-- <SummaryCard key="b2b" title='PS B2B' department='b2b' @dblclick="navigate('b2b')" /> -->
