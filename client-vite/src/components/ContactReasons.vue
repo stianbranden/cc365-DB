@@ -7,6 +7,8 @@ import moment from 'moment'
 import {useStore} from 'vuex'
 
 const store = useStore()
+const dark = computed(_=>store.state.dark)
+
 const crChartEl = ref(null)
 const crChart = shallowRef()
 
@@ -61,7 +63,7 @@ function createChart(){
                     align: 'start'
                 },
                 datalabels: {
-                    color: 'lightgrey',
+                    color: dark.value ? 'lightgrey': 'black',
                     display: function(context) {
                         return context.dataset.data[context.dataIndex] > 0;
                     },
@@ -188,7 +190,7 @@ watch(data, _=>{
 , { immediate: true}
 )
 
-watch([chosenJourney, topN, language, chosenLevel1], _=>{
+watch([chosenJourney, topN, language, chosenLevel1, dark], _=>{
     updateChart()
 })
 // watch(topN, _=>{
