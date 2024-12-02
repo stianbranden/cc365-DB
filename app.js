@@ -44,7 +44,7 @@ const queueUpdateFrequency = process.env.UPDATE_FREQUENCY || 10000;
 const {logStd,logSys,logErr, logTab} = require('./controllers/logger');
 const {getAlerts} = require('./controllers/getAlerts');
 const {getOsData} = require('./controllers/getOsData');
-const { checkChatStatus } = require('./controllers/checkChat');
+// const { checkChatStatus } = require('./controllers/checkChat');
 const {setGlobalLocalsVariables} = require('./middleware/setLocals');
 const { getPm2Data } = require('./controllers/getPm2');
 const logToMongo = require('./middleware/logToMongo');
@@ -248,9 +248,9 @@ server.listen(process.env.PORT, ()=>{
         //getQueues(true, 0).then(data=>console.log(data.data.queueStatus[1]))
     })
 
-    cron.schedule('0 */1 * * * *', _=>{ //Check chat
-        checkChatStatus();
-    });
+    // cron.schedule('0 */1 * * * *', _=>{ //Check chat
+    //     checkChatStatus();
+    // });
 
     cron.schedule(`0 */${OSUPDATEFREQ} * * * *`, async _=>{ //Get Admin data
         logStd('Getting admin data')
