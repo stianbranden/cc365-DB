@@ -319,4 +319,11 @@ Object.keys(c1apis).forEach(key=>{
     queries[key] = c1apis[key];
 });
 
+queries.genesys = {
+    getQueues: {
+        method: 'GET',
+        url: GCBASEURL + '/api/v2/routing/queues?pageSize=100&pageNumber=1'
+    }
+}
+
 module.exports = queries
