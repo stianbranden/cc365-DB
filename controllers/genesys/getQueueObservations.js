@@ -35,7 +35,7 @@ module.exports = function(platformClient, queues){
                 },
               
                 "metrics": ["oAlerting", "oInteracting", "oOnQueueUsers", "oWaiting"],
-                "detailMetrics": ["oWaiting", "oInteracting"]
+                "detailMetrics": ["oWaiting"]
               }
             const observations = await apiInstance.postAnalyticsQueuesObservationsQuery(body)
             resolve(observations)

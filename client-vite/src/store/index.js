@@ -137,7 +137,11 @@ export default createStore({
     cgp: [], //ContactGoalProgress
     aiContactReasonData: [], //GPT Contact Reasons
     evaluations: [], //Evaluators or agents
-    scorecardTargets: []
+    scorecardTargets: [],
+    genesysQueueStatus: [],
+    genesysIntervalsStats: [],
+    genesysDailyStats: [],
+    sourceSystem: 'Sinch'
   },
   mutations: {
     ioConnect(state){
@@ -196,6 +200,13 @@ export default createStore({
       })
       state.socket.on('aiContactReasonData', data=>{
         state.aiContactReasonData = data
+      })
+      state.socket.on('genesys-status', data=> state.genesysQueueStatus = data)
+      state.socket.on('genesys-statistics', ({intervaDailyStats, dailyStats})=> {
+        state.genesysIntervalsStats = intervaDailyStats
+        state.genesysDailyStats = dailyStats
+        console.log(dailyStats);
+        
       })
       
 

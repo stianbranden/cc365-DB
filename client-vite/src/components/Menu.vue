@@ -1,3 +1,58 @@
+<script setup >
+import { computed, ref } from '@vue/reactivity'
+import {useStore} from 'vuex'
+import {useRouter} from 'vue-router'
+import Logo from './Logo.vue'
+import ReleaseNotes from './ReleaseNotes.vue'
+import { watch } from '@vue/runtime-core'
+
+function abbrTitle(title){
+  if (title === 'General Service Denmark') return 'GS Denmark'
+  if (title === 'General Service Finland') return 'GS Finland'
+  if (title === 'General Service Norway') return 'GS Norway'
+  if (title === 'General Service Sweden') return 'GS Sweden'
+  if (title === 'Premium Support Kitchen&Interior') return 'PS K&I'
+  if (title === 'Premium Support Technical Helpdesk') return 'PS THD'
+  if (title === 'Premium Support B2B') return 'PS B2B'
+  else return title
+}
+
+function getPrograms(){
+  const programs = []
+  store.state.genesysQueueStatus.forEach(q=>{
+    if (!programs.includes(q.program)) programs.push(q.program)
+  })
+  return programs.sort((a,b)=>a<b?-1:1)
+}
+
+const emit = defineEmits(["closeMenu"])
+const props = defineProps({
+    menuOpen: Boolean
+})
+
+const store = useStore()
+const user = ref(store.getters.getUser)
+const router = useRouter()
+const ping = computed(_=>store.state.lastPing)
+
+watch(ping, _=>user.value = store.getters.getUser);
+
+function navigate(name, params){
+    router.push({name, params})
+    emit("closeMenu")
+}
+function navigateExternal(path){
+    emit("closeMenu")
+    window.location.href = path
+}
+
+function navigateDynamic({routerName, params}){
+    router.push({name: routerName, params})
+    emit("closeMenu")
+}
+
+</script>
+
 <template>
     <transition name="slide-down"> 
             <ul class="nav-drop" v-if="menuOpen">
@@ -5,30 +60,38 @@
                     <span></span>
                     <span>Nordic</span>
                 </li>
-                <li @click="navigate('Department',{department: 'denmark'})">
-                    <logo department="dk" />
-                    <span>Denmark</span>
-                </li>
-                <li @click="navigate('Department',{department: 'finland'})">
-                    <logo department="fi" />
-                    <span>Finland</span>
-                </li>
-                <li @click="navigate('Department',{department: 'norway'})">
-                    <logo department="no" />
-                    <span>Norway</span>
-                </li>
-                <li @click="navigate('Department',{department: 'sweden'})">
-                    <logo department="se" />
-                    <span>Sweden</span>
-                </li>
-                <li @click="navigate('Department',{department: 'kitchen'})">
-                    <logo department="ki" />
-                    <span>Kitchen</span>
-                </li>
-                <li @click="navigate('Department',{department: 'helpdesk'})">
-                    <logo department="thd" />
-                    <span>Helpdesk</span>
-                </li>
+                <template v-if="store.state.sourceSystem==='Genesys'">
+                    <li v-for="program in getPrograms()" :key="program" @click="navigate('Department',{department: program})">
+                        <span></span>
+                        <span>{{abbrTitle(program)}}</span>
+                    </li>
+                </template>
+                <template v-else>
+                    <li @click="navigate('Department',{department: 'denmark'})">
+                        <logo department="dk" />
+                        <span>Denmark</span>
+                    </li>
+                    <li @click="navigate('Department',{department: 'finland'})">
+                        <logo department="fi" />
+                        <span>Finland</span>
+                    </li>
+                    <li @click="navigate('Department',{department: 'norway'})">
+                        <logo department="no" />
+                        <span>Norway</span>
+                    </li>
+                    <li @click="navigate('Department',{department: 'sweden'})">
+                        <logo department="se" />
+                        <span>Sweden</span>
+                    </li>
+                    <li @click="navigate('Department',{department: 'kitchen'})">
+                        <logo department="ki" />
+                        <span>Kitchen</span>
+                    </li>
+                    <li @click="navigate('Department',{department: 'helpdesk'})">
+                        <logo department="thd" />
+                        <span>Helpdesk</span>
+                    </li>
+                </template>
                 <li @click="navigate('WFM')">
                     <div>
                         <font-awesome-icon icon="shield" />
@@ -91,46 +154,7 @@
         </transition>
 </template>
 
-<script>
-import { computed, ref } from '@vue/reactivity'
-import {useStore} from 'vuex'
-import {useRouter} from 'vue-router'
-import Logo from './Logo.vue'
-import ReleaseNotes from './ReleaseNotes.vue'
-import { watch } from '@vue/runtime-core'
-export default {
-    emits: ["closeMenu"],
-    components: {Logo, ReleaseNotes},
-    props: {
-        menuOpen: Boolean
-    },
-    setup(props, {emit}) {
-        const store = useStore()
-        const user = ref(store.getters.getUser)
-        const router = useRouter()
-        const ping = computed(_=>store.state.lastPing)
 
-        watch(ping, _=>user.value = store.getters.getUser);
-
-        function navigate(name, params){
-            router.push({name, params})
-            emit("closeMenu")
-        }
-        function navigateExternal(path){
-            emit("closeMenu")
-            window.location.href = path
-        }
-
-        function navigateDynamic({routerName, params}){
-            router.push({name: routerName, params})
-            emit("closeMenu")
-        }
-
-        return {store, user, navigate, navigateExternal, navigateDynamic, emit}
-    }
-
-}
-</script>
 
 <style lang="scss">
 ul.nav-drop {

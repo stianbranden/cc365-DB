@@ -110,7 +110,7 @@ const routes = [
   {
     path: '/:department',
     name: 'Department',
-    component: () => import(/* webpackChunkName: "department" */ '../views/Department.vue')
+    component: () => import(/* webpackChunkName: "department" */ '../views/Program.vue')
   },
   {
     path: '/:department/:channel/:country',

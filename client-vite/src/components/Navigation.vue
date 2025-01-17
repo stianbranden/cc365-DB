@@ -3,6 +3,7 @@
         <div class="left">
             <div class="brand" @click="navigate('Nordic', {})">
                 <img alt="Logo" src="../assets/icon.png">
+                <span title="Genesys" v-if="store.state.sourceSystem ==='Genesys'">G</span>
             </div>
             <h3 class="pagename">{{store.state.pageName}}</h3>
         </div>
@@ -84,6 +85,9 @@ header.navigation {
         margin: 0 1rem;
         img {
             height: 2rem;
+        }
+        span {
+            font-size: 0.5rem;
         }
     }
     h3.pagename {

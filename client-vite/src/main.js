@@ -2,7 +2,8 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import VueResizeObserver from "vue-resize-observer";
+import VueResizeObserver from "vue-resize-observer"
+import Shortkey from 'vue3-shortkey'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { 
@@ -54,6 +55,7 @@ import {
     faCircleHalfStroke,
     faCircle,
     faCopy,
+    faPhoneVolume
 
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -69,11 +71,12 @@ library.add(faLightbulb, faPhoneAlt, faComments, faEnvelope, faFolder, faCircleN
     faClipboard, faEdit, faCog, faFile, faTrashAlt, faAngleDown, faAngleUp, faTruck, faUserCog,
     faCalendar, faUndoAlt, faUser, faCodeBranch, faSync, faStar, faShield, faGaugeSimpleHigh, faCircleMinus, 
     faPenToSquare, faCircleCheck, faTrash, faArrowUpRightFromSquare, faCircleXmark, faMedal, faChartSimple,
-    faCircleHalfStroke,faCircle, farCircle, farCircleCheck, farCircleXmark, faCircleQuestion, faCopy)
+    faCircleHalfStroke,faCircle, farCircle, farCircleCheck, farCircleXmark, faCircleQuestion, faCopy, faPhoneVolume)
 
 createApp(App)
     .component('font-awesome-icon', FontAwesomeIcon)
     .use(store)
     .use(router)
     .use(VueResizeObserver)
+    .use(Shortkey)
     .mount('#app')

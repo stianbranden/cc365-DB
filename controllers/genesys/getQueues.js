@@ -6,11 +6,9 @@
 // client.loginClientCredentialsGrant(clientId,clientSecret)
 // // platformClient.ApiClient.instance.setAccessToken(accessToken);
 const Queue = require('../../models/genesys/Queue.js')
+const { logSys } = require('../logger.js')
 
-let opts = { 
-    pageNumber: 1, // Number | Page number
-    pageSize: 10, // Number | Page size
-}
+
 
 function getMeta(name){
     const items = name.split(' ')
@@ -63,16 +61,24 @@ function getMeta(name){
 }
 
 function getQueues(platformClient){
-    let apiInstance = new platformClient.RoutingApi();
+    const apiInstance = new platformClient.RoutingApi();
+    const opts = { 
+        pageNumber: 1, // Number | Page number
+        pageSize: 10, // Number | Page size
+    }
     return new Promise(async (resolve, reject)=>{
         try {
             const data = await apiInstance.getRoutingQueues(opts)
+            // console.log({data})
             const allData = [...data.entities]
             for (let i = 2; i <= data.pageCount; i++){
                 opts.pageNumber = i
+                // console.log('Running page', i)
                 allData.push(...(await apiInstance.getRoutingQueues(opts)).entities)
             }
+            // console.log(allData.length)
             await Queue.collection.drop()
+            logSys('Queues collection dropped')
             for (let i = 0; i < allData.length; i++){
                 const {id, name} = allData[i]
                 const {program, mainProgram, country} = getMeta(name)
@@ -80,7 +86,9 @@ function getQueues(platformClient){
                 await Queue.create({
                     _id: id, name, program, mainProgram, country
                 })
+                // console.log('Queue', i, 'inserted (', name, ')')
             }
+            logSys(allData.length, ' queues inserted')
 
             resolve(allData)
         } catch (error) {

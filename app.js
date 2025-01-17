@@ -54,6 +54,19 @@ const {createBPOFile, getBPOFileForSkillAndDate} = require('./controllers/bpo')
 const {returnContactGoalProgress} = require('./controllers/contactGoal');
 const { getBulkTranscriptData } = require('./controllers/aidata');
 
+//Genesys Cloud
+const getGCQueues = require('./controllers/genesys/getQueues.js');
+const {auth, authWithToken} = require('./controllers/genesys/authGC.js');
+const getActiveQueues = require('./controllers/genesys/getActiveQueues.js');
+const createChannel = require('./controllers/genesys/createChannel.js');
+const getQueueObservations = require('./controllers/genesys/getQueueObservations.js');
+const getDailyStats = require('./controllers/genesys/getDailyStats.js');
+const {parseQueueStatus, parseDailyStats, updateDailyStats, updateOnQueue} = require('./controllers/genesys/utilities.js');
+const { createWebSocket, subscribeToQueueStatus, updateDetailQueueStatus } = require('./controllers/genesys/handleWS.js');
+const deleteToken = require('./controllers/genesys/deleteToken.js');
+const getChannels = require('./controllers/genesys/getChannels.js');
+const deleteSubscriptions = require('./controllers/genesys/deleteSubscriptions.js');
+
  /*Setup EJS*/
 app.set('view engine', 'ejs');
 app.use(ejsLayouts);
@@ -182,6 +195,9 @@ function updateIntervalData(key, data){
 server.listen(process.env.PORT, ()=>{
     logSys(`Server listening on port ${process.env.PORT}`);
 
+    //Start up Genesys Cloud fetching
+    startGenesys()
+
     //Start up Sinch ContactCenter fetching
     //run(false, 0);
     getQueues(false, 0).then(data=> {
@@ -219,7 +235,9 @@ server.listen(process.env.PORT, ()=>{
     //Start up Teleopti data fetching
     getTodaysTeleoptiData({dropScheduleCollection: false}).then(_=>startInterval('scheduleUpdate'));
     
-
+    cron.schedule('0 * 3 * * *', _=>{ //reinitializing all connections to Genesys Cloud
+        startGenesys()
+    })
 
     cron.schedule('0 0 3 * * *', _=>{ //Getting data at 03:00 each night
         stopInterval('scheduleUpdate');
@@ -315,13 +333,14 @@ io.on('connection', socket =>{
         if (dataToUsers.queueData[room] && dataToUsers.dailyStats[room]){
             socket.emit('updateQueues', dataToUsers.queueData[room])
             socket.emit('updateStats', dataToUsers.dailyStats[room])
-            
         }
         if (dataToUsers.delDev[room]) socket.emit('delDev', dataToUsers.delDev[room])
         if (dataToUsers.intervalData[room]) socket.emit('intervalData', dataToUsers.intervalData[room] )
         if (dataToUsers.bpoReadyTime[room]) socket.emit('bpoReadyTime', dataToUsers.bpoReadyTime[room] )
         if (dataToUsers.cgp[room]) socket.emit('cgp', dataToUsers.cgp[room] )
         if (dataToUsers.aiContactReasonData[room]) socket.emit('aiContactReasonData', dataToUsers.aiContactReasonData[room] )
+        if (dataToUsers.genesys[room]?.queueStatus) socket.emit('genesys-status', dataToUsers.genesys[room].queueStatus)
+        if (dataToUsers.genesys[room]?.statistics) socket.emit('genesys-statistics', dataToUsers.genesys[room].statistics)
         
         socket.emit('reconnect-to-agents');
         
@@ -384,6 +403,9 @@ let dataToUsers = {
     },
     aiContactReasonData: {
         vue: null
+    }, 
+    genesys: {
+        vue: {}
     }
 }
 
@@ -464,4 +486,96 @@ function updateQueues({data, queueMap}){
     dataToUsers.dailyStats.vue = nordicStats;
     logStd(`Number of missing groups: ${missingGroups.length}`);
     
+}
+
+let authToken
+async function startGenesys(){
+    try {
+        // await connectDB()
+        if ( authToken ) { //Genesys clean-up
+            try {
+                logSys('Cleaning up Genesys Cloud authentication')
+                const platformClient = await authWithToken(authToken)
+                const channels = await getChannels(platformClient)
+                // console.log({channels: channels.entities})
+                for ( let i = 0; i < channels.entities.length; i++){
+                    logSys('Deleting subscriptions ' + channels.entities[i].id)
+                    await deleteSubscriptions(platformClient, channels.entities[i].id)
+                }
+                await deleteToken(platformClient)
+                logSys('Deleted token ', authToken)
+                authToken = null
+            } catch (error) {
+                logErr('Error in Genesys clean-up: ' + error.message)
+            }
+        }
+        //Creating connection to Genesys Cloud
+        const platformClient = await auth()
+        authToken = platformClient.ApiClient.authData.accessToken
+        // console.log(authToken)
+                
+        logSys('Connected to Genesys Cloud')
+        await getGCQueues(platformClient)
+        const queues = await getActiveQueues()
+        //Initializing data
+        const {results} = await getQueueObservations(platformClient, queues)    
+        const queueStatus = parseQueueStatus(results, queues)
+        let [intervaDailyStats, dailyStats] = parseDailyStats( await getDailyStats(platformClient, queues), queues)
+        logSys('Data initialized')
+        
+        io.in('vue').emit('genesys-status', queueStatus)
+        dataToUsers.genesys.vue.queueStatus = queueStatus
+        io.in('vue').emit('genesys-statistics', {intervaDailyStats, dailyStats})
+        dataToUsers.genesys.vue.statistics = {intervaDailyStats, dailyStats}
+
+        //Creating notification channel connecting to websocket (also sends a ping)
+        const channel = await createChannel(platformClient)
+        const ws = createWebSocket(channel.connectUri) 
+        // deleteToken(platformClient)
+    
+        ws.on('message', async msg=> {
+            const data = JSON.parse(msg.toString())
+    
+            if ( data?.eventBody?.message === 'pong'){ //When recieving a pong, subscribe to queues
+                subscribeToQueueStatus(ws, queues)
+            }
+    
+            else if (data?.topicName?.includes('v2.analytics.queues.') && data?.topicName?.includes('.observations.details')) { //Trigger on detail queue status
+                const queueId = data.topicName.split('.')[3]
+                updateDetailQueueStatus(queueStatus, queueId, data.eventBody.results)
+                io.in('vue').emit('genesys-status', queueStatus)
+                dataToUsers.genesys.vue.queueStatus = queueStatus
+            }
+            
+            else if (data?.topicName?.includes('v2.analytics.queues.') && data?.topicName?.includes('.observations')){ //Trigger on regular queue status
+                const {queueId, mediaType} = data.eventBody.group
+                if (!mediaType){ //If mediaType is not present, it is a user status update
+                    data.eventBody.data.forEach(d=>{
+                        const onQueueChanges = d.metrics.filter(a=>a.metric==='oOnQueueUsers')
+                        updateOnQueue(queueStatus, queueId, onQueueChanges)
+                        io.in('vue').emit('genesys-status', queueStatus)
+                        dataToUsers.genesys.vue.queueStatus = queueStatus
+                    })
+                }
+                else { //If mediaType is present, it is a queue status update
+                    console.log(data.eventBody.data)
+                    data.eventBody.data.forEach(d=>{
+                        const {interval, metrics} = d
+                        // console.log({interval, metrics})
+                        const [intervalStart, intervalEnd] = interval.split('/')
+                        if (intervalStart !== intervalEnd) { //If start and end intervals are different, its an statistics update
+                            [intervaDailyStats, dailyStats] = updateDailyStats(queues, intervaDailyStats, dailyStats, {queueId, mediaType}, intervalStart, intervalEnd, metrics)
+                            io.in('vue').emit('genesys-statistics', {intervaDailyStats, dailyStats})
+                            // console.log('I have sent')
+                            dataToUsers.genesys.vue.statistics = {intervaDailyStats, dailyStats}
+                        }
+                    })
+                    
+                }
+            }
+        })
+        
+    } catch (error) {
+        logErr(error)
+    }
 }

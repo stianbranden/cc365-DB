@@ -4,6 +4,7 @@
     <Warnings />
     <router-view/>  
     <HotBot />
+    <button hidden v-shortkey.once="['ctrl', 'alt', 'g']" @shortkey="store.state.sourceSystem = 'Genesys'">Switch to Genesys</button>
   </div>
 </template>
 
