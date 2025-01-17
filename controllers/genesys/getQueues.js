@@ -88,7 +88,7 @@ function getQueues(platformClient){
                 })
                 // console.log('Queue', i, 'inserted (', name, ')')
             }
-            logSys(allData.length, ' queues inserted')
+            logSys(allData.length + ' queues inserted')
 
             resolve(allData)
         } catch (error) {
