@@ -235,7 +235,7 @@ server.listen(process.env.PORT, ()=>{
     //Start up Teleopti data fetching
     getTodaysTeleoptiData({dropScheduleCollection: false}).then(_=>startInterval('scheduleUpdate'));
     
-    cron.schedule('0 * 3 * * *', _=>{ //reinitializing all connections to Genesys Cloud
+    cron.schedule('0 0 3 * * *', _=>{ //reinitializing all connections to Genesys Cloud
         startGenesys()
     })
 
@@ -558,7 +558,7 @@ async function startGenesys(){
                     })
                 }
                 else { //If mediaType is present, it is a queue status update
-                    console.log(data.eventBody.data)
+                    // console.log(data.eventBody.data)
                     data.eventBody.data.forEach(d=>{
                         const {interval, metrics} = d
                         // console.log({interval, metrics})
