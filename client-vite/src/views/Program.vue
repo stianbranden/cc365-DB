@@ -9,6 +9,7 @@ import DeliveryDeviationCard from '../components/DeliveryDeviationCard.vue'
 import Alerts from '../components/Alerts.vue'
 import CollectionQueueCard from '../components/CollectionQueueCard.vue'
 import EmbedCard from '../components/EmbedCard.vue'
+import SummaryCardGenesys from '../components/SummaryCardGenesys.vue'
 
 const route = useRoute();
 const store = useStore();
@@ -25,6 +26,12 @@ watch(ping, _=>{
 })
 
 const program = ref(route.params.department)
+const country = computed(_=>{
+  if ( program.value.startsWith('General Service')){
+    return program.value.split(' ')[2]
+  }
+  else return null
+})
 let department = computed(_=> getAbbr(program) )
 // console.log({program: program.value, department: department.value});
 
@@ -117,7 +124,8 @@ function channelSorter(a,b){
   <Alerts v-if="store.state.showAlerts" :department="department" /> 
   <template v-if="store.state.sourceSystem==='Genesys'">
     <div class="home" :class="{showAlerts: store.state.showAlerts}" >
-            <QueueCardGenesys v-for="channel in getChannels()" :title="channel" :channel="channel" :program="program" />
+      <QueueCardGenesys v-for="channel in getChannels()" :title="channel" :channel="channel" :program="program" />
+      <SummaryCardGenesys v-if="program.startsWith('General Service')" :title="'PS B2B ' + country" program="Premium Support B2B" :country="country" />
     </div>
   </template>
   <template v-else>

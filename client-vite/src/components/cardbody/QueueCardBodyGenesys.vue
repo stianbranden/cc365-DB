@@ -37,9 +37,9 @@ function sToTime(s){
 }
 
 function getValue(value, def=0){
-    let  arr = []
-    if (props.channel) arr = store.state.genesysQueueStatus.filter(a=>a.program === props.program && a.mediaType === props.channel)
-    else arr = store.state.genesysQueueStatus.filter(a=>a.program === props.program && a.country === props.country)
+    let  arr = store.state.genesysQueueStatus.filter(a=>a.program === props.program)
+    if ( props.channel ) arr = arr.filter(a=>a.mediaType === props.channel)
+    if ( props.country ) arr = arr.filter(a=>a.country === props.country)
     const data =  arr.reduce((acc, cur)=>{
         if ( value === 'waiting') acc += cur.waiting
         if ( value === 'idleMin') acc = cur.idle < acc ? cur.idle : acc

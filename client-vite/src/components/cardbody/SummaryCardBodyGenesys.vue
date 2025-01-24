@@ -2,30 +2,28 @@
 import {useStore} from 'vuex'
 
 const props = defineProps({
-    program: String
+    program: String,
+    country: String
 })
 const store = useStore();
 
 function getQueue(channel, country){
-    if (channel){
-        const queue =  store.state.genesysQueueStatus.filter(a=>a.program === props.program && a.mediaType === channel).reduce((acc, cur)=>{
-                acc += cur.waiting
-                return acc
-            }, 0)
-        return queue
-    }
-    else {
-        const queue =  store.state.genesysQueueStatus.filter(a=>a.program === props.program && a.country === country).reduce((acc, cur)=>{
-                acc += cur.waiting
-                return acc
-            }, 0)
-        return queue
-    }
+    let arr = store.state.genesysQueueStatus.filter(a=>a.program === props.program)
+
+    if (channel) arr = arr.filter(a=>a.mediaType === channel)
+    if (country) arr = arr.filter(a=>a.country===country)
+    const queue =  arr.reduce((acc, cur)=>{
+            acc += cur.waiting
+            return acc
+        }, 0)
+    return queue
 }
 
 function getChannels(part = 0){
   const channels = []
-  store.state.genesysQueueStatus.filter(a=>a.program === props.program).forEach(q=>{
+  let arr = store.state.genesysQueueStatus.filter(a=>a.program === props.program)
+  if ( props.country ) arr = arr.filter(a=>a.country===props.country)
+  arr.forEach(q=>{
     if (!channels.includes(q.mediaType)) channels.push(q.mediaType)
   })
   if (part === 1 ) return channels.sort(channelSorter).slice(0,Math.ceil(channels.length / 2))

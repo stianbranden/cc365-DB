@@ -14,7 +14,9 @@ const store = useStore();
 
 function getChannels(part = 0){
   const channels = []
-  store.state.genesysQueueStatus.filter(a=>a.program === props.program).forEach(q=>{
+  let qs = store.state.genesysQueueStatus.filter(a=>a.program === props.program)
+  if (props.country) qs = qs.filter(a=>a.country === props.country)
+  qs.forEach(q=>{
     if (!channels.includes(q.mediaType)) channels.push(q.mediaType)
   })
   if (part === 1 ) return channels.sort(channelSorter).slice(0,Math.ceil(channels.length / 2))
@@ -50,7 +52,10 @@ function getIcon(key){
 }
 
 function getResult(kpi, channel, country){
-    const data = channel ? store.state.genesysDailyStats.filter(a=>a.program === props.program && a.mediaType === channel) : []
+    let data = store.state.genesysDailyStats.filter(a=>a.program === props.program)
+    if (channel) data.filter(a=>a.mediaType === channel)
+    if (country) data.filter(a=>a.country === country)
+    // const data = channel ? store.state.genesysDailyStats.filter(a=>a.program === props.program && a.mediaType === channel) : []
     if (kpi === 'sl') {
         const num = data.reduce((acc, cur)=>{
             return acc + cur.serviceLevelStats.numerator

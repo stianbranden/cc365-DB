@@ -9,7 +9,8 @@ import DeliveryDeviationCardBody from './cardbody/DeliveryDeviationCardBody.vue'
 
 const props = defineProps({
     title: String, 
-    program: String
+    program: String,
+    country: String
 })
 const store = useStore();
 let page = ref('menu')
@@ -36,9 +37,16 @@ function statClick(){
 
 function getChannels(part = 0){
   const channels = []
-  store.state.genesysQueueStatus.filter(a=>a.program === props.program).forEach(q=>{
-    if (!channels.includes(q.mediaType)) channels.push(q.mediaType)
-  })
+  if ( props.country ){
+      store.state.genesysQueueStatus.filter(a=>a.program === props.program && a.country === props.country).forEach(q=>{
+        if (!channels.includes(q.mediaType)) channels.push(q.mediaType)
+      })
+  }
+  else  {
+      store.state.genesysQueueStatus.filter(a=>a.program === props.program).forEach(q=>{
+        if (!channels.includes(q.mediaType)) channels.push(q.mediaType)
+      })
+  }
   if (part === 1 ) return channels.sort(channelSorter).slice(0,Math.ceil(channels.length / 2))
   else if (part === 2 ) return channels.sort(channelSorter).slice(Math.ceil(channels.length / 2))
   else return channels.sort(channelSorter)
