@@ -66,6 +66,7 @@ const { createWebSocket, subscribeToQueueStatus, updateDetailQueueStatus } = req
 const deleteToken = require('./controllers/genesys/deleteToken.js');
 const getChannels = require('./controllers/genesys/getChannels.js');
 const deleteSubscriptions = require('./controllers/genesys/deleteSubscriptions.js');
+const { getLanguages } = require('./controllers/genesys/getLanguages.js');
 
  /*Setup EJS*/
 app.set('view engine', 'ejs');
@@ -516,6 +517,7 @@ async function startGenesys(){
                 
         logSys('Connected to Genesys Cloud')
         await getGCQueues(platformClient)
+        await getLanguages(platformClient)
         const queues = await getActiveQueues()
         //Initializing data
         const {results} = await getQueueObservations(platformClient, queues)    
