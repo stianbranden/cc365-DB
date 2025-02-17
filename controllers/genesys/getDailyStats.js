@@ -29,7 +29,7 @@ module.exports = function(platformClient, queues, subtract=0){
                           "value": "callback"
                       },{
                           "dimension": "mediaType",
-                          "value": "chat"
+                          "value": "message"
                       }
                       ]
                     }
