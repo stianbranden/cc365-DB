@@ -32,7 +32,7 @@ function getChannels(part = 0){
 }
 
 function channelSorter(a,b){
-    const dir = ['voice','callback','chat','email']
+    const dir = ['voice','callback','message','email']
     return dir.indexOf(a) - dir.indexOf(b)
 }
 

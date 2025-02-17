@@ -28,7 +28,7 @@ module.exports = function(platformClient, queues){
                         },
                         {
                             "dimension": "mediaType",
-                            "value": "chat"
+                            "value": "message"
                         }]
                     }
                   ]

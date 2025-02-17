@@ -9,7 +9,7 @@ function sortQueues(a,b){
 
 function isValidMediaType({program, queue, mediaType}){
     const valids = program.startsWith('Premium Support') ? ['voice', 'callback'] : ['voice', 'callback', 'email']    
-    if ( program.startsWith('General') && queue.includes('First Line')) valids.push('chat')
+    if ( program.startsWith('General') && queue.includes('First Line')) valids.push('message')
     if ( program.includes('B2B') || program.includes('Kitchen&Interior')) valids.push('email')
     return valids.includes(mediaType)
 }
@@ -25,8 +25,8 @@ function parseQueueStatus(results, queues){
             const waiting = data.filter(a=>a.metric==='oWaiting')[0]
             const interacting = data.filter(a=>a.metric==='oInteracting')[0]
             let oldest = null
-            if ( waiting.observations && waiting.observations.length > 0 ) oldest = waiting.observations[0].observationDate
-            returnData.push({queueId, program: q.program, queue: q.name, country: q.country, mediaType, waiting: waiting.stats.count, interacting: interacting.stats.count, oldest, idle: 0, onQueue: 0})
+            if ( waiting?.observations && waiting?.observations.length > 0 ) oldest = waiting.observations[0].observationDate
+            returnData.push({queueId, program: q.program, queue: q.name, country: q.country, mediaType, waiting: waiting?.stats.count, interacting: interacting.stats.count, oldest, idle: 0, onQueue: 0})
         }
     })
     results.forEach(({group, data})=>{

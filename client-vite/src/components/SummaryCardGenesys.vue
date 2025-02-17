@@ -53,14 +53,14 @@ function getChannels(part = 0){
 }
 
 function channelSorter(a,b){
-    const dir = ['voice','callback','chat','email']
+    const dir = ['voice','callback','message','email']
     return dir.indexOf(a) - dir.indexOf(b)
 }
 
 
 function getIcon(ch){
     if (ch === 'voice') return 'phone-alt'
-    if (ch === 'chat') return 'comments'
+    if (ch === 'message') return 'comments'
     if (ch === 'email') return 'envelope'
     if (ch === 'callback') return 'phone-volume'
     if (ch === 'dk') return 'dk'
@@ -85,7 +85,7 @@ function getIcon(ch){
             <SummaryCardBodyGenesys :program="props.program" v-if="page === 'menu'"/>
             <QueueCardBodyGenesys v-else-if="page === 'voice'" :program="props.program" channel="voice" />
             <QueueCardBodyGenesys v-else-if="page === 'callback'" :program="props.program" channel="callback" />
-            <QueueCardBodyGenesys v-else-if="page === 'chat'" :program="props.program" channel="chat" />
+            <QueueCardBodyGenesys v-else-if="page === 'message'" :program="props.program" channel="message" />
             <QueueCardBodyGenesys v-else-if="page === 'email'" :program="props.program" channel="email" />
             <SummaryCardStatBodyGenesys v-else-if="page=='stat'" :program="props.program" /> 
             <!-- <summary-card-body v-if="page=='menu'" :department="department" />

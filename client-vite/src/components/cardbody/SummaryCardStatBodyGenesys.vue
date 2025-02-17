@@ -25,7 +25,7 @@ function getChannels(part = 0){
 }
 
 function channelSorter(a,b){
-    const dir = ['voice','callback','chat','email']
+    const dir = ['voice','callback','message','email']
     return dir.indexOf(a) - dir.indexOf(b)
 }
 
@@ -35,7 +35,7 @@ function getIcon(key){
         case 'voice':
             icon = 'phone-alt'
             break;
-        case 'chat':
+        case 'message':
             icon = 'comments'
             break;
         case 'email':
@@ -53,8 +53,8 @@ function getIcon(key){
 
 function getResult(kpi, channel, country){
     let data = store.state.genesysDailyStats.filter(a=>a.program === props.program)
-    if (channel) data.filter(a=>a.mediaType === channel)
-    if (country) data.filter(a=>a.country === country)
+    if (channel) data = data.filter(a=>a.mediaType === channel)
+    if (country) data = data.filter(a=>a.country === country)
     // const data = channel ? store.state.genesysDailyStats.filter(a=>a.program === props.program && a.mediaType === channel) : []
     if (kpi === 'sl') {
         const num = data.reduce((acc, cur)=>{
