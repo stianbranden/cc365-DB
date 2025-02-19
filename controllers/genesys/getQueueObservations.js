@@ -39,6 +39,7 @@ module.exports = function(platformClient, queues){
               }
             const observations = await apiInstance.postAnalyticsQueuesObservationsQuery(body)
             resolve(observations)
+            // resolve({results: []})
         } catch (error) {
             reject(error)
         }

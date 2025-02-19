@@ -237,6 +237,7 @@ server.listen(process.env.PORT, ()=>{
     getTodaysTeleoptiData({dropScheduleCollection: false}).then(_=>startInterval('scheduleUpdate'));
     
     cron.schedule('0 0 3 * * *', _=>{ //reinitializing all connections to Genesys Cloud
+    // cron.schedule('0 22 * * * *', _=>{
         startGenesys()
     })
 
@@ -490,11 +491,13 @@ function updateQueues({data, queueMap}){
 }
 
 let authToken
+let timer
 async function startGenesys(){
     try {
         // await connectDB()
         if ( authToken ) { //Genesys clean-up
             try {
+                clearInterval(timer)
                 logSys('Cleaning up Genesys Cloud authentication')
                 const platformClient = await authWithToken(authToken)
                 const channels = await getChannels(platformClient)
@@ -523,7 +526,12 @@ async function startGenesys(){
         const {results} = await getQueueObservations(platformClient, queues)    
         const queueStatus = parseQueueStatus(results, queues)
         let [intervaDailyStats, dailyStats] = parseDailyStats( await getDailyStats(platformClient, queues), queues)
+        // let [intervaDailyStats, dailyStats] = parseDailyStats( [], queues)
+
         logSys('Data initialized')
+        timer = setInterval(async _=>{
+            [intervaDailyStats, dailyStats] = parseDailyStats( await getDailyStats(platformClient, queues), queues)
+        }, 1000*60*15)
         
         io.in('vue').emit('genesys-status', queueStatus)
         dataToUsers.genesys.vue.queueStatus = queueStatus

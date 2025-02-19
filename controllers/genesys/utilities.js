@@ -43,6 +43,16 @@ function parseQueueStatus(results, queues){
             })
         }
     })
+    queues.forEach(q=>{
+        ['voice', 'callback', 'email', 'message'].forEach(mediaType=>{
+            if ( returnData.filter(a=>a.queueId === q._id && a.mediaType === mediaType).length === 0 ){
+                returnData.push({queueId: q._id, program: q.program, queue: q.name, country: q.country, mediaType, waiting: 0, interacting: 0, oldest: null, idle: 0, onQueue: 0})
+                // log(queueId: q.queueId)
+            }
+
+        }) 
+    })
+
     return returnData.filter(isValidMediaType).sort(sortQueues)
 }
 

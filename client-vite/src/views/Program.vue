@@ -113,7 +113,7 @@ function getChannels(part = 0){
 }
 
 function channelSorter(a,b){
-    const dir = ['voice','callback','chat','email']
+    const dir = ['voice','callback','message','email']
     return dir.indexOf(a) - dir.indexOf(b)
 }
 
@@ -124,7 +124,7 @@ function channelSorter(a,b){
   <Alerts v-if="store.state.showAlerts" :department="department" /> 
   <template v-if="store.state.sourceSystem==='Genesys'">
     <div class="home" :class="{showAlerts: store.state.showAlerts}" >
-      <QueueCardGenesys v-for="channel in getChannels()" :title="channel" :channel="channel" :program="program" />
+      <QueueCardGenesys v-for="channel in getChannels()" :title="channel === 'message' ? 'chat' : channel" :channel="channel" :program="program" />
       <SummaryCardGenesys v-if="program.startsWith('General Service')" :title="'PS B2B ' + country" program="Premium Support B2B" :country="country" />
     </div>
   </template>
