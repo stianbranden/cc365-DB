@@ -67,6 +67,7 @@ const deleteToken = require('./controllers/genesys/deleteToken.js');
 const getChannels = require('./controllers/genesys/getChannels.js');
 const deleteSubscriptions = require('./controllers/genesys/deleteSubscriptions.js');
 const { getLanguages } = require('./controllers/genesys/getLanguages.js');
+const { log } = require('console');
 
  /*Setup EJS*/
 app.set('view engine', 'ejs');
@@ -236,8 +237,8 @@ server.listen(process.env.PORT, ()=>{
     //Start up Teleopti data fetching
     getTodaysTeleoptiData({dropScheduleCollection: false}).then(_=>startInterval('scheduleUpdate'));
     
-    cron.schedule('0 0 3 * * *', _=>{ //reinitializing all connections to Genesys Cloud
-    // cron.schedule('0 22 * * * *', _=>{
+    cron.schedule('0 0 4,7 * * *', _=>{ //reinitializing all connections to Genesys Cloud
+    // cron.schedule('0 11 * * * *', _=>{
         startGenesys()
     })
 
@@ -545,7 +546,7 @@ async function startGenesys(){
     
         ws.on('message', async msg=> {
             const data = JSON.parse(msg.toString())
-    
+            // logStd(ws._url + ' - ' + data.topicName || data.eventBody?.message)
             if ( data?.eventBody?.message === 'pong'){ //When recieving a pong, subscribe to queues
                 subscribeToQueueStatus(ws, queues)
             }
