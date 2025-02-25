@@ -237,7 +237,7 @@ server.listen(process.env.PORT, ()=>{
     //Start up Teleopti data fetching
     getTodaysTeleoptiData({dropScheduleCollection: false}).then(_=>startInterval('scheduleUpdate'));
     
-    cron.schedule('0 0 4,7 * * *', _=>{ //reinitializing all connections to Genesys Cloud
+    cron.schedule('0 0 8 * * *', _=>{ //reinitializing all connections to Genesys Cloud
     // cron.schedule('0 11 * * * *', _=>{
         startGenesys()
     })
