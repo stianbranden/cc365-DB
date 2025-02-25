@@ -3,7 +3,7 @@
         <div class="left">
             <div class="brand" @click="navigate('Nordic', {})">
                 <img alt="Logo" src="../assets/icon.png">
-                <span title="Genesys" v-if="store.state.sourceSystem ==='Genesys'">G</span>
+                <span title="Sinch" v-if="store.state.sourceSystem ==='Sinch'">S</span>
             </div>
             <h3 class="pagename">{{store.state.pageName}}</h3>
         </div>

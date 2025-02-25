@@ -141,7 +141,7 @@ export default createStore({
     genesysQueueStatus: [],
     genesysIntervalsStats: [],
     genesysDailyStats: [],
-    sourceSystem: 'Sinch'
+    sourceSystem: 'Genesys'
   },
   mutations: {
     ioConnect(state){
