@@ -202,12 +202,13 @@ server.listen(process.env.PORT, ()=>{
 
     //Start up Sinch ContactCenter fetching
     //run(false, 0);
+    
     getQueues(false, 0).then(data=> {
         updateQueues(data);
         updateIntervalData('queueUpdate', {i: 1, auth: true});
         startInterval('queueUpdate');
     });
-
+/*
     returnContactGoalProgress().then(data=>{
         dataToUsers.cgp.vue = data
         io.in('vue').emit('cgp', data)
@@ -236,12 +237,12 @@ server.listen(process.env.PORT, ()=>{
 
     //Start up Teleopti data fetching
     getTodaysTeleoptiData({dropScheduleCollection: false}).then(_=>startInterval('scheduleUpdate'));
-    
+    */
     cron.schedule('0 0 8 * * *', _=>{ //reinitializing all connections to Genesys Cloud
     // cron.schedule('0 11 * * * *', _=>{
         startGenesys()
     })
-
+    /*
     cron.schedule('0 0 3 * * *', _=>{ //Getting data at 03:00 each night
         stopInterval('scheduleUpdate');
         logSys('Running daily read of Teleopti data');
@@ -249,25 +250,25 @@ server.listen(process.env.PORT, ()=>{
             startInterval('scheduleUpdate')
         }).catch(err=>logErr(err));
     })
+*/
+    // cron.schedule('0 */1 * * * *', _=>{ //Alerts
+    //     //logStd('Checking for alerts');
+    //     getAlerts().then(alerts=>{
+    //         io.in('nordic').emit('new-alert', {alerts});
+    //         io.in('vue').emit('new-alert', {alerts});
+    //     });
+    //     ['Denmark', 'Finland', 'Norway', 'Sweden', 'Kitchen', 'Helpdesk'].forEach(department=>{
+    //         getAlerts(department).then(alerts=>{
+    //             const room = department.toLowerCase();
+    //             logStd(`Contacting ${room} with ${alerts.length} alerts`);
+    //             io.in(room).emit('new-alert', {alerts});
+    //         });
+    //     })
+    // });
 
-    cron.schedule('0 */1 * * * *', _=>{ //Alerts
-        //logStd('Checking for alerts');
-        getAlerts().then(alerts=>{
-            io.in('nordic').emit('new-alert', {alerts});
-            io.in('vue').emit('new-alert', {alerts});
-        });
-        ['Denmark', 'Finland', 'Norway', 'Sweden', 'Kitchen', 'Helpdesk'].forEach(department=>{
-            getAlerts(department).then(alerts=>{
-                const room = department.toLowerCase();
-                logStd(`Contacting ${room} with ${alerts.length} alerts`);
-                io.in(room).emit('new-alert', {alerts});
-            });
-        })
-    });
-
-    cron.schedule('0 42 * * * *', _=>{
-        //getQueues(true, 0).then(data=>console.log(data.data.queueStatus[1]))
-    })
+    // cron.schedule('0 42 * * * *', _=>{
+    //     //getQueues(true, 0).then(data=>console.log(data.data.queueStatus[1]))
+    // })
 
     // cron.schedule('0 */1 * * * *', _=>{ //Check chat
     //     checkChatStatus();
@@ -283,28 +284,28 @@ server.listen(process.env.PORT, ()=>{
         logTab(pm2Data, "PM-DATA");
     })
 
-    cron.schedule('0 */10 * * * *', _=>{
-        returnContactGoalProgress().then(data=>{
-            dataToUsers.cgp.vue = data
-            io.in('vue').emit('cgp', data)
-        })
-        fetchDeliveryDeviations().then(data=>{
-            dataToUsers.delDev.vue = data;
-            io.in('vue').emit('delDev', data)
-        })
-        getIntervalData().then(data=>{
-            dataToUsers.intervalData.vue = data
-            io.in('vue').emit('intervalData', data)
-        })
-        getProfileTimeForWebhelp().then(data=>{
-            dataToUsers.bpoReadyTime.vue = data
-            io.in('vue').emit('bpoReadyTime', data)
-        })
-        getBulkTranscriptData('today', {hasSummary: true}).then(data=>{
-            dataToUsers.aiContactReasonData.vue = data
-            io.in('vue').emit('aiContactReasonData', data)
-        })
-    })
+    // cron.schedule('0 */10 * * * *', _=>{
+    //     returnContactGoalProgress().then(data=>{
+    //         dataToUsers.cgp.vue = data
+    //         io.in('vue').emit('cgp', data)
+    //     })
+    //     fetchDeliveryDeviations().then(data=>{
+    //         dataToUsers.delDev.vue = data;
+    //         io.in('vue').emit('delDev', data)
+    //     })
+    //     getIntervalData().then(data=>{
+    //         dataToUsers.intervalData.vue = data
+    //         io.in('vue').emit('intervalData', data)
+    //     })
+    //     getProfileTimeForWebhelp().then(data=>{
+    //         dataToUsers.bpoReadyTime.vue = data
+    //         io.in('vue').emit('bpoReadyTime', data)
+    //     })
+    //     getBulkTranscriptData('today', {hasSummary: true}).then(data=>{
+    //         dataToUsers.aiContactReasonData.vue = data
+    //         io.in('vue').emit('aiContactReasonData', data)
+    //     })
+    // })
 
 });
 
@@ -337,10 +338,10 @@ io.on('connection', socket =>{
             socket.emit('updateQueues', dataToUsers.queueData[room])
             socket.emit('updateStats', dataToUsers.dailyStats[room])
         }
-        if (dataToUsers.delDev[room]) socket.emit('delDev', dataToUsers.delDev[room])
-        if (dataToUsers.intervalData[room]) socket.emit('intervalData', dataToUsers.intervalData[room] )
-        if (dataToUsers.bpoReadyTime[room]) socket.emit('bpoReadyTime', dataToUsers.bpoReadyTime[room] )
-        if (dataToUsers.cgp[room]) socket.emit('cgp', dataToUsers.cgp[room] )
+        // if (dataToUsers.delDev[room]) socket.emit('delDev', dataToUsers.delDev[room])
+        // if (dataToUsers.intervalData[room]) socket.emit('intervalData', dataToUsers.intervalData[room] )
+        // if (dataToUsers.bpoReadyTime[room]) socket.emit('bpoReadyTime', dataToUsers.bpoReadyTime[room] )
+        // if (dataToUsers.cgp[room]) socket.emit('cgp', dataToUsers.cgp[room] )
         if (dataToUsers.aiContactReasonData[room]) socket.emit('aiContactReasonData', dataToUsers.aiContactReasonData[room] )
         if (dataToUsers.genesys[room]?.queueStatus) socket.emit('genesys-status', dataToUsers.genesys[room].queueStatus)
         if (dataToUsers.genesys[room]?.statistics) socket.emit('genesys-statistics', dataToUsers.genesys[room].statistics)
@@ -411,6 +412,14 @@ let dataToUsers = {
         vue: {}
     }
 }
+
+setInterval(_=>{
+    if (dataToUsers.genesys.vue?.queueStatus) io.in('vue').emit('genesys-status', dataToUsers.genesys.vue.queueStatus)
+}, queueUpdateFrequency)
+
+cron.schedule('0 */5 * * * *', _=>{
+    if (dataToUsers.genesys.vue?.statistics) io.in('vue').emit('genesys-statistics', dataToUsers.genesys.vue.statistics)
+})
 
 function updateQueues({data, queueMap}){
     queueMap = queueMap.data;
@@ -554,7 +563,7 @@ async function startGenesys(){
             else if (data?.topicName?.includes('v2.analytics.queues.') && data?.topicName?.includes('.observations.details')) { //Trigger on detail queue status
                 const queueId = data.topicName.split('.')[3]
                 updateDetailQueueStatus(queueStatus, queueId, data.eventBody.results)
-                io.in('vue').emit('genesys-status', queueStatus)
+                // io.in('vue').emit('genesys-status', queueStatus)
                 dataToUsers.genesys.vue.queueStatus = queueStatus
             }
             
@@ -564,7 +573,7 @@ async function startGenesys(){
                     data.eventBody.data.forEach(d=>{
                         const onQueueChanges = d.metrics.filter(a=>a.metric==='oOnQueueUsers')
                         updateOnQueue(queueStatus, queueId, onQueueChanges)
-                        io.in('vue').emit('genesys-status', queueStatus)
+                        // io.in('vue').emit('genesys-status', queueStatus)
                         dataToUsers.genesys.vue.queueStatus = queueStatus
                     })
                 }
@@ -576,7 +585,7 @@ async function startGenesys(){
                         const [intervalStart, intervalEnd] = interval.split('/')
                         if (intervalStart !== intervalEnd) { //If start and end intervals are different, its an statistics update
                             [intervaDailyStats, dailyStats] = updateDailyStats(queues, intervaDailyStats, dailyStats, {queueId, mediaType}, intervalStart, intervalEnd, metrics)
-                            io.in('vue').emit('genesys-statistics', {intervaDailyStats, dailyStats})
+                            // io.in('vue').emit('genesys-statistics', {intervaDailyStats, dailyStats})
                             // console.log('I have sent')
                             dataToUsers.genesys.vue.statistics = {intervaDailyStats, dailyStats}
                         }
