@@ -82,12 +82,12 @@ function getIcon(ch){
             </span>
         </div>
         <transition name="slide-fade" mode="out-in">
-            <SummaryCardBodyGenesys :program="props.program" v-if="page === 'menu'"/>
-            <QueueCardBodyGenesys v-else-if="page === 'voice'" :program="props.program" channel="voice" />
-            <QueueCardBodyGenesys v-else-if="page === 'callback'" :program="props.program" channel="callback" />
-            <QueueCardBodyGenesys v-else-if="page === 'message'" :program="props.program" channel="message" />
-            <QueueCardBodyGenesys v-else-if="page === 'email'" :program="props.program" channel="email" />
-            <SummaryCardStatBodyGenesys v-else-if="page=='stat'" :program="props.program" /> 
+            <SummaryCardBodyGenesys :program="props.program" :country="props.country" v-if="page === 'menu'"/>
+            <QueueCardBodyGenesys v-else-if="page === 'voice'" :program="props.program" :country="props.country" channel="voice" />
+            <QueueCardBodyGenesys v-else-if="page === 'callback'" :program="props.program" :country="props.country" channel="callback" />
+            <QueueCardBodyGenesys v-else-if="page === 'message'" :program="props.program" :country="props.country" channel="message" />
+            <QueueCardBodyGenesys v-else-if="page === 'email'" :program="props.program" :country="props.country" channel="email" />
+            <SummaryCardStatBodyGenesys v-else-if="page=='stat'" :program="props.program" :country="props.country" /> 
             <!-- <summary-card-body v-if="page=='menu'" :department="department" />
             <QueueCardBody v-else-if="page=='phone'" :department="department" channel="PH" :queue="queue.data.ph" />
             <QueueCardBody v-else-if="page=='chat'" :department="department" channel="CH" :queue="queue.data.ch" />

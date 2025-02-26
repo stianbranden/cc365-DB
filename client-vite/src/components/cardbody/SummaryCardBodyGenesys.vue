@@ -7,11 +7,11 @@ const props = defineProps({
 })
 const store = useStore();
 
-function getQueue(channel, country){
+function getQueue(channel){
     let arr = store.state.genesysQueueStatus.filter(a=>a.program === props.program)
 
     if (channel) arr = arr.filter(a=>a.mediaType === channel)
-    if (country) arr = arr.filter(a=>a.country===country)
+    if (props.country) arr = arr.filter(a=>a.country===props.country)
     const queue =  arr.reduce((acc, cur)=>{
             acc += cur.waiting
             return acc

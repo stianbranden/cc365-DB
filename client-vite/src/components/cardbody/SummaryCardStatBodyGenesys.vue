@@ -51,10 +51,10 @@ function getIcon(key){
     return icon
 }
 
-function getResult(kpi, channel, country){
+function getResult(kpi, channel){
     let data = store.state.genesysDailyStats.filter(a=>a.program === props.program)
     if (channel) data = data.filter(a=>a.mediaType === channel)
-    if (country) data = data.filter(a=>a.country === country)
+    if (props.country) data = data.filter(a=>a.country === props.country)
     // const data = channel ? store.state.genesysDailyStats.filter(a=>a.program === props.program && a.mediaType === channel) : []
     if (kpi === 'sl') {
         const num = data.reduce((acc, cur)=>{
@@ -76,6 +76,7 @@ function getResult(kpi, channel, country){
 
 <template>
     <div class="card-body stats">
+        {{ props.country }}
         <div class="stat-row" v-for="channel in getChannels()" :key="channel">
             <span v-if="getIcon(channel)">
                 <font-awesome-icon :icon="getIcon(channel)" />

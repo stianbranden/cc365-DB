@@ -84,7 +84,7 @@ function parseDailyStats(results, queues, returnData = []){
 
 function summarizeIntervalStats(intervaDailyStats, returnData = []){
     // const returnData = []
-    intervaDailyStats.forEach(({program, queue, queueId, mediaType, offered, answered, abandon, serviceLevel, serviceLevelStats, handleTime, handled})=>{
+    intervaDailyStats.forEach(({program, queue, queueId, mediaType, country, offered, answered, abandon, serviceLevel, serviceLevelStats, handleTime, handled})=>{
         const found = returnData.filter(a=>a.queueId===queueId && a.mediaType===mediaType)[0]
         if ( found ){
             found.offered += offered
@@ -99,7 +99,7 @@ function summarizeIntervalStats(intervaDailyStats, returnData = []){
             found.handled += handled
         }
         else {
-            returnData.push({program, queue, queueId, mediaType, offered, answered, abandon, serviceLevel, serviceLevelStats, handleTime, handled})
+            returnData.push({program, queue, queueId, mediaType, country, offered, answered, abandon, serviceLevel, serviceLevelStats, handleTime, handled})
         }
     })
     return returnData
@@ -123,7 +123,7 @@ function updateDailyStats(queues, intervaDailyStats, dailyStats, {queueId, media
         found.handled = handle?.stats?.count || 0
     }
     else {
-        intervaDailyStats.push({program: q.program, queue: q.name, queueId, mediaType, intervalStart, intervalEnd, offered, answered, serviceLevel, 
+        intervaDailyStats.push({program: q.program, queue: q.name, queueId,country: q.country, mediaType, intervalStart, intervalEnd, offered, answered, serviceLevel, 
             serviceLevelStats: serviceLevel?.stats || {ratio: 0, numerator: 0, denominator: 0, target: 0}, abandon, handleTime: handle?.stats?.sum || 0, handled: handle?.stats?.count || 0})
     }
     dailyStats = summarizeIntervalStats(intervaDailyStats)
