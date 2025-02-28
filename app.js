@@ -67,7 +67,7 @@ const deleteToken = require('./controllers/genesys/deleteToken.js');
 const getChannels = require('./controllers/genesys/getChannels.js');
 const deleteSubscriptions = require('./controllers/genesys/deleteSubscriptions.js');
 const { getLanguages } = require('./controllers/genesys/getLanguages.js');
-const { log } = require('console');
+
 
  /*Setup EJS*/
 app.set('view engine', 'ejs');
@@ -203,11 +203,11 @@ server.listen(process.env.PORT, ()=>{
     //Start up Sinch ContactCenter fetching
     //run(false, 0);
     
-    getQueues(false, 0).then(data=> {
-        updateQueues(data);
-        updateIntervalData('queueUpdate', {i: 1, auth: true});
-        startInterval('queueUpdate');
-    });
+    // getQueues(false, 0).then(data=> {
+    //     updateQueues(data);
+    //     updateIntervalData('queueUpdate', {i: 1, auth: true});
+    //     startInterval('queueUpdate');
+    // });
 /*
     returnContactGoalProgress().then(data=>{
         dataToUsers.cgp.vue = data
