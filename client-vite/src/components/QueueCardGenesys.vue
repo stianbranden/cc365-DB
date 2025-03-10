@@ -50,11 +50,11 @@ function statClick(){
 }
 
 const queues = computed(_=>{
-    const qs = store.state.genesysQueueStatus
-        .filter(a=>a.program === props.program && a.mediaType === props.channel)
-        .map(a=>a.queue)
-        .sort((a,b)=>a.localeCompare(b))
-    return qs
+    let qs = store.state.genesysQueueStatus.filter(a=>a.program === props.program)
+    if (props.channel) qs = qs.filter(a=> a.mediaType === props.channel)
+    if( props.country) qs = qs.filter(a=>a.country === props.country)
+        
+    return qs.map(a=>a.queue).sort((a,b)=>a.localeCompare(b))
 })
 
 // const ping = computed(_=>store.state.lastPing)
@@ -102,9 +102,9 @@ function getQueues(){
         </span>
     </div>
     <transition name="slide-fade" mode="out-in">
-        <QueueCardBodyGenesys :program="program" :channel="channel" v-if="page==-1" />
-        <QueueCardStatBodyGenesys :program="program" :channel="channel" v-else-if="page == -2" />
-        <QueueCardPageBodyGenesys :queues="getQueues()" :channel="channel" v-else-if="page>=0" />
+        <QueueCardBodyGenesys :program="program" :channel :country v-if="page==-1" />
+        <QueueCardStatBodyGenesys :program="program" :channel :country v-else-if="page == -2" />
+        <QueueCardPageBodyGenesys :queues="getQueues()" :channel :country v-else-if="page>=0" />
         <div class="card-spinner" v-else>
             <span>Loading...</span>
         </div>
@@ -114,29 +114,7 @@ function getQueues(){
         <div @click="newPage(1)"><font-awesome-icon icon="angle-right" /></div>
     </div>
 </div>
-    <!-- <div class="card queuecard" v-if="queue.queues.length">
-        <div class="card-header">
-            <div class="flag">        
-                <font-awesome-icon :icon="icon" />
-            </div>
-            <span class="title">{{title}}</span>
-            <span class="icon" @click="statClick" :class="{active: page==-2}">
-                <font-awesome-icon icon="chart-bar" />  
-            </span>
-        </div>
-        <transition name="slide-fade" mode="out-in">
-            <queue-card-body :queue="queue" :department="department" :channel="channel" v-if="queue.queues.length && page==-1" />
-            <queue-card-stat-body :daily="daily" :channel="channel" :department="department" v-else-if="page == -2" />
-            <queue-card-page-body :pages="queue.pages" :page="page" v-else-if="page>=0" />
-            <div class="card-spinner" v-else>
-                <span>Loading...</span>
-            </div> 
-        </transition>
-        <div class="card-menu">
-            <div @click="newPage(-1)"><font-awesome-icon icon="angle-left" /></div>
-            <div @click="newPage(1)"><font-awesome-icon icon="angle-right" /></div>
-        </div>
-    </div> -->
+
 </template>
 
 

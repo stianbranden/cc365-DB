@@ -140,7 +140,9 @@ export default createStore({
     genesysQueueStatus: [],
     genesysIntervalsStats: [],
     genesysDailyStats: [],
-    sourceSystem: 'Genesys'
+    sourceSystem: 'Genesys',
+    userAgent: navigator.userAgent,
+    browserType: navigator.userAgent.includes('SMART-TV') ? 'GoogleTV' : 'PC browser'
   },
   mutations: {
     ioConnect(state){

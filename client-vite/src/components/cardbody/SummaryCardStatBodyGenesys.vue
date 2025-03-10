@@ -2,6 +2,28 @@
 import {useStore} from 'vuex'
 import Logo from '../Logo.vue'
 
+function getCountryAbbr(country){
+    let abbr = ''
+    switch (country) {
+        case 'Denmark':
+            abbr = 'dk'
+            break;
+        case 'Finland':
+            abbr = 'fi'
+            break;
+        case 'Norway':
+            abbr = 'no'
+            break;
+        case 'Sweden':
+            abbr = 'se'
+            break;
+    
+        default:
+            break;
+    }
+    return abbr
+}
+
 const props = defineProps( {
     title: String, 
     channel: String,
@@ -51,10 +73,11 @@ function getIcon(key){
     return icon
 }
 
-function getResult(kpi, channel){
+function getResult(kpi, channel, country){
     let data = store.state.genesysDailyStats.filter(a=>a.program === props.program)
     if (channel) data = data.filter(a=>a.mediaType === channel)
     if (props.country) data = data.filter(a=>a.country === props.country)
+    if (country) data = data.filter(a=>a.country === country)
     // const data = channel ? store.state.genesysDailyStats.filter(a=>a.program === props.program && a.mediaType === channel) : []
     if (kpi === 'sl') {
         const num = data.reduce((acc, cur)=>{
@@ -76,25 +99,45 @@ function getResult(kpi, channel){
 
 <template>
     <div class="card-body stats">
-        {{ props.country }}
-        <div class="stat-row" v-for="channel in getChannels()" :key="channel">
-            <span v-if="getIcon(channel)">
-                <font-awesome-icon :icon="getIcon(channel)" />
-            </span>
-            <span>
-                <span class="label">{{ channel ==='email' ? 'OnTime' : 'SL' }}</span>
-                <span class="result bigger">{{ getResult('sl', channel) }}</span>
-            </span>
-            <span>
-                <span class="label">Offered</span>
-                <span class="result bigger">{{ getResult('offered', channel) }}</span>
-            </span>
-            <span>
-                <span class="label">Answered</span>
-                <span class="result bigger">{{ getResult('answered', channel) }}</span>
-            </span>
+        <template v-if="program != 'Premium Support Technical Helpdesk'">
+            <div class="stat-row" v-for="channel in getChannels()" :key="channel">
+                <span v-if="getIcon(channel)">
+                    <font-awesome-icon :icon="getIcon(channel)" />
+                </span>
+                <span>
+                    <span class="label">{{ channel ==='email' ? 'OnTime' : 'SL' }}</span>
+                    <span class="result bigger">{{ getResult('sl', channel) }}</span>
+                </span>
+                <span>
+                    <span class="label">Offered</span>
+                    <span class="result bigger">{{ getResult('offered', channel) }}</span>
+                </span>
+                <span>
+                    <span class="label">Answered</span>
+                    <span class="result bigger">{{ getResult('answered', channel) }}</span>
+                </span>
+    
+            </div>
 
-        </div>
+        </template>
+        <template v-else>
+            <div class="stat-row" v-for="country in ['Denmark', 'Finland', 'Norway', 'Sweden']" :key="country">
+                <Logo :department="getCountryAbbr(country)" />
+                <span>
+                    <span class="label">{{ channel ==='email' ? 'OnTime' : 'SL' }}</span>
+                    <span class="result bigger">{{ getResult('sl', channel, country) }}</span>
+                </span>
+                <span>
+                    <span class="label">Offered</span>
+                    <span class="result bigger">{{ getResult('offered', channel, country) }}</span>
+                </span>
+                <span>
+                    <span class="label">Answered</span>
+                    <span class="result bigger">{{ getResult('answered', channel, country) }}</span>
+                </span>
+    
+            </div>
+        </template>
         <!-- <div class="stat-row" v-for="key in keys" :key="key">
             <span v-if="getIcon(key)">
                 <font-awesome-icon :icon="getIcon(key)" />

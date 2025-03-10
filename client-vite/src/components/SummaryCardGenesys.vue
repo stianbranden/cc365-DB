@@ -74,6 +74,7 @@ function getIcon(ch){
 
 <template>
     <div class="card summarycard">
+
         <div class="card-header">
 
             <span>{{title}}</span>
@@ -87,22 +88,16 @@ function getIcon(ch){
             <QueueCardBodyGenesys v-else-if="page === 'callback'" :program="props.program" :country="props.country" channel="callback" />
             <QueueCardBodyGenesys v-else-if="page === 'message'" :program="props.program" :country="props.country" channel="message" />
             <QueueCardBodyGenesys v-else-if="page === 'email'" :program="props.program" :country="props.country" channel="email" />
+            <QueueCardBodyGenesys v-else-if="page === 'dk'" :program="props.program" country="Denmark" channel="voice" />
+            <QueueCardBodyGenesys v-else-if="page === 'fi'" :program="props.program" country="Finland" channel="voice" />
+            <QueueCardBodyGenesys v-else-if="page === 'no'" :program="props.program" country="Norway" channel="voice" />
+            <QueueCardBodyGenesys v-else-if="page === 'se'" :program="props.program" country="Sweden" channel="voice" />
             <SummaryCardStatBodyGenesys v-else-if="page=='stat'" :program="props.program" :country="props.country" /> 
-            <!-- <summary-card-body v-if="page=='menu'" :department="department" />
-            <QueueCardBody v-else-if="page=='phone'" :department="department" channel="PH" :queue="queue.data.ph" />
-            <QueueCardBody v-else-if="page=='chat'" :department="department" channel="CH" :queue="queue.data.ch" />
-            <QueueCardBody v-else-if="page=='email'" :department="department" channel="EM" :queue="queue.data.em" />
-            <QueueCardBody v-else-if="page=='action'" :department="department" channel="AC" :queue="queue.data.ac" />
-            <DeliveryDeviationCardBody v-else-if="page=='deldev'" :department="department" />
-            <QueueCardBody v-else-if="page=='dk'" :department="department" channel="PH" :queue="queue.data.dk" />
-            <QueueCardBody v-else-if="page=='fi'" :department="department" channel="PH" :queue="queue.data.fi" />
-            <QueueCardBody v-else-if="page=='no'" :department="department" channel="PH" :queue="queue.data.no" />
-            <QueueCardBody v-else-if="page=='se'" :department="department" channel="PH" :queue="queue.data.se" />
-            -->
+       
         </transition>
 
 
-        <div class="card-menu" v-if="getChannels().length > 1">
+        <div class="card-menu" v-if="getChannels().length > 1 && program !== 'Premium Support Technical Helpdesk'">
             <div v-for="ch in getChannels(1)" :key="ch" @click="page=ch" :class="{active: page==ch}" :title="ch">
                 <font-awesome-icon :icon="getIcon(ch)" />
             </div>
@@ -113,8 +108,26 @@ function getIcon(ch){
                 <font-awesome-icon :icon="getIcon(ch)" />
             </div>
         </div>
-
+        <div class="card-menu" v-else>
+            <div @click="page='dk'" :class="{active: page=='dk'}">
+                <Logo department="dk" />   
+            </div>
+            <div @click="page='fi'" :class="{active: page=='fi'}">
+                <Logo department="fi" />   
+            </div>
+            <div @click="page='menu'" :class="{active: page=='menu'}">
+                <font-awesome-icon icon="th-large" />
+            </div>
+            <div @click="page='no'" :class="{active: page=='no'}">
+                <Logo department="no" />   
+            </div>
+            <div @click="page='se'" :class="{active: page=='se'}">
+                <Logo department="se" />   
+            </div>
+        </div>
     </div>
+
+    
 </template>
 
 

@@ -9,7 +9,8 @@ const store = useStore();
 
 const props = defineProps({
     queues: Array,
-    channel: String
+    channel: String,
+    country: String
 })
 const shortName = name =>{
     let short = name

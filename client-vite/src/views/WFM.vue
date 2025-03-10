@@ -7,8 +7,6 @@ import { useStore } from 'vuex'
 
 const store = useStore()
 
-const userAgent = navigator.userAgent
-
 function getPrograms(){
   const programs = []
   store.state.genesysQueueStatus.filter(a=> !a.program.includes('Inside Sales')).forEach(q=>{
@@ -44,7 +42,6 @@ function abbrTitle(title){
         <!-- <SummaryCard key="b2b" title='PS B2B' department='b2b' @dblclick="navigate('b2b')" /> -->
     </div>
     <div class="wfm">
-        <div>{{userAgent}}</div><br>
         <IntervalDataTable />
     </div>
 </template>
@@ -65,6 +62,7 @@ function abbrTitle(title){
     }
 }
 .home {
+    overflow: hidden;
     gap: 1rem;
     display: flex;
     justify-content: space-between !important;

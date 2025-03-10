@@ -14,7 +14,8 @@ const props = defineProps({
 })
 
 function getResult(kpi){
-    const data = props.channel ? store.state.genesysDailyStats.filter(a=>a.program === props.program && a.mediaType === props.channel) : []
+    let data = props.channel ? store.state.genesysDailyStats.filter(a=>a.program === props.program && a.mediaType === props.channel) : []
+    if (props.country) data = data.filter(a=>a.country === props.country)
     if (kpi === 'sl') {
         const num = data.reduce((acc, cur)=>{
             return acc + cur.serviceLevelStats.numerator

@@ -123,9 +123,15 @@ function channelSorter(a,b){
 <template>
   <Alerts v-if="store.state.showAlerts" :department="department" /> 
   <template v-if="store.state.sourceSystem==='Genesys'">
-    <div class="home" :class="{showAlerts: store.state.showAlerts}" >
+    <div class="home" :class="{showAlerts: store.state.showAlerts}" v-if="program !== 'Premium Support Technical Helpdesk'">
       <QueueCardGenesys v-for="channel in getChannels()" :title="channel === 'message' ? 'chat' : channel" :channel="channel" :program="program" />
       <SummaryCardGenesys v-if="program.startsWith('General Service')" :title="'PS B2B ' + country" program="Premium Support B2B" :country="country" />
+    </div>
+    <div class="home" :class="{showAlerts: store.state.showAlerts}" v-else>
+      <QueueCardGenesys title="DK THD Phone" channel="voice" country="Denmark" :program="program" />
+      <QueueCardGenesys title="FI THD Phone" channel="voice" country="Finland" :program="program" />
+      <QueueCardGenesys title="NO THD Phone" channel="voice" country="Norway" :program="program" />
+      <QueueCardGenesys title="SE THD Phone" channel="voice" country="Sweden" :program="program" />
     </div>
   </template>
   <template v-else>
