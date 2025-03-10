@@ -112,43 +112,8 @@ function getIcon(ch){
             <div v-for="ch in getChannels(2)" :key="ch" @click="page=ch" :class="{active: page==ch}" :title="ch">
                 <font-awesome-icon :icon="getIcon(ch)" />
             </div>
-
-            <!-- <div @click="page='phone'" :class="{active: page=='phone'}" v-if="queue.data.ph.queues.length > 0">
-                <font-awesome-icon icon='phone-alt'/>
-            </div>
-            <div @click="page='chat'" :class="{active: page=='chat'}" v-if="queue.data.ch.queues.length > 0">
-                <font-awesome-icon icon='comments'/>
-            </div>
-            <div @click="page='menu'" :class="{active: page=='menu'}" v-if="channelPages != 1">
-                <font-awesome-icon icon="th-large" />
-            </div>
-            <div @click="page='email'" :class="{active: page=='email'}"  v-if="queue.data.em.queues.length > 0">
-                <font-awesome-icon icon='envelope' />
-            </div>
-            <div @click="page='action'" :class="{active: page=='action'}"  v-if="queue.data.ac.queues.length > 0">
-                <font-awesome-icon icon='folder'/>
-            </div>
-            <div @click="page='deldev'" :class="{active: page=='deldev'}"  v-if="store.getters.getDeliveryDeviations(department).deliveryDeviations.length > 0">
-                <font-awesome-icon icon='truck'/> 
-            </div>-->
         </div>
-        <!--<div class="card-menu" v-else>
-            <div @click="page='dk'" :class="{active: page=='dk'}" v-if="queue.data.dk.queues.length > 0">
-                <Logo department="dk" />
-            </div>
-            <div @click="page='fi'" :class="{active: page=='fi'}" v-if="queue.data.fi.queues.length > 0">
-                <Logo department="fi" />
-            </div>
-            <div @click="page='menu'" :class="{active: page=='menu'}" v-if="channelPages != 1">
-                <font-awesome-icon icon="th-large" />
-            </div>  
-            <div @click="page='no'" :class="{active: page=='no'}" v-if="queue.data.no.queues.length > 0">
-                <Logo department="no" />
-            </div>
-            <div @click="page='se'" :class="{active: page=='se'}" v-if="queue.data.se.queues.length > 0">
-                <Logo department="se" />
-            </div>
-        </div> -->
+
     </div>
 </template>
 

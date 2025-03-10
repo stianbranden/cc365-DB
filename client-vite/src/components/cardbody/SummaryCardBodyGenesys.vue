@@ -7,11 +7,12 @@ const props = defineProps({
 })
 const store = useStore();
 
-function getQueue(channel){
+function getQueue(channel, country){
     let arr = store.state.genesysQueueStatus.filter(a=>a.program === props.program)
 
     if (channel) arr = arr.filter(a=>a.mediaType === channel)
     if (props.country) arr = arr.filter(a=>a.country===props.country)
+    if (country) arr = arr.filter(a=>a.country===country)
     const queue =  arr.reduce((acc, cur)=>{
             acc += cur.waiting
             return acc
@@ -58,8 +59,8 @@ function spanDouble(channel){
         <div v-for="country in ['Denmark', 'Finland', 'Norway', 'Sweden']" :key="country">
             <span 
                 class="large-ban"
-                :class="{'reduce-size': getQueue(null, country.toLowerCase())>999}"
-            >{{getQueue(null, country.toLowerCase())}}</span>
+                :class="{'reduce-size': getQueue(null, country)>999}"
+            >{{getQueue(null, country)}}</span>
             <span class="small-ban">{{country}}</span>
         </div>
     </div>

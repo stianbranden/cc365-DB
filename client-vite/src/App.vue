@@ -76,6 +76,14 @@ body {
   --iconhovercolor: #aaa;
   --cardwidth: 275px;
   --cardbodyheight: 225px;
+  @include small {
+    // --cardwidth: 200px;
+    --cardbodyheight: 175px;
+  }
+  @include tv {
+    // --cardwidth: 350px;
+    --cardbodyheight: 275px;
+  }
   --navhover: #{lighten($brand-color, 10%)};
   --alertbordercolor: lightgrey;
   --activealertbgcolor: #{lighten($color-bad, 30%)};
