@@ -12,72 +12,135 @@ const store = useStore()
 
 const intervals = store.state.intervalLabels
 
-const departments = [
-    {
-        key: 'dk',
-        name: 'GS DK', 
-        target: 50
-    },
-    {
-        key: 'fi',
-        name: 'GS FI' , 
-        target: 50
-    },
-    {
-        key: 'no',
-        name: 'GS NO' , 
-        target: 50
-    },
-    {
-        key: 'se',
-        name: 'GS SE' , 
-        target: 50
-    },
-    {
-        key: 'ki',
-        name: 'PS K&I' , 
-        target: 50
-    },
-    {
-        key: 'thd',
-        name: 'PS THD' , 
-        target: 70
-    },
-    {
-        key: 'b2b',
-        name: 'PS B2B' , 
-        target: 50
-    },
-]
+const allowedChannels = ['voice', 'message', 'callback']
 
-function getChannelName(abbr, form){
-    if (form === 'short') return abbr
-    if (abbr === 'PH') return 'Phone'
-    if (abbr === 'CH') return 'Chat'
-    if (abbr === 'CB') return 'Callback'
-    return 'N/A'
+function getPrograms(){
+  const programs = []
+  store.state.genesysIntervalsStats.filter(a=> !a.program.includes('Inside Sales')).forEach(q=>{
+    if (!programs.includes(q.program)) programs.push(q.program)
+  })
+  return programs.sort((a,b)=>a<b?-1:1)
 }
 
-function calculateServiceLevel(department, channel, interval, re = 'number' ){
-    // console.log({department, channel, interval, re});
-    const {key, target} = department
-    const data = store.getters.getIntervalDataByDepartment[department.key][channel][interval]
+function getChannels(program){
+    const channels = []
+    store.state.genesysIntervalsStats.filter(a=> a.program === program && allowedChannels.includes(a.mediaType)).forEach(q=>{
+        if (!channels.includes(q.mediaType)) channels.push(q.mediaType)
+    })
+    return channels.sort((a,b)=>a<b?-1:1)
+}
+
+function abbrTitle(title){
+  if (title === 'General Service Denmark') return 'GS DK'
+  if (title === 'General Service Finland') return 'GS Finland'
+  if (title === 'General Service Norway') return 'GS Norway'
+  if (title === 'General Service Sweden') return 'GS Sweden'
+  if (title === 'Premium Support Kitchen&Interior') return 'PS Kitchen&Interior'
+  if (title === 'Premium Support Technical Helpdesk') return 'PS Technical Helpdesk'
+  if (title === 'Premium Support B2B') return 'PS B2B'
+  else return title
+}
+
+// const departments = [
+//     {
+//         key: 'dk',
+//         name: 'GS DK', 
+//         target: 50
+//     },
+//     {
+//         key: 'fi',
+//         name: 'GS FI' , 
+//         target: 50
+//     },
+//     {
+//         key: 'no',
+//         name: 'GS NO' , 
+//         target: 50
+//     },
+//     {
+//         key: 'se',
+//         name: 'GS SE' , 
+//         target: 50
+//     },
+//     {
+//         key: 'ki',
+//         name: 'PS K&I' , 
+//         target: 50
+//     },
+//     {
+//         key: 'thd',
+//         name: 'PS THD' , 
+//         target: 70
+//     },
+//     {
+//         key: 'b2b',
+//         name: 'PS B2B' , 
+//         target: 50
+//     },
+// ]
+
+// function getChannelName(abbr, form){
+//     if (form === 'short') return abbr
+//     if (abbr === 'PH') return 'Phone'
+//     if (abbr === 'CH') return 'Chat'
+//     if (abbr === 'CB') return 'Callback'
+//     return 'N/A'
+// }
+
+function getTarget(program){
+    if (program === 'Premium Support Technical Helpdesk') return 70
+    return 50
+}
+
+function getIntervalFromDateTime(intervalStart){
+    const time = intervalStart.split('T')[1].split(':')
+    const hour = time[0]
+    const minute = time[1]
+    return `${hour}:${minute}`
+}
+function calculateServiceLevel(program, channel, interval, ret = 'number'){
+    const data = store.state.genesysIntervalsStats.filter(a=>a.program === program && a.mediaType === channel && getIntervalFromDateTime(a.intervalStart) === interval)
     if (data){
-        const {countOfAnsweredOnTimeContacts, countOfCompletedContacts} = data
+        const countOfAnsweredOnTimeContacts = data.reduce((acc, cur)=>acc+cur.serviceLevelStats.numerator, 0)
+        const countOfCompletedContacts = data.reduce((acc, cur)=>acc+cur.serviceLevelStats.denominator, 0)
+        
+        // const {countOfAnsweredOnTimeContacts, countOfCompletedContacts} = data
         const serviceLevel = Math.floor(countOfAnsweredOnTimeContacts/countOfCompletedContacts*100)
 
-        if (re === 'number' && countOfCompletedContacts) return Math.floor(serviceLevel) + '%'
-        if (re === 'color' && countOfCompletedContacts ) {
-            // console.log({target, serviceLevel, data});
-            if (serviceLevel > target+20) return 'blue'
+        const target = getTarget(program)
+
+        if (ret === 'number' && countOfCompletedContacts) return Math.floor(serviceLevel) + '%'
+        if (ret === 'color' && countOfCompletedContacts ) {
+            if (serviceLevel > target + 20) return 'blue'
             if (serviceLevel >= target) return 'green'
             if (serviceLevel >= target-10) return 'yellow'
             if (serviceLevel >= 0) return 'red'
         }
     }
-    if (re === 'color' ) return 'none'
+    if (ret === 'color' ) return 'none'
     return ' '
 }
+
+// function calculateServiceLevel(department, channel, interval, re = 'number' ){
+//     // console.log({department, channel, interval, re});
+//     const {key, target} = department
+//     const data = store.getters.getIntervalDataByDepartment[department.key][channel][interval]
+//     if (data){
+//         const {countOfAnsweredOnTimeContacts, countOfCompletedContacts} = data
+//         const serviceLevel = Math.floor(countOfAnsweredOnTimeContacts/countOfCompletedContacts*100)
+
+//         if (re === 'number' && countOfCompletedContacts) return Math.floor(serviceLevel) + '%'
+//         if (re === 'color' && countOfCompletedContacts ) {
+//             // console.log({target, serviceLevel, data});
+//             if (serviceLevel > target+20) return 'blue'
+//             if (serviceLevel >= target) return 'green'
+//             if (serviceLevel >= target-10) return 'yellow'
+//             if (serviceLevel >= 0) return 'red'
+//         }
+//     }
+//     if (re === 'color' ) return 'none'
+//     return ' '
+// }
 
 </script>
 
@@ -96,7 +159,26 @@ function calculateServiceLevel(department, channel, interval, re = 'number' ){
                 </span>
             </th>
         </tr>
-        <template v-for="department in departments" :key="department.key">
+        <template v-for="program in getPrograms()" :key="program">
+            <tr v-for="channel in getChannels(program)" :key="program + channel" class="program">
+                <th class="program-name">{{abbrTitle(program)}}</th>
+                <!-- <th class="program-name">{{program}}</th> -->
+                <th class="channel-name"><span class="long">{{channel}}</span><span class="short">{{channel}}</span></th>
+                <td class="target">{{getTarget(program)}}%</td>
+                <td 
+                    class="data" 
+                    v-for="interval in intervals" 
+                    :key="program + channel + interval"
+                    :class="calculateServiceLevel(program, channel, interval, 'color')"
+                    :title="calculateServiceLevel(program, channel, interval, 'number')"
+                >
+                    <span>{{ calculateServiceLevel(program, channel, interval, 'number') }}</span>
+                </td>
+
+            </tr>
+        </template>
+    
+        <!-- <template v-for="department in departments" :key="department.key">
             <tr class="program" v-for="channel in Object.keys(store.getters.getIntervalDataByDepartment[department.key] ||[])">
                 <th class="program-name">{{department.name}}</th>
                 <th class="channel-name"><span class="long">{{getChannelName(channel, 'long')}}</span><span class="short">{{getChannelName(channel, 'short')}}</span></th>
@@ -105,7 +187,7 @@ function calculateServiceLevel(department, channel, interval, re = 'number' ){
                     <span>{{calculateServiceLevel(department, channel, interval, 'number')}}</span>
                 </td>
             </tr>
-        </template>
+        </template> -->
     </table>
 </template>
 
@@ -131,10 +213,10 @@ function calculateServiceLevel(department, channel, interval, re = 'number' ){
     .interval span.hour {
         display: none;
     }
-    .interval:nth-of-type(4n) span.hour{
+    .interval:nth-of-type(2n) span.hour{
         display: inline;
     }
-    .interval:nth-of-type(4n+3){
+    .interval:nth-of-type(2n+3){
         border-right: 1px solid var(--textcolor);
     }
     .interval:last-of-type{
