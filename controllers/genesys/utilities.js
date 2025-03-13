@@ -1,3 +1,5 @@
+const moment = require('moment')
+
 function sortQueues(a,b){
     if ( a.program > b.program ) return 1
     if ( a.program < b.program ) return -1
@@ -63,7 +65,9 @@ function parseDailyStats(results, queues, returnData = []){
         const {queueId, mediaType} = group
         if ( mediaType ){
             data.forEach(({interval, metrics})=>{
-                const [intervalStart, intervalEnd] = interval.split('/')
+                const [intervalS, intervalE] = interval.split('/')
+                const intervalStart = moment(intervalS).toISOString(true)
+                const intervalEnd = moment(intervalE).toISOString(true)
                 const q = queues.filter(a=>a._id === queueId)[0]
                 const offered = metrics.filter(a=>a.metric==='nOffered')[0]
                 const answered = metrics.filter(a=>a.metric==='tAnswered')[0]
@@ -105,7 +109,9 @@ function summarizeIntervalStats(intervaDailyStats, returnData = []){
     return returnData
 }
 
-function updateDailyStats(queues, intervaDailyStats, dailyStats, {queueId, mediaType}, intervalStart, intervalEnd, metrics){
+function updateDailyStats(queues, intervaDailyStats, dailyStats, {queueId, mediaType}, intervalS, intervalE, metrics){
+    const intervalStart = moment(intervalS).toISOString(true)
+    const intervalEnd = moment(intervalE).toISOString(true)
     const q = queues.filter(a=>a._id === queueId)[0]
     const found = intervaDailyStats.filter(a=>a.queueId === queueId && a.mediaType === mediaType && a.intervalStart === intervalStart)[0]
     const offered = metrics.filter(a=>a.metric==='nOffered')[0]?.stats?.count || 0
