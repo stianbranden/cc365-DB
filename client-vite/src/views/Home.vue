@@ -26,7 +26,7 @@ const ping = computed(_=>store.state.lastPing)
 function getPrograms(){
   const programs = []
   store.state.genesysQueueStatus.forEach(q=>{
-    if (!programs.includes(q.program)) programs.push(q.program)
+    if (!programs.includes(q.program) && !q.program.includes('Inside Sales')) programs.push(q.program)
   })
   return programs.sort((a,b)=>a<b?-1:1)
 }
