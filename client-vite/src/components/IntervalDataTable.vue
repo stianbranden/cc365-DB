@@ -32,11 +32,11 @@ function getChannels(program){
 
 function abbrTitle(title){
   if (title === 'General Service Denmark') return 'GS DK'
-  if (title === 'General Service Finland') return 'GS Finland'
-  if (title === 'General Service Norway') return 'GS Norway'
-  if (title === 'General Service Sweden') return 'GS Sweden'
-  if (title === 'Premium Support Kitchen&Interior') return 'PS Kitchen&Interior'
-  if (title === 'Premium Support Technical Helpdesk') return 'PS Technical Helpdesk'
+  if (title === 'General Service Finland') return 'GS FI'
+  if (title === 'General Service Norway') return 'GS NO'
+  if (title === 'General Service Sweden') return 'GS SE'
+  if (title === 'Premium Support Kitchen&Interior') return 'PS K&I'
+  if (title === 'Premium Support Technical Helpdesk') return 'PS THD'
   if (title === 'Premium Support B2B') return 'PS B2B'
   else return title
 }
