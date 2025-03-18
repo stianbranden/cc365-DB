@@ -55,7 +55,9 @@ import {
     faCircleHalfStroke,
     faCircle,
     faCopy,
-    faPhoneVolume
+    faPhoneVolume,
+    faArrowDown,
+    faArrowUp
 
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -71,7 +73,7 @@ library.add(faLightbulb, faPhoneAlt, faComments, faEnvelope, faFolder, faCircleN
     faClipboard, faEdit, faCog, faFile, faTrashAlt, faAngleDown, faAngleUp, faTruck, faUserCog,
     faCalendar, faUndoAlt, faUser, faCodeBranch, faSync, faStar, faShield, faGaugeSimpleHigh, faCircleMinus, 
     faPenToSquare, faCircleCheck, faTrash, faArrowUpRightFromSquare, faCircleXmark, faMedal, faChartSimple,
-    faCircleHalfStroke,faCircle, farCircle, farCircleCheck, farCircleXmark, faCircleQuestion, faCopy, faPhoneVolume)
+    faCircleHalfStroke,faCircle, farCircle, farCircleCheck, farCircleXmark, faCircleQuestion, faCopy, faPhoneVolume, faArrowDown, faArrowUp)
 
 createApp(App)
     .component('font-awesome-icon', FontAwesomeIcon)
