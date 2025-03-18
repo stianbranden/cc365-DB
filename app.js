@@ -571,7 +571,7 @@ async function startGenesys(){
                 const {queueId, mediaType} = data.eventBody.group
                 if (!mediaType){ //If mediaType is not present, it is a user status update
                     data.eventBody.data.forEach(d=>{
-                        const onQueueChanges = d.metrics.filter(a=>a.metric==='oOnQueueUsers')
+                        const onQueueChanges = d.metrics?.filter(a=>a.metric==='oOnQueueUsers')
                         updateOnQueue(queueStatus, queueId, onQueueChanges)
                         // io.in('vue').emit('genesys-status', queueStatus)
                         dataToUsers.genesys.vue.queueStatus = queueStatus
