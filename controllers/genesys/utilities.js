@@ -138,11 +138,11 @@ function updateDailyStats(queues, intervaDailyStats, dailyStats, {queueId, media
 }
 
 function updateOnQueue(queueStatus, queueId, results){
-    const qs = queueStatus.filter(a=>a.queueId === queueId)
-    const idle = results.filter(a=>a.metric==='oOnQueueUsers' && a.qualifier === 'IDLE')[0]?.stats.count || 0
-    const onQueue = results.filter(a=>a.metric==='oOnQueueUsers').reduce((acc, a)=>{
+    const qs = queueStatus?.filter(a=>a.queueId === queueId) || []
+    const idle = results?.filter(a=>a.metric==='oOnQueueUsers' && a.qualifier === 'IDLE')[0]?.stats.count || 0
+    const onQueue = results?.filter(a=>a.metric==='oOnQueueUsers').reduce((acc, a)=>{
         return a.qualifier === 'NOT_RESPONDING' ? acc: acc + a.stats.count
-    }, 0)
+    }, 0) || 0
     qs.forEach(q=>{
         q.idle = idle
         q.onQueue = onQueue
